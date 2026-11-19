@@ -1,0 +1,12 @@
+{
+  "name": "shiroodi-class",
+  "version": "9.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env.development.local scripts/dev-server.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}
