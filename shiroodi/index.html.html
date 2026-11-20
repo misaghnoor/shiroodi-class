@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سامانه مدیریت کلاس | دبستان شهید شیرودی عباس‌آباد</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p1:#7c3aed;--p2:#4f46e5;--p3:#db2777;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444;--info:#0ea5e9;--txt:#0f172a;--muted:#64748b;--soft:#94a3b8;--card:rgba(255,255,255,.85);--border:rgba(255,255,255,.7);--line:rgba(100,116,139,.14);--radius:22px;--shadow:0 20px 45px -22px rgba(30,41,59,.5);--shadow-sm:0 8px 22px -12px rgba(30,41,59,.4)}
+html{scroll-behavior:smooth}
+body{font-family:'Vazirmatn',Tahoma,system-ui,sans-serif;color:var(--txt);min-height:100vh;padding:0 0 30px;background:radial-gradient(1200px 700px at 100% -5%,#ddd6fe 0%,transparent 58%),radial-gradient(1000px 600px at -5% 8%,#fbcfe8 0%,transparent 55%),radial-gradient(1100px 800px at 50% 105%,#bbf7d0 0%,transparent 58%),#f8fafc;background-attachment:fixed;-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+input,textarea,select{user-select:text;-webkit-user-select:text}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{height:10px;width:10px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(124,58,237,.4),rgba(79,70,229,.4));border-radius:20px}
+.hidden{display:none!important}
+@media print{html,body{display:none!important}}
+#watermark{position:fixed;inset:0;pointer-events:none;z-index:9998;background-image:repeating-linear-gradient(-30deg,rgba(124,58,237,.05) 0 2px,transparent 2px 180px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#watermark::before{content:attr(data-text);font-size:34px;font-weight:800;color:rgba(124,58,237,.08);transform:rotate(-24deg);white-space:nowrap;text-align:center;line-height:2.4;letter-spacing:4px}
+#lockOverlay{position:fixed;inset:0;background:rgba(15,23,42,.96);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);z-index:9999;display:grid;place-items:center;color:#fff;text-align:center;font-weight:800;font-size:16px;gap:14px;padding:24px;line-height:2}
+#lockOverlay .lock-ico{font-size:64px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.7}}
+#loginScreen{min-height:100vh;padding:20px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.login-hero{max-width:1100px;width:100%;padding:20px 22px;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:26px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.login-hero .logo{width:70px;height:70px;border-radius:22px;display:grid;place-items:center;font-size:34px;flex:0 0 auto;background:linear-gradient(135deg,#7c3aed,#4f46e5 55%,#0ea5e9);box-shadow:0 18px 40px -14px rgba(79,70,229,.9);animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-2deg)}}
+.login-hero h1{font-size:clamp(19px,2.6vw,26px);font-weight:800;background:linear-gradient(90deg,#4f46e5,#7c3aed 45%,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent}
+.login-hero p{font-size:12.5px;color:var(--muted);margin-top:4px;font-weight:600}
+.news-section{max-width:1100px;width:100%;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:26px;padding:18px 20px;box-shadow:var(--shadow)}
+.news-section h3{font-size:14.5px;font-weight:800;color:#312e81;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.news-item{background:#faf5ff;border:1px solid #e9d5ff;border-radius:16px;padding:12px 14px;margin-bottom:8px;transition:.2s}
+.news-item:hover{background:#f3e8ff;transform:translateY(-2px)}
+.news-item .nt{font-size:13px;font-weight:800;color:#6b21a8;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.news-item .nd{font-size:12px;color:#475569;line-height:1.9;font-weight:600}
+.news-item .ndate{font-size:10.5px;color:#94a3b8;font-weight:700;margin-top:6px}
+.login-forms{max-width:1100px;width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.login-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:26px;padding:26px 22px;box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden}
+.login-card::before{content:'';position:absolute;top:0;right:0;left:0;height:5px;background:linear-gradient(90deg,#7c3aed,#4f46e5,#0ea5e9)}
+.login-card.teacher::before{background:linear-gradient(90deg,#db2777,#f59e0b)}
+.login-card .l-ico{font-size:42px;margin-bottom:8px}
+.login-card h2{font-size:18px;font-weight:800;margin-bottom:8px;color:#312e81}
+.login-card p{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:18px;line-height:1.9}
+.code-input{width:100%;max-width:280px;margin:0 auto 14px;display:block;padding:16px 14px;border-radius:16px;border:2px solid var(--line);background:#fff;text-align:center;font-size:24px;font-weight:800;letter-spacing:8px;color:#4338ca;outline:none;transition:.2s;font-family:'Vazirmatn',monospace}
+.code-input:focus{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(167,139,250,.22);transform:translateY(-1px)}
+.code-input::placeholder{letter-spacing:2px;font-size:16px;color:#cbd5e1}
+.login-btn{width:100%;max-width:280px;margin:0 auto;padding:14px;border-radius:16px;font-size:14.5px;font-weight:800;color:#fff;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;box-shadow:0 14px 30px -12px rgba(99,60,235,1);transition:.25s}
+.login-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.login-btn.teacher{background:linear-gradient(135deg,#db2777,#f59e0b);box-shadow:0 14px 30px -12px rgba(219,39,119,1)}
+.login-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.login-err{color:#b91c1c;font-size:12px;font-weight:700;margin-top:10px;min-height:16px}
+.app-header{max-width:1200px;margin:0 auto;padding:20px 20px 8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.app-header .logo{width:60px;height:60px;border-radius:20px;display:grid;place-items:center;font-size:28px;flex:0 0 auto;background:linear-gradient(135deg,#7c3aed,#4f46e5 55%,#0ea5e9);box-shadow:0 18px 40px -14px rgba(79,70,229,.9);animation:float 5s ease-in-out infinite}
+.app-header h1{font-size:clamp(17px,2.5vw,24px);font-weight:800;background:linear-gradient(90deg,#4f46e5,#7c3aed 45%,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent}
+.app-header p{font-size:12px;color:var(--muted);margin-top:3px;font-weight:600}
+.hdr-actions{margin-inline-start:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hdr-chip{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:14px;padding:8px 14px;font-size:12px;font-weight:800;color:#4338ca;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:6px}
+.hdr-chip.logout{background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;cursor:pointer;border-color:transparent}
+.hdr-chip.sync{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff}
+.tabs{max-width:1200px;margin:10px auto 0;padding:6px 14px 4px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:40;background:rgba(248,250,252,.4);backdrop-filter:blur(10px);border-radius:0 0 20px 20px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:700;background:rgba(255,255,255,.72);backdrop-filter:blur(14px);border:1px solid var(--border);color:#475569;box-shadow:0 6px 18px -12px rgba(30,41,59,.5);transition:all .25s;white-space:nowrap}
+.tab:hover{transform:translateY(-2px);color:var(--p1);background:#fff}
+.tab.active{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 14px 30px -12px rgba(99,60,235,1);border-color:transparent}
+main{max-width:1200px;margin:0 auto;padding:14px 16px 40px;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.card-title{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:10px;color:#312e81}
+.card-title .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#0ea5e9);box-shadow:0 0 12px rgba(124,58,237,.6)}
+.grid{display:grid;gap:14px}
+.g-auto{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.g-4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.g-2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;gap:7px;justify-content:center;padding:10px 18px;border-radius:14px;font-size:13px;font-weight:700;background:#fff;border:1.5px solid var(--line);color:#334155;transition:all .22s;box-shadow:0 4px 12px -8px rgba(30,41,59,.6)}
+.btn:hover{transform:translateY(-2px);border-color:#c7d2fe;color:var(--p1)}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border-color:transparent}
+.btn-primary:hover{color:#fff;filter:brightness(1.08)}
+.btn-ok{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border-color:transparent}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;border-color:transparent}
+.btn-sm{padding:7px 12px;font-size:12px;border-radius:11px}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none!important}
+.input,.select,textarea.input{padding:11px 14px;border-radius:14px;border:1.5px solid var(--line);background:rgba(255,255,255,.95);outline:none;transition:.2s;font-size:13px;font-weight:600;width:100%}
+.input:focus,.select:focus{border-color:#a78bfa;box-shadow:0 0 0 4px rgba(167,139,250,.22)}
+.select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c3aed' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center;padding-left:36px}
+label.fl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;display:block}
+.stat{border-radius:20px;padding:16px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow);min-height:110px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .3s}
+.stat:hover{transform:translateY(-4px)}
+.stat .s-ico{font-size:22px}
+.stat .s-val{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-top:6px}
+.stat .s-lbl{font-size:11.5px;opacity:.95;font-weight:600}
+.s1{background:linear-gradient(135deg,#7c3aed,#a855f7)}.s2{background:linear-gradient(135deg,#2563eb,#0ea5e9)}.s3{background:linear-gradient(135deg,#16a34a,#4ade80)}.s4{background:linear-gradient(135deg,#f59e0b,#fbbf24)}.s5{background:linear-gradient(135deg,#db2777,#f472b6)}
+.chip{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:#eef2ff;color:#4338ca;white-space:nowrap;display:inline-block}
+.chip.g{background:#dcfce7;color:#15803d}.chip.r{background:#fee2e2;color:#b91c1c}.chip.y{background:#fef3c7;color:#b45309}.chip.b{background:#e0f2fe;color:#0369a1}.chip.p{background:#fae8ff;color:#a21caf}
+.bars{display:flex;flex-direction:column;gap:11px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-label{font-size:12px;font-weight:700;min-width:110px;color:#475569}
+.bar-track{flex:1;height:14px;background:#eef2f7;border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;transition:width .8s}
+.bar-val{font-size:12px;font-weight:800;min-width:34px;text-align:left;color:#334155}
+.analysis-box{border-radius:20px;padding:16px;border:1.5px solid;margin-bottom:14px}
+.analysis-box.good{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#86efac}
+.analysis-box.warn{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fde68a}
+.analysis-box.bad{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fecaca}
+.analysis-box.info{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#bfdbfe}
+.analysis-box .an-title{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px;color:#1e293b}
+.analysis-box ul{list-style:none;font-size:12.5px;font-weight:600;color:#334155;line-height:2}
+.analysis-box ul li{display:flex;align-items:flex-start;gap:8px;margin-bottom:4px}
+.analysis-box ul li::before{content:'•';color:#7c3aed;font-weight:800;font-size:18px;line-height:1}
+.analysis-box .recom{background:rgba(255,255,255,.65);border-radius:14px;padding:11px 13px;margin-top:10px;font-size:12.5px;font-weight:600;color:#334155;line-height:2}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:linear-gradient(135deg,#eef2ff,#e0e7ff);color:#3730a3;font-weight:800;padding:9px 7px;text-align:center;border-bottom:2px solid #c7d2fe}
+.tbl td{padding:8px;border-bottom:1px solid var(--line);text-align:center;font-weight:600}
+.tbl tr:hover td{background:#f8fafc}
+.tbl td.name{text-align:right;font-weight:700}
+.chart-wrap{background:linear-gradient(135deg,#faf5ff,#eef2ff);border-radius:18px;padding:14px;border:1.5px solid #e9d5ff}
+.chart-svg{width:100%;height:auto;display:block;overflow:visible}
+.chart-empty{text-align:center;padding:30px 10px;color:#94a3b8;font-size:12.5px;font-weight:600}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(8px);display:grid;place-items:center;z-index:200;padding:16px;animation:fade .22s}
+.modal{background:#fff;border-radius:24px;padding:22px;max-width:760px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 50px 90px -30px rgba(0,0,0,.7);animation:pop .28s}
+.modal h3{font-size:16px;font-weight:800;margin-bottom:14px;color:#312e81}
+@keyframes pop{from{transform:scale(.95) translateY(-6px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:#1e293b;color:#fff;padding:12px 22px;border-radius:14px;font-size:13px;font-weight:700;z-index:10000;transition:.35s;box-shadow:0 25px 50px -18px rgba(0,0,0,.85);opacity:0;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.toast.ok{background:linear-gradient(135deg,#16a34a,#22c55e)}
+.toast.bad{background:linear-gradient(135deg,#ef4444,#f97316)}
+.toast.info{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.empty{text-align:center;padding:34px 14px;color:var(--muted);font-size:13px;font-weight:600}
+.empty .big{font-size:44px;display:block;margin-bottom:10px;opacity:.7}
+.app-footer{max-width:1200px;margin:24px auto 10px;padding:22px 20px 10px;text-align:center;border-top:1px dashed #cbd5e1}
+.credit-block{display:inline-flex;flex-direction:column;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(79,70,229,.08) 45%,rgba(219,39,119,.08));border:1px solid #ddd6fe;border-radius:22px;padding:16px 24px;box-shadow:0 16px 40px -22px rgba(99,60,235,.7)}
+.credit-name{font-size:13px;font-weight:800;color:#4338ca;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;line-height:1.9}
+.credit-name b{color:#7c3aed}
+.credit-sub{font-size:11.5px;font-weight:700;color:#64748b}
+.student-hero{background:linear-gradient(135deg,#7c3aed,#4f46e5 50%,#0ea5e9);border-radius:26px;padding:22px;color:#fff;box-shadow:0 30px 60px -25px rgba(79,70,229,.8);margin-bottom:16px;position:relative;overflow:hidden}
+.student-hero .sh-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;position:relative;z-index:1}
+.student-hero .sh-avatar{width:60px;height:60px;border-radius:20px;background:rgba(255,255,255,.25);backdrop-filter:blur(10px);display:grid;place-items:center;font-size:26px;font-weight:800;flex:0 0 auto}
+.student-hero h2{font-size:19px;font-weight:800;margin-bottom:3px}
+.student-hero .sh-sub{font-size:12px;opacity:.9;font-weight:600}
+.student-hero .sh-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;position:relative;z-index:1}
+.student-hero .sh-stat{background:rgba(255,255,255,.18);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:11px;text-align:center}
+.student-hero .sh-stat .v{font-size:20px;font-weight:800}
+.student-hero .sh-stat .l{font-size:10.5px;opacity:.9;font-weight:700;margin-top:2px}
+.group-overview{background:linear-gradient(135deg,#faf5ff,#eef2ff);border:1.5px solid #e9d5ff;border-radius:22px;padding:18px;position:relative;overflow:hidden}
+.group-overview .gbar{position:absolute;top:0;right:0;left:0;height:6px}
+.group-overview h3{font-size:16px;font-weight:800;color:#4c1d95;margin:6px 0 12px;display:flex;align-items:center;gap:8px}
+.group-overview .g-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:12px}
+.group-overview .g-stat{background:#fff;border:1px solid #ddd6fe;border-radius:14px;padding:12px;text-align:center}
+.group-overview .g-stat .v{font-size:20px;font-weight:800;color:#4338ca}
+.group-overview .g-stat .l{font-size:10.5px;font-weight:700;color:#64748b;margin-top:3px}
+.opt-btn{padding:12px 16px;border-radius:14px;border:2px solid var(--line);background:#fff;font-size:13px;font-weight:700;color:#334155;cursor:pointer;transition:.2s;width:100%;text-align:right;display:flex;align-items:center;gap:10px}
+.opt-btn:hover{border-color:#a78bfa;background:#faf5ff;transform:translateY(-2px)}
+.opt-btn.selected{border-color:#7c3aed;background:linear-gradient(135deg,#faf5ff,#eef2ff);color:#4338ca;box-shadow:0 8px 20px -12px rgba(99,60,235,.6)}
+.opt-btn .checkbox{width:20px;height:20px;border-radius:6px;border:2px solid #cbd5e1;flex-shrink:0;display:grid;place-items:center;font-size:12px;color:#fff}
+.opt-btn.selected .checkbox{background:#7c3aed;border-color:#7c3aed}
+.opt-btn .checkbox.round{border-radius:50%}
+.quiz-timer-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:14px;font-size:15px;font-weight:800;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 12px 24px -12px rgba(22,163,74,.8)}
+.quiz-timer-badge.warn{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.quiz-timer-badge.danger{background:linear-gradient(135deg,#ef4444,#f97316);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.6}}
+.question-card{padding:16px;border-radius:16px;background:rgba(255,255,255,.9);border:1px solid var(--line);margin-bottom:12px}
+.question-card .q-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;font-weight:800;color:#312e81;flex-wrap:wrap}
+.question-card .q-num{background:#7c3aed;color:#fff;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:800}
+.question-card .q-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px}
+.question-card .q-badge.mcq{background:#dbeafe;color:#1e40af}
+.question-card .q-badge.desc{background:#fce7f3;color:#9d174d}
+.question-card textarea.answer-input{width:100%;min-height:80px;font-size:13px;padding:10px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;resize:vertical}
+.jdate-input{cursor:pointer!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237c3aed' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center;padding-left:38px}
+.jp-popup{position:fixed;background:#fff;border-radius:20px;padding:16px;box-shadow:0 30px 70px -20px rgba(30,41,59,.55),0 0 0 1px rgba(124,58,237,.1);z-index:10001;width:300px;animation:pop .22s;direction:rtl}
+.jp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:6px}
+.jp-head .jp-title{font-size:14.5px;font-weight:800;flex:1;text-align:center;background:linear-gradient(135deg,#7c3aed,#4f46e5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.jp-nav{width:32px;height:32px;border-radius:10px;background:#eef2ff;color:#4338ca;display:grid;place-items:center;font-size:14px;font-weight:800;transition:.18s}
+.jp-nav:hover{background:#c7d2fe}
+.jp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.jp-weekday{font-size:11px;color:#94a3b8;font-weight:800;text-align:center;padding:5px 0}
+.jp-day{aspect-ratio:1;border-radius:11px;display:grid;place-items:center;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;color:#334155}
+.jp-day:hover{background:#eef2ff;color:#4338ca}
+.jp-day.other{opacity:.28;pointer-events:none}
+.jp-day.today{color:#7c3aed;font-weight:800}
+.jp-day.selected{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff}
+.jp-foot{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(100,116,139,.14)}
+.jp-foot button{flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:700;background:#f1f5f9;color:#475569}
+@media(max-width:640px){
+.app-header{padding:14px 12px 4px}
+.app-header .logo{width:50px;height:50px;font-size:24px;border-radius:16px}
+main{padding:10px 12px 40px}
+.card{padding:15px;border-radius:18px}
+.stat .s-val{font-size:22px}
+.bar-label{min-width:82px;font-size:11px}
+.tbl{font-size:11px}
+.tbl th,.tbl td{padding:6px 5px}
+.student-hero{padding:16px}
+.code-input{font-size:20px;letter-spacing:6px;padding:14px 10px}
+}
+</style>
+</head>
+<body>
+<div id="watermark" data-text=""></div>
+<div id="lockOverlay" class="hidden"><div class="lock-ico">🔒</div><div>برای حفظ امنیت، محتوای صفحه موقتاً مخفی شد.<br><span style="font-size:12px;opacity:.7">لطفاً به پنجره سامانه بازگردید.</span></div></div>
+
+<div id="loginScreen">
+  <div class="login-hero">
+    <div class="logo">🎓</div>
+    <div><h1>سامانه مدیریت کلاس</h1><p>دبستان شهید شیرودی عباس‌آباد • کارنامه، نظرسنجی، آزمون</p></div>
+  </div>
+  <div class="news-section">
+    <h3>📢 اطلاعیه‌ها و اخبار کلاس</h3>
+    <div id="loginNews"><div class="empty" style="padding:14px">در حال بارگذاری...</div></div>
+  </div>
+  <div class="login-forms">
+    <div class="login-card">
+      <div class="l-ico">👦</div>
+      <h2>ورود دانش‌آموز</h2>
+      <p>کد اختصاصی ۶ رقمی خود را وارد کنید</p>
+      <input type="text" class="code-input" id="studentCode" inputmode="numeric" maxlength="6" placeholder="کد ۶ رقمی" autocomplete="off">
+      <button class="login-btn" id="studentLoginBtn" onclick="Auth.loginStudent()">🔓 ورود به کارنامه</button>
+      <div class="login-err" id="studentErr"></div>
+    </div>
+    <div class="login-card teacher">
+      <div class="l-ico">👨‍🏫</div>
+      <h2>ورود معلم</h2>
+      <p>کد مدیریت را وارد کنید</p>
+      <input type="password" class="code-input" id="teacherCode" inputmode="numeric" maxlength="8" placeholder="کد معلم" autocomplete="off">
+      <button class="login-btn teacher" id="teacherLoginBtn" onclick="Auth.loginTeacher()">🔐 ورود مدیریت</button>
+      <div class="login-err" id="teacherErr"></div>
+    </div>
+  </div>
+  <footer class="app-footer" style="background:none;border:none;padding:10px">
+    <div class="credit-block">
+      <div class="credit-name">✨ معلم و روانشناس: <b>محمدباقر کالجی</b></div>
+      <div class="credit-sub">طراحی توسعه وب کالج مدیا</div>
+    </div>
+  </footer>
+</div>
+
+<div id="app" class="hidden">
+  <header class="app-header">
+    <div class="logo">🎓</div>
+    <div><h1 id="hTitle">سامانه مدیریت کلاس</h1><p id="hSub">دبستان شهید شیرودی عباس‌آباد</p></div>
+    <div class="hdr-actions" id="hdrActions"></div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="view"></main>
+  <footer class="app-footer">
+    <div class="credit-block">
+      <div class="credit-name">✨ معلم و روانشناس: <b>محمدباقر کالجی</b></div>
+      <div class="credit-sub">طراحی توسعه وب کالج مدیا</div>
+    </div>
+  </footer>
+</div>
+
+<div id="modal" class="modal-backdrop hidden" onclick="if(event.target===this)App.closeModal()"><div class="modal" id="modalBox"></div></div>
+<div id="toast" class="toast"></div>
+<div id="jp-host"></div>
+
+<script>
+/* ============================================================
+   سامانه مدیریت کلاس — نسخه ۹ (Vercel + Supabase)
+   ایده‌پرداز: محمدباقر کالجی — کالج مدیا
+   ============================================================ */
+
+const API = '/api';
+const SESSION_KEY = 'shiroodi_token_v9';
+
+const DEFAULT_LEVELS=[
+  {key:'excellent',label:'خیلی خوب',icon:'🌟',color:'#16a34a'},
+  {key:'good',label:'خوب',icon:'✅',color:'#2563eb'},
+  {key:'acceptable',label:'قابل قبول',icon:'👍',color:'#f59e0b'},
+  {key:'needs_effort',label:'نیاز به تلاش',icon:'💪',color:'#ef4444'}
+];
+const ATT=[
+  {key:'present',label:'حاضر',icon:'✅',color:'#16a34a'},
+  {key:'late',label:'تأخیر',icon:'⏰',color:'#f59e0b'},
+  {key:'absent',label:'غایب',icon:'❌',color:'#ef4444'},
+  {key:'excused',label:'مرخصی',icon:'📝',color:'#0ea5e9'}
+];
+const ASSESS_TYPES={oral:{label:'شفاهی',icon:'🗣️',color:'#db2777'},written:{label:'کتبی',icon:'📝',color:'#2563eb'},other:{label:'سایر',icon:'📎',color:'#64748b'}};
+const PRESET_REASONS=['مشارکت فعال در کلاس','کمک به هم‌کلاسی','انجام کامل تکالیف','نظم و انضباط عالی','رعایت ادب و احترام','پیشرفت چشمگیر','صحبت در کلاس','بی‌نظمی در صف','عدم انجام تکالیف','غفلت در درس','بی‌توجهی به تذکر','دیر آمدن به کلاس'];
+const PALETTE=['#7c3aed','#2563eb','#16a34a','#f59e0b','#db2777','#0ea5e9','#ef4444','#14b8a6','#8b5cf6','#f97316'];
+
+/* ==================== JALALI ==================== */
+const JalCal=(function(){
+const breaks=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+const div=(a,b)=>~~(a/b);const mod=(a,b)=>a-~~(a/b)*b;
+function jalCal(jy){const bl=breaks.length;const gy=jy+621;let leapJ=-14,jp=breaks[0],jm,jump=0,leap,leapG,march,n,i;if(jy<jp||jy>=breaks[bl-1])throw new Error('Invalid');for(i=1;i<bl;i++){jm=breaks[i];jump=jm-jp;if(jy<jm)break;leapJ=leapJ+div(jump,33)*8+div(mod(jump,33),4);jp=jm;}n=jy-jp;leapJ=leapJ+div(n,33)*8+div(mod(n,33)+3,4);if(mod(jump,33)===4&&jump-n===4)leapJ+=1;leapG=div(gy,4)-div((div(gy,100)+1)*3,4)-150;march=20+leapJ-leapG;if(jump-n<6)n=n-jump+div(jump+4,33)*33;leap=mod(mod(n+1,33)-1,4);if(leap===-1)leap=4;return{leap,gy,march};}
+function g2d(gy,gm,gd){let d=div((gy+div(gm-8,6)+100100)*1461,4)+div(153*mod(gm+9,12)+2,5)+gd-34840408;d=d-div(div(gy+100100+div(gm-8,6),100)*3,4)+752;return d;}
+function d2g(jdn){let j=4*jdn+139361631;j=j+div(div(4*jdn+183187720,146097)*3,4)*4-3908;const i=div(mod(j,1461),4)*5+308;const gd=div(mod(i,153),5)+1;const gm=mod(div(i,153),12)+1;const gy=div(j,1461)-100100+div(8-gm,6);return{gy,gm,gd};}
+function j2d(jy,jm,jd){const r=jalCal(jy);return g2d(r.gy,3,r.march)+(jm-1)*31-div(jm,7)*(jm-7)+jd-1;}
+function d2j(jdn){const gy=d2g(jdn).gy;let jy=gy-621;const r=jalCal(jy);const jdn1f=g2d(gy,3,r.march);let k=jdn-jdn1f;if(k>=0){if(k<=185){const jm=1+div(k,31);const jd=mod(k,31)+1;return{jy,jm,jd};}k-=186;}else{jy-=1;k+=179;if(r.leap===1)k+=1;}const jm=7+div(k,30);const jd=mod(k,30)+1;return{jy,jm,jd};}
+return{jalCal,g2d,d2g,j2d,d2j};
+})();
+const J_MONTHS=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const J_WEEKDAYS=['ش','ی','د','س','چ','پ','ج'];
+function isoToJalali(iso){if(!iso||!/^\d{4}-\d{2}-\d{2}$/.test(iso))return null;const[gy,gm,gd]=iso.split('-').map(Number);return JalCal.d2j(JalCal.g2d(gy,gm,gd));}
+function jalaliToIso(jy,jm,jd){const g=JalCal.d2g(JalCal.j2d(jy,jm,jd));return `${g.gy}-${String(g.gm).padStart(2,'0')}-${String(g.gd).padStart(2,'0')}`;}
+function formatJalaliDisplay(iso){const j=isoToJalali(iso);if(!j)return '';return `${fa(j.jy)}/${fa(String(j.jm).padStart(2,'0'))}/${fa(String(j.jd).padStart(2,'0'))}`;}
+function isoToJalaliLong(iso){const j=isoToJalali(iso);if(!j)return '';try{const d=new Date(iso+'T00:00:00');const wd=new Intl.DateTimeFormat('fa-IR',{weekday:'long'}).format(d);return `${wd} ${fa(j.jd)} ${J_MONTHS[j.jm-1]} ${fa(j.jy)}`;}catch(e){return `${fa(j.jd)} ${J_MONTHS[j.jm-1]} ${fa(j.jy)}`;}}
+function isoToShortJalali(iso){const j=isoToJalali(iso);if(!j)return '';return `${fa(j.jd)} ${J_MONTHS[j.jm-1].slice(0,4)}`;}
+function jalaliToGregorianWeekdayIndex(jy,jm,jd){const iso=jalaliToIso(jy,jm,jd);const d=new Date(iso+'T00:00:00');return(d.getDay()+1)%7;}
+function todayJalali(){const d=new Date();return JalCal.d2j(JalCal.g2d(d.getFullYear(),d.getMonth()+1,d.getDate()));}
+function todayIso(){return dateKey(new Date());}
+function dateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+
+const JalaliPicker={host:null,currentInput:null,viewY:null,viewM:null,
+init(){this.host=document.getElementById('jp-host');document.addEventListener('click',e=>{if(!this.currentInput)return;const p=document.querySelector('.jp-popup');if(!p)return;if(p.contains(e.target))return;if(this.currentInput===e.target)return;this.close();});},
+openFor(input){if(this.currentInput===input){this.close();return;}this.close();this.currentInput=input;const iso=input.dataset.iso||todayIso();const j=isoToJalali(iso)||todayJalali();this.viewY=j.jy;this.viewM=j.jm;this.render();},
+close(){if(this.host)this.host.innerHTML='';this.currentInput=null;},
+render(){const jy=this.viewY,jm=this.viewM;const curIso=this.currentInput.dataset.iso||todayIso();const curJ=isoToJalali(curIso);const todayJ=todayJalali();const firstWeekday=jalaliToGregorianWeekdayIndex(jy,jm,1);const prevM=jm===1?12:jm-1;const prevY=jm===1?jy-1:jy;const monthLen=(jm<=6)?31:(jm<=11)?30:(JalCal.jalCal(jy).leap===0?30:29);const prevLen=(prevM<=6)?31:(prevM<=11)?30:(JalCal.jalCal(prevY).leap===0?30:29);const cells=[];for(let i=0;i<firstWeekday;i++){const d=prevLen-(firstWeekday-1-i);cells.push({jy:prevY,jm:prevM,jd:d,other:true});}for(let d=1;d<=monthLen;d++)cells.push({jy,jm,jd:d,other:false});const remain=(7-(cells.length%7))%7;const nextM=jm===12?1:jm+1;const nextY=jm===12?jy+1:jy;for(let d=1;d<=remain;d++)cells.push({jy:nextY,jm:nextM,jd:d,other:true});
+const html=`<div class="jp-popup" onclick="event.stopPropagation()"><div class="jp-head"><button class="jp-nav" onclick="JalaliPicker.nav(-1)">‹</button><div class="jp-title">${J_MONTHS[jm-1]} ${fa(jy)}</div><button class="jp-nav" onclick="JalaliPicker.nav(1)">›</button></div><div class="jp-grid">${J_WEEKDAYS.map(w=>`<div class="jp-weekday">${w}</div>`).join('')}${cells.map(c=>{const isCur=curJ&&curJ.jy===c.jy&&curJ.jm===c.jm&&curJ.jd===c.jd;const isToday=todayJ.jy===c.jy&&todayJ.jm===c.jm&&todayJ.jd===c.jd;const cls=['jp-day'];if(c.other)cls.push('other');if(isCur)cls.push('selected');else if(isToday)cls.push('today');if(c.other)return `<div class="${cls.join(' ')}"></div>`;return `<div class="${cls.join(' ')}" onclick="JalaliPicker.pick(${c.jy},${c.jm},${c.jd})">${fa(c.jd)}</div>`;}).join('')}</div><div class="jp-foot"><button onclick="JalaliPicker.pickToday()">امروز</button><button onclick="JalaliPicker.pickClear()">پاک</button></div></div>`;
+this.host.innerHTML=html;const popup=this.host.querySelector('.jp-popup');const rect=this.currentInput.getBoundingClientRect();const pw=popup.offsetWidth||300,ph=popup.offsetHeight||340;let left=rect.left,top=rect.bottom+6;if(left+pw>window.innerWidth-8)left=window.innerWidth-pw-8;if(left<8)left=8;if(top+ph>window.innerHeight-8)top=rect.top-ph-6;if(top<8)top=8;popup.style.left=left+'px';popup.style.top=top+'px';},
+nav(dir){let m=this.viewM+dir,y=this.viewY;if(m<1){m=12;y-=1;}if(m>12){m=1;y+=1;}this.viewM=m;this.viewY=y;this.render();},
+pick(jy,jm,jd){if(!this.currentInput)return;const iso=jalaliToIso(jy,jm,jd);this.currentInput.dataset.iso=iso;this.currentInput.value=formatJalaliDisplay(iso);const action=this.currentInput.dataset.action;const input=this.currentInput;this.close();if(action&&typeof App!=='undefined'&&App.onDatePick)App.onDatePick(action,iso,input);},
+pickToday(){const t=todayJalali();this.pick(t.jy,t.jm,t.jd);},
+pickClear(){if(!this.currentInput)return;this.currentInput.dataset.iso='';this.currentInput.value='';const action=this.currentInput.dataset.action;const input=this.currentInput;this.close();if(action&&typeof App!=='undefined'&&App.onDatePick)App.onDatePick(action,'',input);}};
+function jalaliInputHTML(action,isoValue,extraClass=''){const display=isoValue?formatJalaliDisplay(isoValue):'';return `<input type="text" class="input jdate-input ${extraClass}" readonly value="${display}" data-iso="${isoValue||''}" data-action="${action}" onclick="JalaliPicker.openFor(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();JalaliPicker.openFor(this)}">`;}
+
+/* ==================== UTILS ==================== */
+const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const shuffle=a=>{const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;};
+function fmtNum(n){const x=Number(n);if(isNaN(x))return '—';return Number.isInteger(x)?fa(x):fa(x.toFixed(1));}
+function colorFor(str){let h=0;for(let i=0;i<str.length;i++)h=(h*31+str.charCodeAt(i))%9973;return PALETTE[h%PALETTE.length];}
+function initials(name){const p=name.trim().split(/\s+/);return(p[p.length-1]||'?').charAt(0);}
+function genStudentCode(){let code;do{code=String(Math.floor(100000+Math.random()*900000));}while(state?.students?.some(s=>s.code===code));return code;}
+
+/* ==================== STATE + API ==================== */
+let state = null;
+let session = null;
+let authToken = sessionStorage.getItem(SESSION_KEY);
+let saveTimer = null;
+let pollTimer = null;
+let saveInFlight = false;
+
+async function apiFetch(path, opts={}){
+  const headers = {...(opts.headers||{})};
+  if(authToken) headers.Authorization = `Bearer ${authToken}`;
+  if(opts.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+  const res = await fetch(API+path, {...opts, headers});
+  if(res.status === 401){
+    authToken = null;
+    sessionStorage.removeItem(SESSION_KEY);
+    throw new Error('unauthorized');
+  }
+  if(!res.ok){
+    const data = await res.json().catch(()=>({}));
+    throw new Error(data.error || `http_${res.status}`);
+  }
+  return res.json();
+}
+
+async function loadState(){
+  try{
+    const data = await apiFetch('/data');
+    state = data.state;
+    session = { role: data.role, sid: state.student?.id || null };
+    return true;
+  }catch(e){
+    console.error('loadState failed:', e);
+    return false;
+  }
+}
+
+function save(){
+  if(session?.role !== 'teacher') return;
+  if(!state) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    if(saveInFlight) return;
+    saveInFlight = true;
+    try{
+      await apiFetch('/data', { method:'POST', body: JSON.stringify({ state }) });
+    }catch(e){
+      toast('خطا در ذخیره‌سازی','bad');
+    }finally{
+      saveInFlight = false;
+    }
+  }, 400);
+}
+
+async function studentAction(action, payload){
+  try{
+    const res = await apiFetch('/student', { method:'POST', body: JSON.stringify({ action, payload }) });
+    await loadState();
+    renderView();
+    return res;
+  }catch(e){
+    toast('خطا: '+e.message,'bad');
+    return null;
+  }
+}
+
+/* ==================== HELPERS (both roles) ==================== */
+function getStudent(sid){
+  if(state?.students) return state.students.find(s=>s.id===sid);
+  if(state?.student && state.student.id===sid) return state.student;
+  return null;
+}
+function studentName(sid){return getStudent(sid)?.name || '—';}
+function getStudentGroup(sid){
+  if(state?.groups) return state.groups.find(g=>g.members.includes(sid));
+  if(state?.group) return state.group;
+  return null;
+}
+function getLevel(key){return state.levels.find(l=>l.key===key)||null;}
+function levelScore(key){const i=state.levels.findIndex(l=>l.key===key);return i<0?0:state.levels.length-i;}
+function levelFromScore(avg){if(!avg||avg<=0||!state.levels.length)return null;const N=state.levels.length;const idx=clamp(N-Math.round(avg),0,N-1);return state.levels[idx];}
+function levelChipClass(avg){if(avg>=state.levels.length-.5)return 'g';if(avg>=2.5)return 'b';if(avg>=1.5)return 'y';return 'r';}
+function isNumericMode(){return state.meta.gradingMode==='numeric';}
+function getRawGrade(aid,sub,sid){const g=state.grades?.[aid]?.[sub]?.[sid];return g==null?null:g;}
+function setRawGrade(aid,sub,sid,value){
+  if(session?.role!=='teacher') return;
+  if(!state.grades[aid])state.grades[aid]={};
+  if(!state.grades[aid][sub])state.grades[aid][sub]={};
+  if(value==null||value===''){delete state.grades[aid][sub][sid];}
+  else state.grades[aid][sub][sid]=value;
+  if(state.grades[aid][sub]&&!Object.keys(state.grades[aid][sub]).length)delete state.grades[aid][sub];
+  if(state.grades[aid]&&!Object.keys(state.grades[aid]).length)delete state.grades[aid];
+}
+function gradeToScore(aid,sub,sid){
+  const g=getRawGrade(aid,sub,sid);if(g==null)return null;
+  if(isNumericMode()){const n=Number(g);if(isNaN(n))return null;const{numericMin:mn,numericMax:mx}=state.meta;return clamp((n-mn)/(mx-mn)*state.levels.length,0,state.levels.length);}
+  return levelScore(g);
+}
+function gradeToLevel(aid,sub,sid){
+  const g=getRawGrade(aid,sub,sid);if(g==null)return null;
+  if(isNumericMode()){const n=Number(g);if(isNaN(n))return null;const th=state.meta.numericThresholds;
+    if(n>=th.excellent)return state.levels[0];if(n>=th.good)return state.levels[1];if(n>=th.acceptable)return state.levels[2];return state.levels[3];}
+  return state.levels.find(l=>l.key===g)||null;
+}
+function formatGrade(aid,sub,sid){
+  const g=getRawGrade(aid,sub,sid);if(g==null)return '—';
+  if(isNumericMode())return fmtNum(g);
+  const l=state.levels.find(x=>x.key===g);
+  return l?l.icon+' '+l.label:'—';
+}
+function studentStats(sid,assessList){
+  const list=assessList||state.assessments;
+  let sum=0,cnt=0,filled=0,possible=0;
+  const bySubject={};
+  for(const a of list){
+    for(const sub of(a.subjects||[])){
+      possible++;
+      const sc=gradeToScore(a.id,sub,sid);
+      if(sc!=null){filled++;sum+=sc;cnt++;bySubject[sub]=bySubject[sub]||[];bySubject[sub].push(sc);}
+    }
+  }
+  const avg=cnt?sum/cnt:0;
+  let total=0,present=0,absent=0,late=0,excused=0;
+  for(const d in state.attendance||{}){const st=state.attendance[d][sid];if(!st)continue;total++;if(st==='present')present++;else if(st==='absent')absent++;else if(st==='late')late++;else if(st==='excused')excused++;}
+  const attRate=total?Math.round(present/total*100):0;
+  const recs=(state.discipline||[]).filter(r=>r.sid===sid);
+  const pts=recs.reduce((a,b)=>a+b.points,0);
+  return{avg,cnt,filled,possible,bySubject,total,present,absent,late,excused,attRate,pts,recs};
+}
+function classOverallAverage(assessList){
+  if(!assessList && state?.aggregates?.classOverallAvg!==undefined) return state.aggregates.classOverallAvg;
+  if(!state?.students) return 0;
+  const list=assessList||state.assessments;
+  let sum=0,cnt=0;
+  state.students.forEach(s=>{const st=studentStats(s.id,list);if(st.cnt){sum+=st.avg;cnt++;}});
+  return cnt?sum/cnt:0;
+}
+function subjectAverage(sub,assessList){
+  if(!assessList && state?.aggregates?.subjectAvgs?.[sub]!==undefined) return state.aggregates.subjectAvgs[sub];
+  if(!state?.students) return 0;
+  const list=assessList||state.assessments;
+  let sum=0,cnt=0;
+  for(const a of list){
+    if(!(a.subjects||[]).includes(sub))continue;
+    for(const s of state.students){const sc=gradeToScore(a.id,sub,s.id);if(sc!=null){sum+=sc;cnt++;}}
+  }
+  return cnt?sum/cnt:0;
+}
+function studentSubjectAvg(sid,sub,assessList){
+  const list=assessList||state.assessments;
+  let sum=0,cnt=0;
+  for(const a of list){
+    if(!(a.subjects||[]).includes(sub))continue;
+    const sc=gradeToScore(a.id,sub,sid);if(sc!=null){sum+=sc;cnt++;}
+  }
+  return cnt?sum/cnt:0;
+}
+function getStudentProgress(sid,assessList){
+  const list=assessList||state.assessments;
+  const N=state.levels.length;
+  const sorted=[...list].sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  const points=[];const classAvgPoints=[];
+  sorted.forEach(a=>{
+    const subs=a.subjects||[];if(!subs.length)return;
+    let sumS=0,cntS=0,sumAll=0,cntAll=0;
+    subs.forEach(sub=>{
+      const sc=gradeToScore(a.id,sub,sid);
+      if(sc!=null){sumS+=sc;cntS++;}
+      if(state?.students){
+        state.students.forEach(st=>{const s2=gradeToScore(a.id,sub,st.id);if(s2!=null){sumAll+=s2;cntAll++;}});
+      }
+    });
+    if(cntS){points.push({aid:a.id,name:a.name,date:a.date,value:sumS/cntS,max:N});if(cntAll)classAvgPoints.push({aid:a.id,value:sumAll/cntAll});}
+  });
+  return{points,classAvgPoints,N};
+}
+function analyzeStudent(sid,assessList){
+  const list=assessList||state.assessments;
+  const st=studentStats(sid,list);
+  const classOverall=classOverallAverage(list);
+  const N=state.levels.length;
+  const strengths=[],weaknesses=[];
+  state.subjects.forEach(sub=>{
+    const myAvg=studentSubjectAvg(sid,sub,list);
+    if(!myAvg)return;
+    const clsAvg=subjectAverage(sub,list);
+    const diff=myAvg-clsAvg;
+    if(diff>=0.5)strengths.push({sub,myAvg,clsAvg,diff});
+    else if(diff<=-0.5)weaknesses.push({sub,myAvg,clsAvg,diff});
+  });
+  strengths.sort((a,b)=>b.diff-a.diff);
+  weaknesses.sort((a,b)=>a.diff-b.diff);
+  const{points}=getStudentProgress(sid,list);
+  let trend=null,trendDiff=0;
+  if(points.length>=3){
+    const half=Math.floor(points.length/2);
+    const fAvg=points.slice(0,half).reduce((a,b)=>a+b.value,0)/half;
+    const sAvg=points.slice(-half).reduce((a,b)=>a+b.value,0)/half;
+    trendDiff=sAvg-fAvg;
+    if(trendDiff>=0.4)trend='up';else if(trendDiff<=-0.4)trend='down';else trend='stable';
+  }
+  const attLow=st.total>=5&&st.attRate<80;
+  const discLow=st.pts<-2;
+  const diffFromClass=st.cnt?st.avg-classOverall:0;
+  const recom=[];
+  if(trend==='up')recom.push('روند پیشرفت تحصیلی شما صعودی است؛ این مسیر را ادامه دهید. 🌟');
+  else if(trend==='down')recom.push('در ارزشیابی‌های اخیر روند نزولی دیده می‌شود؛ با تمرین بیشتر و رفع اشکال، روند را معکوس کنید.');
+  else if(trend==='stable')recom.push('عملکرد شما پایدار است؛ برای رشد بیشتر، هدف‌گذاری بلندپروازانه‌تری داشته باشید.');
+  if(weaknesses.length)recom.push(`دروس «${weaknesses.slice(0,2).map(w=>w.sub).join('، ')}» نیاز به تمرین و مرور بیشتری دارند.`);
+  if(strengths.length)recom.push(`نقاط قوت شما در «${strengths.slice(0,2).map(w=>w.sub).join('، ')}» است؛ از این توانایی برای کمک به دوستان نیز بهره ببرید.`);
+  if(attLow)recom.push(`حضور منظم در کلاس تأثیر مستقیمی بر یادگیری دارد. نرخ حضور شما ${fa(st.attRate)}٪ است.`);
+  if(discLow)recom.push('توجه به نکات انضباطی و مشارکت سازنده در کلاس، فضا را برای یادگیری بهتر می‌کند.');
+  if(st.cnt===0)recom.push('هنوز نمره‌ای برای شما ثبت نشده؛ با معلم خود درباره ارزشیابی‌های پیش‌رو صحبت کنید.');
+  if(!recom.length)recom.push('عملکرد متوازن و خوبی دارید. برای حفظ آن، مطالعه منظم روزانه را ادامه دهید.');
+  return{st,classOverall,strengths,weaknesses,trend,trendDiff,diffFromClass,attLow,discLow,recom,N};
+}
+
+/* ==================== TOAST / MODAL ==================== */
+let toastTimer;
+function toast(msg,type='ok'){const t=$('#toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.className='toast';},2600);}
+function openModal(html){$('#modalBox').innerHTML=html;$('#modal').classList.remove('hidden');}
+function closeModal(){$('#modal').classList.add('hidden');$('#modalBox').innerHTML='';JalaliPicker.close();}
+
+/* ==================== AUTH ==================== */
+const Auth = {
+  async loginStudent(){
+    const inp=$('#studentCode'),err=$('#studentErr'),btn=$('#studentLoginBtn');
+    err.textContent='';const code=inp.value.trim();
+    if(!/^\d{6}$/.test(code)){err.textContent='کد باید ۶ رقم باشد';inp.focus();return;}
+    btn.disabled=true;btn.textContent='در حال ورود...';
+    try{
+      const data = await apiFetch('/login',{method:'POST',body:JSON.stringify({code})});
+      authToken = data.token;
+      sessionStorage.setItem(SESSION_KEY, authToken);
+      const ok = await loadState();
+      if(!ok) throw new Error('state_load_failed');
+      startApp();
+      startPolling();
+    }catch(e){
+      err.textContent = e.message === 'invalid_code' ? 'کد نامعتبر است' : 'خطا در ورود — دوباره تلاش کنید';
+      authToken=null;sessionStorage.removeItem(SESSION_KEY);
+    }finally{
+      btn.disabled=false;btn.textContent='🔓 ورود به کارنامه';
+    }
+  },
+  async loginTeacher(){
+    const inp=$('#teacherCode'),err=$('#teacherErr'),btn=$('#teacherLoginBtn');
+    err.textContent='';const code=inp.value.trim();
+    if(!code){err.textContent='کد معلم را وارد کنید';inp.focus();return;}
+    btn.disabled=true;btn.textContent='در حال ورود...';
+    try{
+      const data = await apiFetch('/login',{method:'POST',body:JSON.stringify({code})});
+      authToken = data.token;
+      sessionStorage.setItem(SESSION_KEY, authToken);
+      const ok = await loadState();
+      if(!ok) throw new Error('state_load_failed');
+      startApp();
+      startPolling();
+    }catch(e){
+      err.textContent = e.message === 'invalid_code' ? 'کد معلم نامعتبر است' : 'خطا در ورود — دوباره تلاش کنید';
+      authToken=null;sessionStorage.removeItem(SESSION_KEY);
+    }finally{
+      btn.disabled=false;btn.textContent='🔐 ورود مدیریت';
+    }
+  },
+  logout(){
+    authToken=null;
+    sessionStorage.removeItem(SESSION_KEY);
+    session=null;state=null;
+    if(pollTimer) clearInterval(pollTimer);
+    location.reload();
+  }
+};
+
+/* ==================== POLLING ==================== */
+function startPolling(){
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async ()=>{
+    if(document.hidden || !authToken) return;
+    if(session?.role==='student' && ui.tab==='s-quiz-taking') return; // don't disturb quiz
+    try{
+      const data = await apiFetch('/data');
+      state = data.state;
+      session = { role: data.role, sid: state.student?.id || null };
+      renderView();
+    }catch(e){}
+  }, 15000);
+}
+
+/* ==================== UI STATE ==================== */
+const ui={
+  tab:null,search:'',currentAssessId:'',currentSubject:'',
+  attDate:todayIso(),discSid:'',discPoints:1,discReason:'',discDate:todayIso(),
+  newGroupName:'',newGroupColor:PALETTE[0],newGroupMembers:[],
+  reportExcluded:[],groupCount:3,currentQuizId:null,
+  reportSid:null
+};
+
+const TABS_TEACHER=[
+  {id:'dashboard',label:'داشبورد',icon:'📊'},
+  {id:'students',label:'دانش‌آموزان',icon:'👦'},
+  {id:'grades',label:'ارزشیابی',icon:'📝'},
+  {id:'attendance',label:'حضور و غیاب',icon:'🗓️'},
+  {id:'discipline',label:'انضباط',icon:'⭐'},
+  {id:'groups',label:'گروه‌بندی',icon:'👥'},
+  {id:'polls',label:'نظرسنجی',icon:'📊'},
+  {id:'quizzes',label:'آزمون‌ها',icon:'📝'},
+  {id:'reports',label:'گزارش‌ها',icon:'📈'},
+  {id:'news',label:'اطلاعیه‌ها',icon:'📢'},
+  {id:'settings',label:'تنظیمات',icon:'⚙️'}
+];
+const TABS_STUDENT=[
+  {id:'s-dashboard',label:'داشبورد',icon:'🏠'},
+  {id:'s-grades',label:'کارنامه',icon:'📝'},
+  {id:'s-analysis',label:'تحلیل',icon:'📈'},
+  {id:'s-polls',label:'نظرسنجی',icon:'📊'},
+  {id:'s-quizzes',label:'آزمون‌ها',icon:'📝'},
+  {id:'s-discipline',label:'انضباط',icon:'⭐'},
+  {id:'s-group',label:'گروه من',icon:'👥'},
+  {id:'s-news',label:'اطلاعیه‌ها',icon:'📢'}
+];
+function getVisibleStudentTabs(){
+  const v = state.studentVisibility || {};
+  return TABS_STUDENT.filter(t=>{
+    if(t.id==='s-grades')return v.grades!==false;
+    if(t.id==='s-analysis')return v.analysis!==false;
+    if(t.id==='s-group')return v.group!==false;
+    if(t.id==='s-discipline')return v.discipline!==false;
+    if(t.id==='s-news')return v.news!==false;
+    if(t.id==='s-polls')return v.polls!==false;
+    if(t.id==='s-quizzes')return v.quizzes!==false;
+    return true;
+  });
+}
+
+function startApp(){
+  $('#loginScreen').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  const tabs = session.role==='teacher' ? TABS_TEACHER : getVisibleStudentTabs();
+  if(!tabs.find(t=>t.id===ui.tab)) ui.tab = tabs[0]?.id;
+  renderHeader();
+  renderTabs();
+  renderView();
+  setupAntiScreenshot();
+}
+function renderHeader(){
+  const box=$('#hdrActions');
+  if(session.role==='teacher'){
+    box.innerHTML=`
+      <div class="hdr-chip sync" title="متصل به سرور">☁️ آنلاین</div>
+      <div class="hdr-chip">👨‍🏫 معلم</div>
+      <div class="hdr-chip">📅 ${isoToJalaliLong(todayIso())}</div>
+      <div class="hdr-chip logout" onclick="Auth.logout()">🚪 خروج</div>`;
+    $('#hTitle').textContent='پنل مدیریت معلم';
+    $('#hSub').textContent=`${state.meta.school} • ${fa(state.students.length)} دانش‌آموز`;
+  }else{
+    const st=getStudent(session.sid);
+    if(!st){Auth.logout();return;}
+    box.innerHTML=`
+      <div class="hdr-chip sync" title="متصل به سرور">☁️ آنلاین</div>
+      <div class="hdr-chip">👦 ${esc(st.name)}</div>
+      <div class="hdr-chip">🔑 ${fa(st.code)}</div>
+      <div class="hdr-chip logout" onclick="Auth.logout()">🚪 خروج</div>`;
+    $('#hTitle').textContent='کارنامه دانش‌آموز';
+    $('#hSub').textContent=state.meta.school;
+  }
+}
+function renderTabs(){
+  const tabs = session.role==='teacher' ? TABS_TEACHER : getVisibleStudentTabs();
+  $('#tabs').innerHTML = tabs.map(t=>`<button class="tab ${ui.tab===t.id?'active':''}" onclick="App.setTab('${t.id}')">${t.icon} ${t.label}</button>`).join('');
+}
+function renderView(){
+  const view=$('#view');
+  try{
+    if(ui.tab==='s-quiz-taking'){view.innerHTML=viewQuizTaking();return;}
+    if(session.role==='teacher'){
+      switch(ui.tab){
+        case 'dashboard':view.innerHTML=viewTeacherDashboard();break;
+        case 'students':view.innerHTML=viewStudents();break;
+        case 'grades':view.innerHTML=viewGrades();break;
+        case 'attendance':view.innerHTML=viewAttendance();break;
+        case 'discipline':view.innerHTML=viewDiscipline();break;
+        case 'groups':view.innerHTML=viewGroups();break;
+        case 'polls':view.innerHTML=viewPolls();break;
+        case 'quizzes':view.innerHTML=viewQuizzes();break;
+        case 'reports':view.innerHTML=viewReports();break;
+        case 'news':view.innerHTML=viewNews();break;
+        case 'settings':view.innerHTML=viewSettings();break;
+      }
+    }else{
+      const sid=session.sid;
+      switch(ui.tab){
+        case 's-dashboard':view.innerHTML=viewStudentDashboard(sid);break;
+        case 's-grades':view.innerHTML=viewStudentGrades(sid);break;
+        case 's-analysis':view.innerHTML=viewStudentAnalysis(sid);break;
+        case 's-polls':view.innerHTML=viewStudentPolls(sid);break;
+        case 's-quizzes':view.innerHTML=viewStudentQuizzes(sid);break;
+        case 's-discipline':view.innerHTML=viewStudentDiscipline(sid);break;
+        case 's-group':view.innerHTML=viewStudentGroup(sid);break;
+        case 's-news':view.innerHTML=viewStudentNews();break;
+      }
+    }
+    updateWatermark();
+  }catch(e){
+    console.error('renderView error:',e);
+    view.innerHTML=`<div class="card empty"><span class="big">⚠️</span>خطا در نمایش<br><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="location.reload()">رفرش صفحه</button></div>`;
+  }
+}
+
+/* ==================== APP ACTIONS ==================== */
+const App = {
+  setTab(id){ui.tab=id;renderTabs();renderView();window.scrollTo({top:0,behavior:'smooth'});},
+  closeModal,logout:()=>Auth.logout(),
+  search(v){ui.search=v;renderView();},
+  onDatePick(){},
+  
+  /* ===== Students (teacher) ===== */
+  addStudent(){
+    openModal(`<h3>➕ افزودن دانش‌آموز</h3><label class="fl">نام</label><input class="input" id="newStudentName"><div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.saveNewStudent()">ثبت</button><button class="btn" onclick="App.closeModal()">انصراف</button></div>`);
+  },
+  saveNewStudent(){
+    const name=$('#newStudentName').value.trim();
+    if(!name){toast('نام را وارد کنید','bad');return;}
+    const code=genStudentCode();
+    state.students.push({id:uid(),name,code});
+    save();closeModal();toast(`اضافه شد — کد: ${code}`,'ok');renderView();
+  },
+  renameStudent(sid){
+    const st=getStudent(sid);if(!st)return;
+    openModal(`<h3>✏️ ویرایش</h3><label class="fl">نام</label><input class="input" id="editName" value="${esc(st.name)}"><label class="fl" style="margin-top:10px">کد</label><input class="input" id="editCode" value="${esc(st.code)}"><div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.applyRename('${sid}')">ذخیره</button><button class="btn" onclick="App.closeModal()">انصراف</button></div>`);
+  },
+  applyRename(sid){
+    const st=getStudent(sid);if(!st)return;
+    const n=$('#editName').value.trim();const c=$('#editCode').value.trim();
+    if(!n){toast('نام را وارد کنید','bad');return;}
+    if(!/^\d{6}$/.test(c)){toast('کد باید ۶ رقم باشد','bad');return;}
+    if(state.students.some(x=>x.id!==sid&&x.code===c)){toast('این کد استفاده شده','bad');return;}
+    st.name=n;st.code=c;save();closeModal();renderView();toast('ذخیره شد');
+  },
+  deleteStudent(sid){
+    if(!confirm('حذف شود؟'))return;
+    state.students=state.students.filter(s=>s.id!==sid);
+    save();renderView();toast('حذف شد');
+  },
+  studentDetail(sid){if(session.role==='teacher'){ui.tab='reports';ui.reportSid=sid;renderTabs();renderView();}},
+  showCodes(){
+    openModal(`<h3>🔑 کدهای اختصاصی</h3><div style="max-height:60vh;overflow-y:auto;margin-top:8px"><table class="tbl"><thead><tr><th>#</th><th>نام</th><th>کد</th></tr></thead><tbody>${state.students.map((s,i)=>`<tr><td>${fa(i+1)}</td><td class="name">${esc(s.name)}</td><td style="font-weight:800;color:#4338ca;font-family:monospace">${fa(s.code)}</td></tr>`).join('')}</tbody></table></div><div class="row" style="margin-top:14px"><button class="btn" onclick="App.closeModal()">بستن</button></div>`);
+  },
+  
+  /* ===== Assessments (teacher) ===== */
+  openNewAssessment(){
+    openModal(`<h3>➕ ارزشیابی جدید</h3><label class="fl">عنوان</label><input class="input" id="newAssessName"><label class="fl" style="margin-top:10px">تاریخ</label>${jalaliInputHTML('newAssessDate',todayIso())}<label class="fl" style="margin-top:10px">نوع</label><select class="select" id="newAssessType"><option value="oral">🗣️ شفاهی</option><option value="written">📝 کتبی</option><option value="other">📎 سایر</option></select><label class="fl" style="margin-top:10px">دروس</label><input class="input" id="newAssessSubjects" value="${esc(state.subjects.join(', '))}"><div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.saveNewAssessment()">ثبت</button><button class="btn" onclick="App.closeModal()">انصراف</button></div>`);
+  },
+  saveNewAssessment(){
+    const name=$('#newAssessName').value.trim();
+    if(!name){toast('عنوان را وارد کنید','bad');return;}
+    const date=document.querySelector('[data-action="newAssessDate"]').dataset.iso||todayIso();
+    const type=$('#newAssessType').value;
+    const subjects=$('#newAssessSubjects').value.split(',').map(s=>s.trim()).filter(Boolean);
+    if(!subjects.length){toast('حداقل یک درس','bad');return;}
+    state.assessments.push({id:uid(),name,date,type,subjects,createdAt:todayIso()});
+    save();closeModal();renderView();toast('ثبت شد','ok');
+  },
+  selectAssessment(id){ui.currentAssessId=id;ui.currentSubject='';renderView();},
+  selectSubject(s){ui.currentSubject=s;renderView();},
+  gradeDescriptive(aid,sub,sid,key){setRawGrade(aid,sub,sid,key);save();renderView();},
+  editAssessment(aid){
+    const a=state.assessments.find(x=>x.id===aid);if(!a)return;
+    openModal(`<h3>✏️ ویرایش</h3><label class="fl">عنوان</label><input class="input" id="editAName" value="${esc(a.name)}"><label class="fl" style="margin-top:10px">دروس</label><input class="input" id="editASub" value="${esc((a.subjects||[]).join(', '))}"><div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.applyEditAssessment('${aid}')">ذخیره</button><button class="btn btn-danger" onclick="App.deleteAssessment('${aid}')">حذف</button><button class="btn" onclick="App.closeModal()">انصراف</button></div>`);
+  },
+  applyEditAssessment(aid){
+    const a=state.assessments.find(x=>x.id===aid);if(!a)return;
+    a.name=$('#editAName').value.trim()||a.name;
+    a.subjects=$('#editASub').value.split(',').map(s=>s.trim()).filter(Boolean);
+    save();closeModal();renderView();toast('ذخیره شد');
+  },
+  deleteAssessment(aid){
+    if(!confirm('حذف شود؟'))return;
+    state.assessments=state.assessments.filter(a=>a.id!==aid);
+    delete state.grades[aid];
+    save();closeModal();renderView();toast('حذف شد');
+  },
+  toggleGradingMode(){state.meta.gradingMode=isNumericMode()?'descriptive':'numeric';save();renderView();},
+  
+  /* ===== Attendance ===== */
+  setAtt(sid,key){
+    const dk=ui.attDate;
+    if(!state.attendance[dk])state.attendance[dk]={};
+    state.attendance[dk][sid]=key;
+    save();renderView();
+  },
+  markAll(key){
+    const dk=ui.attDate;
+    if(!key){delete state.attendance[dk];save();renderView();return;}
+    if(!state.attendance[dk])state.attendance[dk]={};
+    state.students.forEach(s=>state.attendance[dk][s.id]=key);
+    save();renderView();toast('ثبت شد');
+  },
+  
+  /* ===== Discipline ===== */
+  setDiscSid(v){ui.discSid=v;},
+  setDiscPoints(v){ui.discPoints=v;renderView();},
+  setDiscReason(v){ui.discReason=v;},
+  addDiscipline(){
+    if(!ui.discSid){toast('دانش‌آموز را انتخاب کنید','bad');return;}
+    if(!ui.discReason.trim()){toast('علت را وارد کنید','bad');return;}
+    state.discipline.push({id:uid(),sid:ui.discSid,points:ui.discPoints,reason:ui.discReason.trim(),date:ui.discDate});
+    ui.discReason='';save();renderView();toast('ثبت شد','ok');
+  },
+  delDiscipline(id){state.discipline=state.discipline.filter(r=>r.id!==id);save();renderView();toast('حذف شد');},
+  
+  /* ===== Groups ===== */
+  setGroupName(v){ui.newGroupName=v;},
+  setGroupColor(c){ui.newGroupColor=c;renderView();},
+  setGroupCount(v){ui.groupCount=v;},
+  toggleMember(sid){const i=ui.newGroupMembers.indexOf(sid);if(i>=0)ui.newGroupMembers.splice(i,1);else ui.newGroupMembers.push(sid);renderView();},
+  clearMemberPick(){ui.newGroupMembers=[];renderView();},
+  createGroup(){
+    if(!ui.newGroupName.trim()){toast('نام گروه را وارد کنید','bad');return;}
+    if(!ui.newGroupMembers.length){toast('حداقل یک عضو','bad');return;}
+    state.groups.push({id:uid(),name:ui.newGroupName.trim(),color:ui.newGroupColor,members:[...ui.newGroupMembers]});
+    ui.newGroupName='';ui.newGroupMembers=[];save();renderView();toast('ساخته شد','ok');
+  },
+  delGroup(id){if(!confirm('حذف شود؟'))return;state.groups=state.groups.filter(g=>g.id!==id);save();renderView();},
+  editGroup(id){
+    const g=state.groups.find(x=>x.id===id);if(!g)return;
+    openModal(`<h3>✏️ ویرایش گروه</h3><label class="fl">نام</label><input class="input" id="editGName" value="${esc(g.name)}"><label class="fl" style="margin-top:10px">اعضا</label><div style="max-height:200px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:8px">${state.students.map(s=>`<button class="btn btn-sm ${g.members.includes(s.id)?'btn-primary':''}" style="margin:2px" onclick="this.classList.toggle('btn-primary')" data-sid="${s.id}">${esc(s.name)}</button>`).join('')}</div><div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.applyEditGroup('${id}')">ذخیره</button><button class="btn" onclick="App.closeModal()">انصراف</button></div>`);
+  },
+  applyEditGroup(id){
+    const g=state.groups.find(x=>x.id===id);if(!g)return;
+    g.name=$('#editGName').value.trim()||g.name;
+    g.members=[...document.querySelectorAll('#modalBox button.btn-primary[data-sid]')].map(b=>b.dataset.sid);
+    save();closeModal();renderView();toast('ذخیره شد');
+  },
+  autoGroup(){
+    const n=Math.max(2,Math.min(10,parseInt(ui.groupCount)||3));
+    const shuffled=shuffle(state.students.map(s=>s.id));
+    const groups=Array.from({length:n},(_,i)=>({id:uid(),name:`گروه ${fa(i+1)}`,color:PALETTE[i%PALETTE.length],members:[]}));
+    shuffled.forEach((sid,i)=>groups[i%n].members.push(sid));
+    state.groups=groups.filter(g=>g.members.length);
+    save();renderView();toast('تقسیم شد','ok');
+  },
+  
+  /* ===== Reports ===== */
+  toggleReportAssessment(aid){const i=ui.reportExcluded.indexOf(aid);if(i>=0)ui.reportExcluded.splice(i,1);else ui.reportExcluded.push(aid);renderView();},
+  selectAllReportAssessments(){ui.reportExcluded=[];renderView();},
+  selectNoneReportAssessments(){ui.reportExcluded=state.assessments.map(a=>a.id);renderView();},
+  setReportSid(v){ui.reportSid=v||null;renderView();},
+  
+  /* ===== News ===== */
+  addNews(){
+    openModal(`<h3>📢 اطلاعیه جدید</h3><label class="fl">عنوان</label><input class="input" id="newsTitle"><label class="fl" style="margin-top:10px">متن</label><textarea class="input" id="newsBody" rows="4"></textarea><div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.saveNews()">ثبت</button><button class="btn" onclick="App.closeModal()">انصراف</button></div>`);
+  },
+  saveNews(){
+    const title=$('#newsTitle').value.trim();const body=$('#newsBody').value.trim();
+    if(!title||!body){toast('عنوان و متن لازم است','bad');return;}
+    state.news.unshift({id:uid(),title,body,date:todayIso(),pinned:false});
+    save();closeModal();renderView();toast('ثبت شد','ok');
+  },
+  delNews(id){if(!confirm('حذف شود؟'))return;state.news=state.news.filter(n=>n.id!==id);save();renderView();},
+  pinNews(id){const n=state.news.find(x=>x.id===id);if(!n)return;n.pinned=!n.pinned;save();renderView();},
+  
+  /* ===== Settings ===== */
+  toggleVisibility(key){state.studentVisibility[key]=!state.studentVisibility[key];save();renderView();toast('ذخیره شد');},
+  exportJSON(){
+    const data=JSON.stringify(state,null,2);
+    const blob=new Blob([data],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=`backup-${todayIso()}.json`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);toast('ذخیره شد','ok');
+  },
+  importJSON(){
+    const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+    inp.onchange=e=>{
+      const file=e.target.files[0];if(!file)return;
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        try{
+          const data=JSON.parse(ev.target.result);
+          if(!data.students||!Array.isArray(data.students))throw new Error('ساختار نامعتبر');
+          if(!confirm('اطلاعات فعلی جایگزین شود؟'))return;
+          state=data;
+          save();
+          toast('وارد شد','ok');
+          startApp();
+        }catch(err){toast('فایل نامعتبر: '+err.message,'bad');}
+      };
+      reader.readAsText(file);
+    };
+    inp.click();
+  },
+  toggleAntiScreenshot(){
+    state.antiScreenshot=!state.antiScreenshot;save();
+    if(!state.antiScreenshot){$('#watermark').style.display='none';$('#lockOverlay').classList.add('hidden');}
+    else{$('#watermark').style.display='flex';}
+    renderView();
+  },
+  
+  /* ===== Polls (teacher) ===== */
+  openNewPoll(){
+    openModal(`<h3>📊 نظرسنجی جدید</h3>
+      <label class="fl">سوال</label><input class="input" id="pollTitle" placeholder="مثال: بهترین روز برای اردو؟">
+      <label class="fl" style="margin-top:10px">توضیحات (اختیاری)</label><textarea class="input" id="pollDesc" rows="2"></textarea>
+      <label class="fl" style="margin-top:10px">نوع</label><select class="select" id="pollMulti"><option value="single">تک‌گزینه</option><option value="multi">چندگزینه</option></select>
+      <label class="fl" style="margin-top:10px">گزینه‌ها (هر خط یکی)</label><textarea class="input" id="pollOptions" rows="4" placeholder="گزینه ۱&#10;گزینه ۲&#10;گزینه ۳"></textarea>
+      <div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.saveNewPoll()">ساخت</button><button class="btn" onclick="App.closeModal()">انصراف</button></div>`);
+  },
+  saveNewPoll(){
+    const title=$('#pollTitle').value.trim();
+    const desc=$('#pollDesc').value.trim();
+    const multi=$('#pollMulti').value==='multi';
+    const options=$('#pollOptions').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(!title){toast('سوال لازم است','bad');return;}
+    if(options.length<2){toast('حداقل ۲ گزینه','bad');return;}
+    state.polls.push({id:uid(),title,description:desc,multi,options:options.map(t=>({id:uid(),text:t})),status:'draft',resultsVisible:false,createdAt:todayIso(),votes:{}});
+    save();closeModal();renderView();toast('ساخته شد','ok');
+  },
+  activatePoll(id){const p=state.polls.find(x=>x.id===id);if(!p)return;p.status='active';save();renderView();toast('فعال شد','ok');},
+  closePoll(id){const p=state.polls.find(x=>x.id===id);if(!p)return;p.status='closed';save();renderView();toast('بسته شد');},
+  approvePoll(id){const p=state.polls.find(x=>x.id===id);if(!p)return;p.resultsVisible=!p.resultsVisible;save();renderView();toast(p.resultsVisible?'نتایج نمایش داده می‌شود':'نمایش لغو شد');},
+  delPoll(id){if(!confirm('حذف شود؟'))return;state.polls=state.polls.filter(p=>p.id!==id);save();renderView();},
+  viewPollResults(id){
+    const p=state.polls.find(x=>x.id===id);if(!p)return;
+    const total=Object.keys(p.votes).length;
+    const counts={};p.options.forEach(o=>counts[o.id]=0);
+    for(const sid in p.votes){p.votes[sid].forEach(oid=>{if(counts[oid]!==undefined)counts[oid]++;});}
+    openModal(`<h3>📊 نتایج: ${esc(p.title)}</h3>
+      <div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:10px">${fa(total)} رأی از ${fa(state.students.length)} دانش‌آموز</div>
+      <div class="bars">${p.options.map(o=>{const c=counts[o.id];const pct=total?Math.round(c/total*100):0;
+        return `<div class="bar-row"><span class="bar-label" style="min-width:140px">${esc(o.text)}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#7c3aed,#4f46e5)"></div></div><span class="bar-val">${fa(c)} (${fa(pct)}٪)</span></div>`;}).join('')}</div>
+      <div class="row" style="margin-top:14px"><button class="btn" onclick="App.closeModal()">بستن</button></div>`);
+  },
+  
+  /* ===== Quizzes (teacher) ===== */
+  openNewQuiz(){
+    const id=uid();
+    state.quizzes.push({id,title:'',description:'',durationMin:0,status:'draft',resultsVisible:false,createdAt:todayIso(),questions:[],submissions:{}});
+    save();
+    this.openQuizEditor(id);
+  },
+  openQuizEditor(id){
+    const q=state.quizzes.find(x=>x.id===id);if(!q)return;
+    openModal(`<h3>✏️ ویرایش آزمون</h3>
+      <label class="fl">عنوان</label><input class="input" id="qzTitle" value="${esc(q.title)}" onchange="App.saveQuizField('${id}','title',this.value)">
+      <label class="fl" style="margin-top:10px">توضیحات</label><textarea class="input" id="qzDesc" rows="2" onchange="App.saveQuizField('${id}','description',this.value)">${esc(q.description)}</textarea>
+      <label class="fl" style="margin-top:10px">مدت زمان (دقیقه — 0 = بدون محدودیت)</label><input type="number" class="input" id="qzDur" value="${q.durationMin||0}" onchange="App.saveQuizField('${id}','durationMin',parseInt(this.value)||0)">
+      <div style="margin-top:14px;padding:12px;background:#f8fafc;border-radius:12px;border:1px solid var(--line)">
+        <div style="font-size:12.5px;font-weight:800;color:#312e81;margin-bottom:8px">📋 سوالات (${fa(q.questions.length)})</div>
+        ${q.questions.length?q.questions.map((qq,i)=>`<div style="padding:8px;border-radius:10px;background:#fff;border:1px solid var(--line);margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="background:#7c3aed;color:#fff;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0">${fa(i+1)}</span>
+          <span style="flex:1;font-size:12px;font-weight:700;min-width:120px">${esc(qq.text.slice(0,60))}${qq.text.length>60?'...':''}</span>
+          <span class="chip ${qq.type==='mcq'?'b':'p'}" style="font-size:9.5px">${qq.type==='mcq'?'تستی':'تشریحی'}</span>
+          <span class="chip">${fa(qq.points)} نمره</span>
+          <button class="btn btn-sm btn-danger" onclick="App.delQuizQuestion('${id}','${qq.id}')">🗑️</button>
+        </div>`).join(''):'<div style="font-size:11px;color:#94a3b8;text-align:center;padding:8px">سوالی ندارد</div>'}
+        <div class="row" style="margin-top:8px"><button class="btn btn-sm btn-primary" onclick="App.openAddQuestion('${id}')">➕ افزودن سوال</button></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        ${q.status==='draft'?`<button class="btn btn-ok" onclick="App.publishQuiz('${id}')">🚀 انتشار</button>`:q.status==='active'?`<button class="btn btn-danger" onclick="App.closeQuiz('${id}')">⏸️ بستن آزمون</button>`:`<span class="chip y">بسته</span>`}
+        <button class="btn" onclick="App.closeModal()">بستن</button>
+        <button class="btn btn-danger" onclick="App.deleteQuiz('${id}')">🗑️ حذف آزمون</button>
+      </div>`);
+  },
+  saveQuizField(id,field,value){
+    const q=state.quizzes.find(x=>x.id===id);if(!q)return;
+    q[field]=value;save();
+  },
+  openAddQuestion(quizId){
+    openModal(`<h3>➕ افزودن سوال</h3>
+      <label class="fl">متن سوال</label><textarea class="input" id="qText" rows="3"></textarea>
+      <label class="fl" style="margin-top:10px">نوع</label>
+      <select class="select" id="qType" onchange="App.toggleQuestionTypeFields()"><option value="mcq">تستی</option><option value="descriptive">تشریحی</option></select>
+      <label class="fl" style="margin-top:10px">بارم</label><input type="number" class="input" id="qPoints" value="1" min="0.25" step="0.25">
+      <div id="mcqFields" style="margin-top:10px">
+        <label class="fl">گزینه ۱</label><input class="input" id="qOpt1">
+        <label class="fl" style="margin-top:6px">گزینه ۲</label><input class="input" id="qOpt2">
+        <label class="fl" style="margin-top:6px">گزینه ۳</label><input class="input" id="qOpt3">
+        <label class="fl" style="margin-top:6px">گزینه ۴</label><input class="input" id="qOpt4">
+        <label class="fl" style="margin-top:10px">گزینه صحیح</label>
+        <select class="select" id="qCorrect"><option value="0">گزینه ۱</option><option value="1">گزینه ۲</option><option value="2">گزینه ۳</option><option value="3">گزینه ۴</option></select>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="btn btn-primary" onclick="App.saveQuizQuestion('${quizId}')">ثبت</button><button class="btn" onclick="App.openQuizEditor('${quizId}')">انصراف</button></div>`);
+  },
+  toggleQuestionTypeFields(){const t=$('#qType').value;$('#mcqFields').style.display=t==='mcq'?'block':'none';},
+  saveQuizQuestion(quizId){
+    const q=state.quizzes.find(x=>x.id===quizId);if(!q)return;
+    const text=$('#qText').value.trim();
+    const type=$('#qType').value;
+    const points=parseFloat($('#qPoints').value)||1;
+    if(!text){toast('متن سوال لازم است','bad');return;}
+    const newQ={id:uid(),text,type,points};
+    if(type==='mcq'){
+      const opts=[$('#qOpt1').value,$('#qOpt2').value,$('#qOpt3').value,$('#qOpt4').value];
+      if(opts.some(o=>!o.trim())){toast('همه گزینه‌ها را پر کنید','bad');return;}
+      newQ.options=opts.map(t=>({id:uid(),text:t.trim()}));
+      newQ.correctOptionId=newQ.options[parseInt($('#qCorrect').value)].id;
+    }
+    q.questions.push(newQ);save();this.openQuizEditor(quizId);toast('سوال اضافه شد','ok');
+  },
+  delQuizQuestion(quizId,qid){
+    const q=state.quizzes.find(x=>x.id===quizId);if(!q)return;
+    q.questions=q.questions.filter(x=>x.id!==qid);save();this.openQuizEditor(quizId);
+  },
+  publishQuiz(id){
+    const q=state.quizzes.find(x=>x.id===id);if(!q)return;
+    if(!q.questions.length){toast('حداقل یک سوال','bad');return;}
+    q.status='active';save();closeModal();renderView();toast('منتشر شد','ok');
+  },
+  closeQuiz(id){const q=state.quizzes.find(x=>x.id===id);if(!q)return;q.status='closed';save();renderView();toast('بسته شد');},
+  deleteQuiz(id){
+    if(!confirm('حذف آزمون؟'))return;
+    state.quizzes=state.quizzes.filter(x=>x.id!==id);
+    save();closeModal();renderView();toast('حذف شد');
+  },
+  approveQuiz(id){const q=state.quizzes.find(x=>x.id===id);if(!q)return;q.resultsVisible=!q.resultsVisible;save();renderView();toast(q.resultsVisible?'نتایج نمایش داده می‌شود':'نمایش لغو شد');},
+  viewQuizSubmissions(id){
+    const q=state.quizzes.find(x=>x.id===id);if(!q)return;
+    const rows=state.students.map(s=>{
+      const sub=q.submissions[s.id];
+      if(!sub)return `<tr><td class="name">${esc(s.name)}</td><td colspan="4" style="color:#94a3b8">شرکت نکرد</td></tr>`;
+      const total=q.questions.reduce((a,qq)=>a+(qq.type==='mcq'?(sub.answers?.[qq.id]===qq.correctOptionId?qq.points:0):(sub.manualScores?.[qq.id]||0)),0);
+      const maxScore=q.questions.reduce((a,qq)=>a+qq.points,0);
+      const notGraded=q.questions.some(qq=>qq.type==='descriptive'&&sub.manualScores?.[qq.id]===undefined);
+      return `<tr>
+        <td class="name">${esc(s.name)}</td>
+        <td style="font-size:10px">${sub.submittedAt?isoToShortJalali(sub.submittedAt.slice(0,10)):'—'}</td>
+        <td>${sub.autoScore!=null?fa(sub.autoScore.toFixed(1)):'—'}</td>
+        <td><b style="color:${notGraded?'#f59e0b':'#16a34a'}">${fa(total.toFixed(1))}/${fa(maxScore)}</b>${notGraded?' ⚠️':''}</td>
+        <td><button class="btn btn-sm" onclick="App.gradeSubmission('${id}','${s.id}')">📝 تصحیح</button></td>
+      </tr>`;
+    }).join('');
+    openModal(`<h3>📋 تصحیح: ${esc(q.title)}</h3>
+      <div style="max-height:65vh;overflow-y:auto"><table class="tbl"><thead><tr><th>نام</th><th>تاریخ</th><th>تستی</th><th>کل</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="row" style="margin-top:14px"><button class="btn btn-ok" onclick="App.approveQuiz('${id}');App.closeModal()">${q.resultsVisible?'🚫 لغو نمایش':'✅ تأیید و نمایش'}</button><button class="btn" onclick="App.closeModal()">بستن</button></div>`);
+  },
+  gradeSubmission(quizId,sid){
+    const q=state.quizzes.find(x=>x.id===quizId);if(!q)return;
+    const sub=q.submissions[sid];if(!sub)return;
+    const st=getStudent(sid);
+    const html=`<h3>📝 تصحیح: ${esc(st.name)}</h3>
+      ${q.questions.map((qq,i)=>`<div style="padding:12px;background:#f8fafc;border-radius:12px;margin-bottom:10px;border:1px solid var(--line)">
+        <div style="font-size:12px;font-weight:800;color:#312e81;margin-bottom:6px">${fa(i+1)}. ${esc(qq.text)} <span class="chip ${qq.type==='mcq'?'b':'p'}" style="font-size:9px">${qq.type==='mcq'?'تستی':'تشریحی'}</span> <span class="chip">${fa(qq.points)} نمره</span></div>
+        ${qq.type==='mcq'?
+          `<div style="font-size:11.5px;color:#475569;font-weight:600">پاسخ: ${sub.answers?.[qq.id]?esc((qq.options.find(o=>o.id===sub.answers[qq.id])||{}).text||'—'):'—'} ${sub.answers?.[qq.id]===qq.correctOptionId?'✅':'❌'}<br>صحیح: ${esc((qq.options.find(o=>o.id===qq.correctOptionId)||{}).text||'—')}</div>`:
+          `<div style="padding:10px;background:#fff;border-radius:10px;border:1px solid var(--line);font-size:12px;min-height:40px;white-space:pre-wrap">${esc(sub.answers?.[qq.id]||'—')}</div>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px"><label class="fl" style="margin:0">نمره:</label><input type="number" class="input" style="width:100px" min="0" max="${qq.points}" step="0.25" value="${sub.manualScores?.[qq.id]??''}" onchange="App.setManualScore('${quizId}','${sid}','${qq.id}',this.value,${qq.points})"></div>`}
+      </div>`).join('')}
+      <div class="row"><button class="btn btn-ok" onclick="App.closeModal();App.viewQuizSubmissions('${quizId}')">ذخیره و بازگشت</button><button class="btn" onclick="App.closeModal()">بستن</button></div>`;
+    openModal(html);
+  },
+  setManualScore(quizId,sid,qid,value,max){
+    const q=state.quizzes.find(x=>x.id===quizId);if(!q)return;
+    const sub=q.submissions[sid];if(!sub)return;
+    if(!sub.manualScores)sub.manualScores={};
+    const v=parseFloat(value);
+    if(isNaN(v)||v===''){delete sub.manualScores[qid];}
+    else{sub.manualScores[qid]=clamp(v,0,max);}
+    save();toast('ذخیره شد');
+  },
+  
+  /* ===== Student actions (API) ===== */
+  async votePoll(pollId, optionId){
+    const p=state.polls.find(x=>x.id===pollId);
+    if(!p||p.status!=='active')return;
+    const sid=session.sid;
+    let votes=(p.votes?.[sid]||[]).slice();
+    if(!p.multi)votes=[optionId];
+    else{const i=votes.indexOf(optionId);if(i>=0)votes.splice(i,1);else votes.push(optionId);}
+    await studentAction('vote_poll',{pollId,votes});
+    toast('رأی ثبت شد','ok');
+  },
+  async startQuiz(quizId){
+    const res=await studentAction('start_quiz',{quizId});
+    if(!res)return;
+    ui.currentQuizId=quizId;
+    ui.tab='s-quiz-taking';
+    renderTabs();renderView();
+  },
+  setQuizAnswer(quizId,qid,value){
+    const q=state.quizzes.find(x=>x.id===quizId);
+    if(!q)return;
+    const sub=q.submissions?.[session.sid];
+    if(!sub||sub.submittedAt)return;
+    if(!sub.answers)sub.answers={};
+    sub.answers[qid]=value;
+  },
+  async submitQuiz(auto=false){
+    const q=state.quizzes.find(x=>x.id===ui.currentQuizId);
+    if(!q)return;
+    const sub=q.submissions?.[session.sid];
+    if(!sub||sub.submittedAt)return;
+    const res=await studentAction('submit_quiz',{quizId:q.id,answers:sub.answers||{}});
+    if(!res)return;
+    if(auto)toast('⏰ زمان تمام — آزمون به‌صورت خودکار ارسال شد','bad');
+    else toast('آزمون ارسال شد','ok');
+    ui.tab='s-quizzes';ui.currentQuizId=null;
+    renderTabs();renderView();
+  }
+};
+
+/* ==================== VIEWS: TEACHER ==================== */
+function viewTeacherDashboard(){
+  const classAvg=classOverallAverage();
+  const classLvl=levelFromScore(classAvg);
+  const att={present:0,late:0,absent:0,excused:0};
+  for(const d in state.attendance){const day=state.attendance[d];for(const sid in day){if(att[day[sid]]!==undefined)att[day[sid]]++;}}
+  const totalAtt=att.present+att.late+att.absent+att.excused;
+  const attRate=totalAtt?Math.round(att.present/totalAtt*100):0;
+  const ranked=[...state.students].map(s=>{const st=studentStats(s.id);return{s,st,score:st.avg*20+st.attRate*.15+st.pts};}).sort((a,b)=>b.score-a.score).slice(0,5);
+  const subjData=state.subjects.map(sub=>({name:sub,avg:subjectAverage(sub)})).filter(x=>x.avg>0);
+  const activePolls=state.polls.filter(p=>p.status==='active').length;
+  const activeQuizzes=state.quizzes.filter(q=>q.status==='active').length;
+  return `
+  <div class="grid g-4" style="margin-bottom:16px">
+    <div class="stat s1"><div class="s-ico">👦</div><div class="s-val">${fa(state.students.length)}</div><div class="s-lbl">دانش‌آموز</div></div>
+    <div class="stat s5"><div class="s-ico">📝</div><div class="s-val">${fa(state.assessments.length)}</div><div class="s-lbl">ارزشیابی</div></div>
+    <div class="stat s2"><div class="s-ico">🎯</div><div class="s-val" style="font-size:18px">${classLvl?esc(classLvl.label):'—'}</div><div class="s-lbl">میانگین کلاس</div></div>
+    <div class="stat s3"><div class="s-ico">✅</div><div class="s-val">${fa(attRate)}٪</div><div class="s-lbl">نرخ حضور</div></div>
+  </div>
+  <div class="grid g-4" style="margin-bottom:16px">
+    <div class="stat s2" style="min-height:90px"><div class="s-ico">📊</div><div class="s-val">${fa(activePolls)}</div><div class="s-lbl">نظرسنجی فعال</div></div>
+    <div class="stat s4" style="min-height:90px"><div class="s-ico">📝</div><div class="s-val">${fa(activeQuizzes)}</div><div class="s-lbl">آزمون فعال</div></div>
+    <div class="stat s5" style="min-height:90px"><div class="s-ico">📢</div><div class="s-val">${fa(state.news.length)}</div><div class="s-lbl">اطلاعیه</div></div>
+    <div class="stat s1" style="min-height:90px"><div class="s-ico">👥</div><div class="s-val">${fa(state.groups.length)}</div><div class="s-lbl">گروه</div></div>
+  </div>
+  <div class="grid g-2">
+    <div class="card"><div class="card-title"><span class="dot"></span> 🏆 دانش‌آموزان برتر</div>
+      ${ranked.map((r,i)=>{const lv=levelFromScore(r.st.avg);
+        return `<div style="padding:10px;border-radius:12px;background:#f8fafc;margin-bottom:6px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="App.studentDetail('${r.s.id}')">
+          <span class="chip">${fa(i+1)}</span>
+          <span style="flex:1;font-size:12.5px;font-weight:700">${esc(r.s.name)}</span>
+          <span class="chip ${levelChipClass(r.st.avg)}">${lv?lv.icon+' '+esc(lv.label):'—'}</span>
+          <span class="chip b">${fa(r.st.attRate)}٪</span>
+          <span class="chip">⭐${fa(r.st.pts)}</span>
+        </div>`;}).join('')}
+    </div>
+    <div class="card"><div class="card-title"><span class="dot"></span> 📊 میانگین دروس</div>
+      ${subjData.length?`<div class="bars">${subjData.map(s=>{const lv=levelFromScore(s.avg);
+        return `<div class="bar-row"><span class="bar-label">${esc(s.name)}</span><div class="bar-track"><div class="bar-fill" style="width:${(s.avg/state.levels.length*100).toFixed(1)}%;background:${lv?lv.color:'#94a3b8'}"></div></div><span class="bar-val">${fa(s.avg.toFixed(2))}</span></div>`;}).join('')}</div>`:`<div class="empty">داده‌ای نیست</div>`}
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> ⚡ دسترسی سریع</div>
+    <div class="row">
+      <button class="btn btn-primary" onclick="App.setTab('grades')">📝 ارزشیابی</button>
+      <button class="btn" onclick="App.setTab('attendance')">🗓️ حضور</button>
+      <button class="btn" onclick="App.setTab('discipline')">⭐ انضباط</button>
+      <button class="btn" onclick="App.setTab('polls')">📊 نظرسنجی</button>
+      <button class="btn" onclick="App.setTab('quizzes')">📝 آزمون‌ها</button>
+      <button class="btn" onclick="App.setTab('news')">📢 اطلاعیه</button>
+      <button class="btn" onclick="App.showCodes()">🔑 کدها</button>
+    </div>
+  </div>`;
+}
+
+function viewStudents(){
+  const q=ui.search.trim().toLowerCase();
+  const list=state.students.filter(s=>!q||s.name.toLowerCase().includes(q));
+  return `
+  <div class="card"><div class="row">
+    <input class="input" placeholder="🔍 جستجو..." value="${esc(ui.search)}" oninput="App.search(this.value)" style="flex:1;min-width:180px">
+    <button class="btn btn-primary" onclick="App.addStudent()">➕ افزودن</button>
+    <button class="btn" onclick="App.showCodes()">🔑 کدها</button>
+  </div>
+  <div style="margin-top:10px;font-size:12px;color:var(--muted);font-weight:700">👥 ${fa(list.length)} از ${fa(state.students.length)}</div></div>
+  <div class="grid g-auto">
+    ${list.map(s=>{const st=studentStats(s.id);const lv=levelFromScore(st.avg);
+      return `<div style="display:flex;align-items:center;gap:12px;padding:13px;background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm)">
+        <div style="width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:18px;background:linear-gradient(135deg,${colorFor(s.name)},${colorFor(s.name)}bb)">${esc(initials(s.name))}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(s.name)}</div>
+          <div style="font-size:11px;color:#94a3b8;font-weight:700;margin-top:3px;font-family:monospace">🔑 ${fa(s.code)}</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+            ${lv?`<span class="chip ${levelChipClass(st.avg)}">${lv.icon} ${esc(lv.label)}</span>`:`<span class="chip">بدون نمره</span>`}
+            <span class="chip b">${fa(st.attRate)}٪</span>
+            <span class="chip">⭐ ${fa(st.pts)}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <button class="btn btn-sm" onclick="App.renameStudent('${s.id}')">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="App.deleteStudent('${s.id}')">🗑️</button>
+        </div>
+      </div>`;}).join('')}
+  </div>`;
+}
+
+function viewGrades(){
+  const assessments=[...state.assessments].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  let cur=state.assessments.find(a=>a.id===ui.currentAssessId);
+  if(!cur&&assessments.length){ui.currentAssessId=assessments[0].id;cur=assessments[0];}
+  let activeSubject=ui.currentSubject;
+  if(cur&&(!activeSubject||!(cur.subjects||[]).includes(activeSubject))){activeSubject=(cur.subjects||[])[0]||'';ui.currentSubject=activeSubject;}
+  const numMode=isNumericMode();
+  return `
+  <div class="card"><div class="card-title"><span class="dot"></span> 📝 ارزشیابی‌ها</div>
+    <div class="row" style="margin-bottom:12px">
+      <button class="btn btn-primary" onclick="App.openNewAssessment()">➕ ارزشیابی جدید</button>
+      <div class="spacer"></div>
+      <button class="btn btn-sm" onclick="App.toggleGradingMode()">${numMode?'🔢 نمره‌ای':'📝 توصیفی'}</button>
+    </div>
+    ${assessments.length?`<div class="grid g-auto" style="gap:10px">
+      ${assessments.map(a=>{
+        let cnt=0,tot=0;
+        (a.subjects||[]).forEach(sub=>state.students.forEach(s=>{tot++;if(getRawGrade(a.id,sub,s.id)!=null)cnt++;}));
+        const pct=tot?Math.round(cnt/tot*100):0;
+        const active=a.id===ui.currentAssessId;
+        const t=ASSESS_TYPES[a.type]||ASSESS_TYPES.other;
+        return `<div style="border-radius:16px;padding:12px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:1.5px solid ${active?'#7c3aed':'#c7d2fe'};cursor:pointer" onclick="App.selectAssessment('${a.id}')">
+          <div style="font-size:13.5px;font-weight:800;color:#312e81;margin-bottom:6px">🎯 ${esc(a.name)}</div>
+          <div style="font-size:11px;color:#4338ca;font-weight:700;margin-bottom:6px">📅 ${a.date?isoToShortJalali(a.date):'—'} • ${t.icon} ${t.label}</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:#475569"><div style="flex:1;height:6px;background:rgba(255,255,255,.7);border-radius:99px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#7c3aed,#4f46e5);border-radius:99px"></div></div><span>${fa(cnt)}/${fa(tot)}</span></div>
+          <div class="row" style="margin-top:6px"><button class="btn btn-sm" onclick="event.stopPropagation();App.editAssessment('${a.id}')">✏️</button></div>
+        </div>`;
+      }).join('')}
+    </div>`:`<div class="empty"><span class="big">📝</span>ارزشیابی‌ای نیست</div>`}
+  </div>
+  ${cur&&(cur.subjects||[]).length?`
+    <div class="card"><div class="card-title"><span class="dot"></span> انتخاب درس</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${(cur.subjects||[]).map(sub=>{
+          let graded=0;state.students.forEach(s=>{if(getRawGrade(cur.id,sub,s.id)!=null)graded++;});
+          const active=sub===activeSubject;
+          return `<button class="btn btn-sm ${active?'btn-primary':''}" onclick="App.selectSubject('${esc(sub)}')">${esc(sub)} <span style="font-size:10px;opacity:.7">${fa(graded)}/${fa(state.students.length)}</span></button>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="card"><div class="card-title"><span class="dot"></span> ثبت نمره — ${esc(cur.name)} / ${esc(activeSubject)}</div>
+      ${state.students.map((s,i)=>{
+        const raw=getRawGrade(cur.id,activeSubject,s.id);
+        return `<div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.85);border:1px solid var(--line);margin-bottom:7px;flex-wrap:wrap">
+          <span class="chip">${fa(i+1)}</span>
+          <span style="font-size:12.5px;font-weight:700;flex:1;min-width:110px">${esc(s.name)}</span>
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;flex:2;min-width:260px">
+            ${state.levels.map(l=>`<button style="padding:8px 4px;border-radius:12px;font-size:11.5px;font-weight:700;border:2px solid transparent;background:${raw===l.key?l.color:'#f8fafc'};color:${raw===l.key?'#fff':'#64748b'};cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:50px" onclick="App.gradeDescriptive('${cur.id}','${esc(activeSubject)}','${s.id}','${l.key}')">
+              <span style="font-size:15px">${l.icon}</span><span style="font-size:10px;font-weight:800">${esc(l.label)}</span>
+            </button>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `:cur?`<div class="card empty">این ارزشیابی درس ندارد</div>`:''}`;
+}
+
+function viewAttendance(){
+  const dk=ui.attDate;
+  const day=state.attendance[dk]||{};
+  const counts={present:0,late:0,absent:0,excused:0,none:0};
+  state.students.forEach(s=>{const v=day[s.id];if(v)counts[v]++;else counts.none++;});
+  return `
+  <div class="card"><div class="row">
+    <div style="min-width:200px"><label class="fl">تاریخ</label>${jalaliInputHTML('attDate',dk)}</div>
+    <button class="btn btn-ok btn-sm" onclick="App.markAll('present')" style="align-self:flex-end">✅ همه حاضر</button>
+    <button class="btn btn-sm" onclick="App.markAll('')" style="align-self:flex-end">🧹 پاک</button>
+    <div class="spacer"></div>
+    <div style="align-self:flex-end;font-size:12px;font-weight:700;color:var(--muted)">${isoToJalaliLong(dk)}</div>
+  </div>
+  <div class="grid g-4" style="margin-top:12px;gap:8px">
+    ${ATT.map(a=>`<div style="background:${a.color}14;border:1.5px solid ${a.color}33;border-radius:14px;padding:10px;text-align:center">
+      <div style="font-size:16px">${a.icon}</div><div style="font-size:18px;font-weight:800;color:${a.color}">${fa(counts[a.key])}</div><div style="font-size:10.5px;font-weight:700;color:${a.color}">${a.label}</div></div>`).join('')}
+  </div></div>
+  <div class="card"><div class="card-title"><span class="dot"></span> ثبت حضور</div>
+    ${state.students.map((s,i)=>{
+      const cur=day[s.id];
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.85);border:1px solid var(--line);margin-bottom:7px;flex-wrap:wrap">
+        <span class="chip">${fa(i+1)}</span>
+        <span style="font-size:12.5px;font-weight:700;flex:1;min-width:110px">${esc(s.name)}</span>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;flex:2;min-width:280px">
+          ${ATT.map(a=>`<button style="padding:8px 4px;border-radius:12px;font-size:11px;font-weight:700;border:1.5px solid ${cur===a.key?a.color:'var(--line)'};background:${cur===a.key?a.color:'#fff'};color:${cur===a.key?'#fff':'#64748b'};cursor:pointer" onclick="App.setAtt('${s.id}','${a.key}')">${a.icon} ${a.label}</button>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function viewDiscipline(){
+  const recs=[...state.discipline].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const board=state.students.map(s=>{const st=studentStats(s.id);return{s,pts:st.pts};}).sort((a,b)=>b.pts-a.pts);
+  const maxAbs=Math.max(1,...board.map(b=>Math.abs(b.pts)));
+  return `
+  <div class="card"><div class="card-title"><span class="dot"></span> ثبت مورد انضباطی</div>
+    <div class="grid g-2">
+      <div><label class="fl">دانش‌آموز</label>
+        <select class="select" onchange="App.setDiscSid(this.value)"><option value="">— انتخاب —</option>${state.students.map(s=>`<option value="${s.id}" ${ui.discSid===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+        <label class="fl" style="margin-top:10px">تاریخ</label>${jalaliInputHTML('discDate',ui.discDate)}
+        <label class="fl" style="margin-top:10px">امتیاز</label>
+        <div class="row">${[1,2,3,-1,-2].map(v=>`<button class="btn btn-sm ${ui.discPoints===v?(v>0?'btn-ok':'btn-danger'):''}" onclick="App.setDiscPoints(${v})">${v>0?'+':''}${fa(v)}</button>`).join('')}</div>
+      </div>
+      <div><label class="fl">علت</label><textarea class="input" rows="3" oninput="App.setDiscReason(this.value)">${esc(ui.discReason)}</textarea>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">${PRESET_REASONS.map(r=>`<button class="btn btn-sm" onclick="App.setDiscReason('${esc(r)}')">${esc(r)}</button>`).join('')}</div>
+        <button class="btn btn-primary" style="margin-top:14px;width:100%" onclick="App.addDiscipline()">➕ ثبت</button>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 🏅 جدول امتیاز</div>
+    <div class="bars">${board.map(b=>`<div class="bar-row"><span class="bar-label" style="min-width:130px">${esc(b.s.name)}</span><div class="bar-track"><div class="bar-fill" style="width:${(Math.abs(b.pts)/maxAbs*100).toFixed(1)}%;background:${b.pts>=0?'linear-gradient(90deg,#16a34a,#4ade80)':'linear-gradient(90deg,#ef4444,#fb7185)'}"></div></div><span class="bar-val" style="color:${b.pts>0?'#16a34a':b.pts<0?'#ef4444':'#64748b'}">${fa(b.pts)}</span></div>`).join('')}</div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 📋 تاریخچه (${fa(recs.length)})</div>
+    ${recs.length?`<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>دانش‌آموز</th><th>امتیاز</th><th>علت</th><th>تاریخ</th><th></th></tr></thead><tbody>
+      ${recs.map((r,i)=>`<tr><td>${fa(i+1)}</td><td class="name">${esc(studentName(r.sid))}</td><td style="font-weight:800;color:${r.points>=0?'#16a34a':'#ef4444'}">${r.points>=0?'+':''}${fa(r.points)}</td><td style="text-align:right">${esc(r.reason||'—')}</td><td style="font-size:10.5px">${r.date?isoToShortJalali(r.date):'—'}</td><td><button class="btn btn-sm" onclick="App.delDiscipline('${r.id}')">🗑️</button></td></tr>`).join('')}
+    </tbody></table></div>`:`<div class="empty">موردی نیست</div>`}
+  </div>`;
+}
+
+function viewGroups(){
+  return `
+  <div class="card"><div class="card-title"><span class="dot"></span> ساخت گروه</div>
+    <div class="grid g-2">
+      <div><label class="fl">نام</label><input class="input" value="${esc(ui.newGroupName)}" oninput="App.setGroupName(this.value)">
+        <label class="fl" style="margin-top:10px">رنگ</label>
+        <div class="row" style="gap:6px">${PALETTE.map(c=>`<div style="width:26px;height:26px;border-radius:8px;cursor:pointer;background:${c};border:3px solid ${ui.newGroupColor===c?'#1e293b':'transparent'}" onclick="App.setGroupColor('${c}')"></div>`).join('')}</div>
+        <label class="fl" style="margin-top:12px">تقسیم خودکار</label>
+        <div class="row"><input type="number" class="input" style="width:80px" value="${ui.groupCount}" onchange="App.setGroupCount(parseInt(this.value)||3)"><button class="btn" onclick="App.autoGroup()">🎲 تقسیم تصادفی</button></div>
+      </div>
+      <div><label class="fl">اعضا (${fa(ui.newGroupMembers.length)})</label>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;max-height:180px;overflow-y:auto;border:1.5px solid var(--line);border-radius:14px;padding:8px">
+          ${state.students.map(s=>`<button class="btn btn-sm ${ui.newGroupMembers.includes(s.id)?'btn-primary':''}" onclick="App.toggleMember('${s.id}')">${esc(s.name)}</button>`).join('')}
+        </div>
+        <div class="row" style="margin-top:10px"><button class="btn btn-primary" onclick="App.createGroup()">➕ ساخت</button><button class="btn" onclick="App.clearMemberPick()">پاک</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> گروه‌ها (${fa(state.groups.length)})</div>
+    ${state.groups.length?`<div class="grid g-auto">${state.groups.map(g=>{
+      const members=g.members.map(getStudent).filter(Boolean);
+      let sum=0,cnt=0,pts=0;
+      members.forEach(m=>{const st=studentStats(m.id);if(st.cnt){sum+=st.avg;cnt++;}pts+=st.pts;});
+      const avg=cnt?sum/cnt:0;const lv=levelFromScore(avg);
+      return `<div class="group-overview"><div class="gbar" style="background:linear-gradient(90deg,${g.color},${g.color}77)"></div>
+        <h3>🎨 ${esc(g.name)}</h3>
+        <div class="row"><span class="chip ${levelChipClass(avg)}">${lv?lv.icon+' '+esc(lv.label):'—'}</span><span class="chip">⭐ ${fa(pts)}</span></div>
+        <div style="margin-top:10px">${members.map(m=>`<span class="chip p" style="margin:2px">${esc(m.name)}</span>`).join('')||'<span style="font-size:11px;color:#94a3b8">بدون عضو</span>'}</div>
+        <div class="row" style="margin-top:10px"><button class="btn btn-sm" onclick="App.editGroup('${g.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="App.delGroup('${g.id}')">🗑️</button></div>
+      </div>`;
+    }).join('')}</div>`:`<div class="empty"><span class="big">👥</span>گروهی نیست</div>`}
+  </div>`;
+}
+
+function viewPolls(){
+  return `
+  <div class="card"><div class="row">
+    <button class="btn btn-primary" onclick="App.openNewPoll()">➕ نظرسنجی جدید</button>
+    <div class="spacer"></div>
+    <span class="chip">${fa(state.polls.length)} نظرسنجی</span>
+  </div></div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 📊 نظرسنجی‌ها</div>
+    ${state.polls.length?state.polls.map(p=>{
+      const total=Object.keys(p.votes).length;
+      const statusLabel=p.status==='draft'?'📝 پیش‌نویس':p.status==='active'?'🟢 فعال':'🔴 بسته';
+      const statusCls=p.status==='draft'?'':p.status==='active'?'g':'r';
+      return `<div style="padding:14px;border-radius:16px;background:#f8fafc;border:1px solid var(--line);margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <div style="flex:1;font-size:14px;font-weight:800;color:#312e81">${esc(p.title)}</div>
+          <span class="chip ${statusCls}">${statusLabel}</span>
+          <span class="chip ${p.resultsVisible?'g':'r'}">${p.resultsVisible?'👁️ نتایج قابل مشاهده':'🚫 نتایج پنهان'}</span>
+        </div>
+        ${p.description?`<div style="font-size:12px;color:#64748b;font-weight:600;margin-bottom:8px">${esc(p.description)}</div>`:''}
+        <div style="font-size:11.5px;color:#475569;font-weight:700;margin-bottom:8px">${fa(total)} رأی از ${fa(state.students.length)} دانش‌آموز • ${p.multi?'چندگزینه':'تک‌گزینه'}</div>
+        <div class="row">
+          ${p.status==='draft'?`<button class="btn btn-sm btn-ok" onclick="App.activatePoll('${p.id}')">🚀 فعال‌سازی</button>`:''}
+          ${p.status==='active'?`<button class="btn btn-sm btn-danger" onclick="App.closePoll('${p.id}')">⏸️ بستن</button>`:''}
+          <button class="btn btn-sm" onclick="App.viewPollResults('${p.id}')">📊 نتایج</button>
+          <button class="btn btn-sm ${p.resultsVisible?'btn-ok':''}" onclick="App.approvePoll('${p.id}')">${p.resultsVisible?'🚫 لغو نمایش':'✅ تأیید نمایش'}</button>
+          <button class="btn btn-sm btn-danger" onclick="App.delPoll('${p.id}')">🗑️</button>
+        </div>
+        <div style="margin-top:8px;font-size:10.5px;color:#94a3b8">${p.options.map(o=>esc(o.text)).join(' • ')}</div>
+      </div>`;
+    }).join(''):`<div class="empty"><span class="big">📊</span>نظرسنجی‌ای نیست</div>`}
+  </div>`;
+}
+
+function viewQuizzes(){
+  return `
+  <div class="card"><div class="row">
+    <button class="btn btn-primary" onclick="App.openNewQuiz()">➕ آزمون جدید</button>
+    <div class="spacer"></div>
+    <span class="chip">${fa(state.quizzes.length)} آزمون</span>
+  </div></div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 📝 آزمون‌ها</div>
+    ${state.quizzes.length?state.quizzes.map(q=>{
+      const statusLabel=q.status==='draft'?'📝 پیش‌نویس':q.status==='active'?'🟢 فعال':'🔴 بسته';
+      const statusCls=q.status==='draft'?'':q.status==='active'?'g':'r';
+      const subsCount=Object.values(q.submissions).filter(s=>s.submittedAt).length;
+      const maxScore=q.questions.reduce((a,qq)=>a+qq.points,0);
+      const mcqCount=q.questions.filter(x=>x.type==='mcq').length;
+      const descCount=q.questions.filter(x=>x.type==='descriptive').length;
+      return `<div style="padding:14px;border-radius:16px;background:#f8fafc;border:1px solid var(--line);margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <div style="flex:1;font-size:14px;font-weight:800;color:#312e81">🎯 ${esc(q.title||'(بدون عنوان)')}</div>
+          <span class="chip ${statusCls}">${statusLabel}</span>
+          <span class="chip ${q.resultsVisible?'g':'r'}">${q.resultsVisible?'👁️ نتایج قابل مشاهده':'🚫 نتایج پنهان'}</span>
+        </div>
+        <div style="font-size:11.5px;color:#475569;font-weight:700;margin-bottom:8px">
+          📋 ${fa(q.questions.length)} سوال (${fa(mcqCount)} تستی • ${fa(descCount)} تشریحی) • 📊 ${fa(subsCount)} شرکت‌کننده • ⏱️ ${q.durationMin?fa(q.durationMin)+' دقیقه':'بدون محدودیت'} • 💯 ${fa(maxScore)} نمره
+        </div>
+        <div class="row">
+          <button class="btn btn-sm btn-primary" onclick="App.openQuizEditor('${q.id}')">✏️ ویرایش</button>
+          <button class="btn btn-sm" onclick="App.viewQuizSubmissions('${q.id}')">📊 نتایج و تصحیح</button>
+          <button class="btn btn-sm ${q.resultsVisible?'btn-ok':''}" onclick="App.approveQuiz('${q.id}')">${q.resultsVisible?'🚫 لغو نمایش':'✅ تأیید نمایش'}</button>
+          <button class="btn btn-sm btn-danger" onclick="App.deleteQuiz('${q.id}')">🗑️</button>
+        </div>
+      </div>`;
+    }).join(''):`<div class="empty"><span class="big">📝</span>آزمونی نیست</div>`}
+  </div>`;
+}
+
+function viewReports(){
+  const reportAssess=state.assessments.filter(a=>!ui.reportExcluded.includes(a.id));
+  const sel=ui.reportSid?getStudent(ui.reportSid):null;
+  return `
+  <div class="card"><div class="card-title"><span class="dot"></span> 🎯 انتخاب ارزشیابی‌ها</div>
+    <div class="row" style="margin-bottom:10px">
+      <button class="btn btn-sm btn-primary" onclick="App.selectAllReportAssessments()">همه</button>
+      <button class="btn btn-sm" onclick="App.selectNoneReportAssessments()">هیچ</button>
+      <span class="chip">${fa(reportAssess.length)} از ${fa(state.assessments.length)}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;max-height:220px;overflow-y:auto">
+      ${state.assessments.map(a=>{
+        const inc=!ui.reportExcluded.includes(a.id);
+        return `<label style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;border-radius:12px;border:1.5px solid ${inc?'#a78bfa':'var(--line)'};background:${inc?'#faf5ff':'#fff'};cursor:pointer;font-size:11.5px"><input type="checkbox" ${inc?'checked':''} onchange="App.toggleReportAssessment('${a.id}')" style="margin-top:2px"><div><div style="font-weight:800;color:#312e81">${esc(a.name)}</div><div style="font-size:10px;color:#94a3b8;margin-top:2px">${isoToShortJalali(a.date)}</div></div></label>`;
+      }).join('')||'<div class="empty">ارزشیابی‌ای نیست</div>'}
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 🏆 جدول رتبه‌بندی</div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>نام</th><th>سطح</th><th>میانگین</th><th>حضور</th><th>انضباط</th></tr></thead><tbody>
+      ${[...state.students].map(s=>({s,st:studentStats(s.id,reportAssess)})).sort((a,b)=>b.st.avg-a.st.avg).map((r,i)=>{
+        const lv=levelFromScore(r.st.avg);
+        return `<tr><td>${fa(i+1)}</td><td class="name">${esc(r.s.name)}</td><td style="color:${lv?lv.color:'#94a3b8'};font-weight:800">${lv?lv.icon+' '+esc(lv.label):'—'}</td><td>${r.st.cnt?fa(r.st.avg.toFixed(2)):'—'}</td><td>${r.st.total?fa(r.st.attRate)+'٪':'—'}</td><td style="color:${r.st.pts>=0?'#16a34a':'#ef4444'};font-weight:800">${fa(r.st.pts)}</td></tr>`;
+      }).join('')}
+    </tbody></table></div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 👁️ کارنامه فردی</div>
+    <select class="select" onchange="App.setReportSid(this.value)" style="margin-bottom:14px">
+      <option value="">— انتخاب دانش‌آموز —</option>
+      ${state.students.map(s=>`<option value="${s.id}" ${ui.reportSid===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}
+    </select>
+    ${sel?`${analysisBoxHTML(sel.id,reportAssess)}<div class="chart-wrap" style="margin-top:10px">${renderProgressChart(sel.id,reportAssess)}</div>`:`<div class="empty">یک دانش‌آموز انتخاب کنید</div>`}
+  </div>`;
+}
+
+function viewNews(){
+  return `
+  <div class="card"><div class="row">
+    <button class="btn btn-primary" onclick="App.addNews()">➕ اطلاعیه جدید</button>
+    <div class="spacer"></div>
+    <span class="chip">${fa(state.news.length)} اطلاعیه</span>
+  </div></div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 📢 لیست</div>
+    ${state.news.length?state.news.map(n=>`<div class="news-item">
+      <div class="nt">${n.pinned?'📌 ':''}${esc(n.title)}
+        <div class="spacer"></div>
+        <button class="btn btn-sm" onclick="App.pinNews('${n.id}')">${n.pinned?'برداشتن پین':'📌 پین'}</button>
+        <button class="btn btn-sm btn-danger" onclick="App.delNews('${n.id}')">🗑️</button>
+      </div>
+      <div class="nd">${esc(n.body)}</div>
+      <div class="ndate">📅 ${n.date?isoToJalaliLong(n.date):'—'}</div>
+    </div>`).join(''):`<div class="empty">اطلاعیه‌ای نیست</div>`}
+  </div>`;
+}
+
+function viewSettings(){
+  const v=state.studentVisibility;
+  return `
+  <div class="card"><div class="card-title"><span class="dot"></span> 👁️ نمایش برای دانش‌آموزان</div>
+    <div class="grid g-2">
+      ${[['grades','📝 کارنامه'],['analysis','📈 تحلیل'],['group','👥 گروه'],['discipline','⭐ انضباط'],['news','📢 اطلاعیه‌ها'],['polls','📊 نظرسنجی'],['quizzes','📝 آزمون‌ها']].map(([k,l])=>`
+        <div class="row" style="padding:10px;background:#f8fafc;border-radius:12px;border:1px solid var(--line)">
+          <span style="flex:1;font-weight:700;font-size:13px">${l}</span>
+          <button class="btn btn-sm ${v[k]?'btn-ok':'btn-danger'}" onclick="App.toggleVisibility('${k}')">${v[k]?'✓ فعال':'✕ غیرفعال'}</button>
+        </div>`).join('')}
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 💾 پشتیبان‌گیری</div>
+    <div class="row"><button class="btn btn-primary" onclick="App.exportJSON()">⬇️ خروجی JSON</button><button class="btn btn-ok" onclick="App.importJSON()">⬆️ ورودی JSON</button></div>
+    <div style="margin-top:10px;font-size:11.5px;color:#64748b;font-weight:600;line-height:1.9">ℹ️ خروجی JSON از دیتابیس Supabase گرفته می‌شود. برای بازیابی، فایل JSON را وارد کنید.</div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 🛡️ امنیت</div>
+    <div class="row" style="padding:10px;background:#f8fafc;border-radius:12px;border:1px solid var(--line)">
+      <span style="flex:1;font-weight:700;font-size:13px">🔒 ضد اسکرین‌شات و پرینت</span>
+      <button class="btn btn-sm ${state.antiScreenshot?'btn-ok':'btn-danger'}" onclick="App.toggleAntiScreenshot()">${state.antiScreenshot?'✓ فعال':'✕ غیرفعال'}</button>
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 🔑 کدها</div>
+    <div class="row" style="padding:10px;background:#fef2f2;border-radius:12px;border:1px solid #fecaca">
+      <span style="flex:1;font-weight:700;font-size:13px">🔐 کد معلم در Environment Variables ورسل تنظیم شده</span>
+      <button class="btn btn-sm" onclick="App.showCodes()">🔍 کدهای دانش‌آموزان</button>
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> ℹ️ درباره</div>
+    <div style="text-align:center;font-size:13px;font-weight:700;color:#475569;line-height:2.2">
+      معلم و روانشناس: <b style="color:#7c3aed">محمدباقر کالجی</b><br>
+      طراحی توسعه وب کالج مدیا<br>
+      <span style="font-size:11px;color:#94a3b8">دبستان شهید شیرودی عباس‌آباد — نسخه ۹ (Vercel + Supabase)</span>
+    </div>
+  </div>`;
+}
+
+/* ==================== VIEWS: STUDENT ==================== */
+function viewStudentDashboard(sid){
+  const st=getStudent(sid);if(!st)return '';
+  const stats=studentStats(sid);
+  const lv=levelFromScore(stats.avg);
+  const group=getStudentGroup(sid);
+  const rank=state.aggregates?.myRank||0;
+  return `
+  <div class="student-hero">
+    <div class="sh-top">
+      <div class="sh-avatar">${esc(initials(st.name))}</div>
+      <div style="flex:1;min-width:140px"><h2>${esc(st.name)}</h2><div class="sh-sub">🔑 کد: ${fa(st.code)} • ${state.meta.className}</div></div>
+      ${group?`<span class="chip p" style="background:rgba(255,255,255,.25);color:#fff">🎨 ${esc(group.name)}</span>`:''}
+    </div>
+    <div class="sh-stats">
+      <div class="sh-stat"><div class="v">${lv?lv.icon+' '+esc(lv.label):'—'}</div><div class="l">سطح کلی</div></div>
+      <div class="sh-stat"><div class="v">${fa(stats.avg.toFixed(2))}</div><div class="l">میانگین</div></div>
+      <div class="sh-stat"><div class="v">${fa(stats.attRate)}٪</div><div class="l">حضور</div></div>
+      <div class="sh-stat"><div class="v">${fa(stats.pts)}</div><div class="l">انضباط</div></div>
+    </div>
+  </div>
+  ${analysisBoxHTML(sid)}
+  <div class="grid g-2">
+    <div class="card"><div class="card-title"><span class="dot"></span> 📈 روند پیشرفت</div><div class="chart-wrap">${renderProgressChart(sid)}</div></div>
+    <div class="card"><div class="card-title"><span class="dot"></span> 📊 میانگین دروس</div>
+      ${(()=>{
+        const subs=state.subjects.map(s=>({name:s,avg:studentSubjectAvg(sid,s)})).filter(x=>x.avg>0);
+        if(!subs.length)return `<div class="empty">نمره‌ای نیست</div>`;
+        return `<div class="bars">${subs.map(s=>{const l=levelFromScore(s.avg);
+          return `<div class="bar-row"><span class="bar-label">${esc(s.name)}</span><div class="bar-track"><div class="bar-fill" style="width:${(s.avg/state.levels.length*100).toFixed(1)}%;background:${l?l.color:'#94a3b8'}"></div></div><span class="bar-val">${fa(s.avg.toFixed(2))}</span></div>`;}).join('')}</div>`;
+      })()}
+    </div>
+  </div>
+  ${state.news.filter(n=>n.pinned).length?`<div class="card"><div class="card-title"><span class="dot"></span> 📌 اطلاعیه‌های مهم</div>
+    ${state.news.filter(n=>n.pinned).slice(0,2).map(n=>`<div class="news-item"><div class="nt">${esc(n.title)}</div><div class="nd">${esc(n.body)}</div></div>`).join('')}
+  </div>`:''}`;
+}
+
+function viewStudentGrades(sid){
+  const assessments=[...state.assessments].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  return `
+  <div class="card"><div class="card-title"><span class="dot"></span> 📋 کارنامه</div>
+    ${assessments.length?assessments.map(a=>{
+      const subs=(a.subjects||[]).filter(sub=>getRawGrade(a.id,sub,sid)!=null);
+      if(!subs.length)return '';
+      return `<div style="margin-bottom:14px;padding:12px;border-radius:14px;background:#f8fafc;border:1px solid var(--line)">
+        <div style="font-size:13.5px;font-weight:800;color:#312e81;margin-bottom:8px">🎯 ${esc(a.name)} <span style="font-size:11px;color:#94a3b8">${a.date?isoToJalaliLong(a.date):''}</span></div>
+        <table class="tbl"><thead><tr><th>درس</th><th>نمره</th></tr></thead><tbody>
+          ${subs.map(sub=>{const g=gradeToLevel(a.id,sub,sid);
+            return `<tr><td class="name">${esc(sub)}</td><td style="color:${g?g.color:'#64748b'};font-weight:800">${formatGrade(a.id,sub,sid)}</td></tr>`;}).join('')}
+        </tbody></table>
+      </div>`;
+    }).join('')||`<div class="empty"><span class="big">📝</span>هنوز نمره‌ای نیست</div>`:''}
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 📊 خلاصه دروس</div>
+    ${(()=>{
+      const subs=state.subjects.map(s=>({name:s,avg:studentSubjectAvg(sid,s),count:state.assessments.filter(a=>(a.subjects||[]).includes(s)&&getRawGrade(a.id,s,sid)!=null).length})).filter(x=>x.count>0);
+      if(!subs.length)return `<div class="empty">داده‌ای نیست</div>`;
+      return `<table class="tbl"><thead><tr><th>درس</th><th>میانگین</th><th>سطح</th></tr></thead><tbody>
+        ${subs.map(s=>{const l=levelFromScore(s.avg);
+          return `<tr><td class="name">${esc(s.name)}</td><td>${fa(s.avg.toFixed(2))}</td><td style="color:${l?l.color:'#64748b'};font-weight:800">${l?l.icon+' '+esc(l.label):'—'}</td></tr>`;}).join('')}
+      </tbody></table>`;
+    })()}
+  </div>`;
+}
+
+function viewStudentAnalysis(sid){
+  return `
+  ${analysisBoxHTML(sid)}
+  <div class="card"><div class="card-title"><span class="dot"></span> 📈 نمودار پیشرفت</div><div class="chart-wrap">${renderProgressChart(sid)}</div></div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 🎯 مقایسه با کلاس</div>
+    ${(()=>{
+      const clsAvg=classOverallAverage();
+      const st=studentStats(sid);
+      const N=state.levels.length;
+      return `<div class="bars">
+        <div class="bar-row"><span class="bar-label">شما</span><div class="bar-track"><div class="bar-fill" style="width:${(st.avg/N*100).toFixed(1)}%;background:linear-gradient(90deg,#7c3aed,#4f46e5)"></div></div><span class="bar-val">${fa(st.avg.toFixed(2))}</span></div>
+        <div class="bar-row"><span class="bar-label">کلاس</span><div class="bar-track"><div class="bar-fill" style="width:${(clsAvg/N*100).toFixed(1)}%;background:#94a3b8"></div></div><span class="bar-val">${fa(clsAvg.toFixed(2))}</span></div>
+      </div>`;
+    })()}
+  </div>`;
+}
+
+function viewStudentPolls(sid){
+  const active=state.polls.filter(p=>p.status==='active');
+  const closedWithResults=state.polls.filter(p=>p.status!=='active'&&p.resultsVisible);
+  return `
+  ${active.length?`<div class="card"><div class="card-title"><span class="dot"></span> 🟢 نظرسنجی‌های فعال</div>
+    ${active.map(p=>{
+      const myVotes=p.votes?.[sid]||[];
+      const hasVoted=myVotes.length>0;
+      return `<div style="padding:16px;border-radius:16px;background:linear-gradient(135deg,#faf5ff,#eef2ff);border:1.5px solid #ddd6fe;margin-bottom:12px">
+        <div style="font-size:14.5px;font-weight:800;color:#312e81;margin-bottom:6px">📊 ${esc(p.title)}</div>
+        ${p.description?`<div style="font-size:12px;color:#64748b;font-weight:600;margin-bottom:10px">${esc(p.description)}</div>`:''}
+        <div style="font-size:11px;color:#4338ca;font-weight:700;margin-bottom:10px">${p.multi?'(چندگزینه)':'(تک‌گزینه)'}</div>
+        ${p.options.map(o=>{const sel=myVotes.includes(o.id);
+          return `<button class="opt-btn ${sel?'selected':''}" style="margin-bottom:6px" onclick="App.votePoll('${p.id}','${o.id}')"><span class="checkbox ${!p.multi?'round':''}">${sel?'✓':''}</span><span style="flex:1">${esc(o.text)}</span></button>`;}).join('')}
+        ${hasVoted?`<div style="margin-top:10px;padding:8px 12px;background:#dcfce7;border-radius:10px;font-size:11.5px;font-weight:700;color:#15803d">✅ رأی شما ثبت شده</div>`:''}
+      </div>`;
+    }).join('')}
+  </div>`:''}
+  ${closedWithResults.length?`<div class="card"><div class="card-title"><span class="dot"></span> 📊 نتایج</div>
+    ${closedWithResults.map(p=>{
+      const total=Object.keys(p.votes).length;
+      const counts={};p.options.forEach(o=>counts[o.id]=0);
+      for(const s in p.votes){p.votes[s].forEach(oid=>{if(counts[oid]!==undefined)counts[oid]++;});}
+      const myVotes=p.votes?.[sid]||[];
+      return `<div style="padding:14px;border-radius:14px;background:#f8fafc;border:1px solid var(--line);margin-bottom:12px">
+        <div style="font-size:13.5px;font-weight:800;color:#312e81;margin-bottom:6px">📊 ${esc(p.title)}</div>
+        <div style="font-size:11px;color:#64748b;font-weight:700;margin-bottom:10px">${fa(total)} رأی</div>
+        ${p.options.map(o=>{const c=counts[o.id];const pct=total?Math.round(c/total*100):0;const isMine=myVotes.includes(o.id);
+          return `<div class="bar-row" style="margin-bottom:6px"><span class="bar-label" style="min-width:130px">${isMine?'✅ ':''}${esc(o.text)}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${isMine?'linear-gradient(90deg,#16a34a,#4ade80)':'linear-gradient(90deg,#7c3aed,#4f46e5)'}"></div></div><span class="bar-val">${fa(c)} (${fa(pct)}٪)</span></div>`;}).join('')}
+      </div>`;
+    }).join('')}
+  </div>`:''}
+  ${!active.length&&!closedWithResults.length?`<div class="card empty"><span class="big">📊</span>نظرسنجی فعالی وجود ندارد</div>`:''}`;
+}
+
+function viewStudentQuizzes(sid){
+  const active=state.quizzes.filter(q=>q.status==='active');
+  const completed=state.quizzes.filter(q=>q.submissions?.[sid]?.submittedAt);
+  const activeNotSubmitted=active.filter(q=>!q.submissions?.[sid]?.submittedAt);
+  return `
+  ${activeNotSubmitted.length?`<div class="card"><div class="card-title"><span class="dot"></span> 🟢 آزمون‌های فعال</div>
+    ${activeNotSubmitted.map(q=>{
+      const maxScore=q.questions.reduce((a,qq)=>a+qq.points,0);
+      return `<div style="padding:16px;border-radius:16px;background:linear-gradient(135deg,#faf5ff,#eef2ff);border:1.5px solid #ddd6fe;margin-bottom:12px">
+        <div style="font-size:14.5px;font-weight:800;color:#312e81;margin-bottom:6px">📝 ${esc(q.title)}</div>
+        ${q.description?`<div style="font-size:12px;color:#64748b;font-weight:600;margin-bottom:10px">${esc(q.description)}</div>`:''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+          <span class="chip b">📋 ${fa(q.questions.length)} سوال</span>
+          <span class="chip">💯 ${fa(maxScore)} نمره</span>
+          <span class="chip ${q.durationMin?'y':'g'}">⏱️ ${q.durationMin?fa(q.durationMin)+' دقیقه':'بدون محدودیت'}</span>
+        </div>
+        <button class="btn btn-primary" onclick="App.startQuiz('${q.id}')">🚀 شروع آزمون</button>
+      </div>`;
+    }).join('')}
+  </div>`:''}
+  ${completed.length?`<div class="card"><div class="card-title"><span class="dot"></span> ✅ آزمون‌های شرکت‌کرده</div>
+    ${completed.map(q=>{
+      const sub=q.submissions[sid];
+      const maxScore=q.questions.reduce((a,qq)=>a+qq.points,0);
+      const total=q.questions.reduce((a,qq)=>a+(qq.type==='mcq'?(sub.answers?.[qq.id]===qq.correctOptionId?qq.points:0):(sub.manualScores?.[qq.id]||0)),0);
+      const pct=maxScore?Math.round(total/maxScore*100):0;
+      return `<div style="padding:14px;border-radius:14px;background:#f8fafc;border:1px solid var(--line);margin-bottom:12px">
+        <div style="font-size:13.5px;font-weight:800;color:#312e81;margin-bottom:6px">📝 ${esc(q.title)}</div>
+        ${q.resultsVisible?`<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="stat s3" style="min-height:80px;flex:1;padding:12px"><div class="s-val" style="font-size:20px">${fa(total.toFixed(1))}/${fa(maxScore)}</div><div class="s-lbl">نمره شما</div></div>
+          <div class="stat s2" style="min-height:80px;flex:1;padding:12px"><div class="s-val" style="font-size:20px">${fa(pct)}٪</div><div class="s-lbl">درصد</div></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:#16a34a;font-weight:700">✅ نتایج توسط معلم تأیید شده</div>`:
+        `<div style="font-size:11.5px;color:#f59e0b;font-weight:700;padding:8px;background:#fef3c7;border-radius:8px">⏳ در انتظار تأیید معلم</div>`}
+      </div>`;
+    }).join('')}
+  </div>`:''}
+  ${!activeNotSubmitted.length&&!completed.length?`<div class="card empty"><span class="big">📝</span>آزمونی وجود ندارد</div>`:''}`;
+}
+
+let quizTimerInterval=null;
+function viewQuizTaking(){
+  const q=state.quizzes.find(x=>x.id===ui.currentQuizId);
+  if(!q){ui.tab='s-quizzes';setTimeout(()=>{renderTabs();renderView();},100);return '<div class="card empty">آزمون یافت نشد</div>';}
+  const sub=q.submissions?.[session.sid];
+  if(!sub||sub.submittedAt){ui.tab='s-quizzes';setTimeout(()=>{renderTabs();renderView();},100);return '<div class="card empty">شما قبلاً شرکت کرده‌اید</div>';}
+  const maxScore=q.questions.reduce((a,qq)=>a+qq.points,0);
+  setTimeout(()=>startQuizTimer(),100);
+  return `
+  <div style="position:sticky;top:0;z-index:50;background:#fff;padding:12px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="flex:1;min-width:150px">
+      <div style="font-size:15px;font-weight:800;color:#312e81">📝 ${esc(q.title)}</div>
+      <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:3px">${fa(q.questions.length)} سوال • ${fa(maxScore)} نمره</div>
+    </div>
+    ${q.durationMin?`<div id="quizTimer" class="quiz-timer-badge">⏱️ --:--</div>`:''}
+    <button class="btn btn-ok" onclick="if(confirm('آزمون ارسال شود؟'))App.submitQuiz(false)">✅ ارسال آزمون</button>
+  </div>
+  ${q.questions.map((qq,i)=>{
+    const val=sub.answers?.[qq.id];
+    return `<div class="question-card">
+      <div class="q-head">
+        <span class="q-num">${fa(i+1)}</span>
+        <span style="flex:1">${esc(qq.text)}</span>
+        <span class="q-badge ${qq.type==='mcq'?'mcq':'desc'}">${qq.type==='mcq'?'تستی':'تشریحی'}</span>
+        <span class="chip">${fa(qq.points)} نمره</span>
+      </div>
+      ${qq.type==='mcq'?
+        `<div style="display:flex;flex-direction:column;gap:6px">
+          ${(qq.options||[]).map(o=>`<button class="opt-btn ${val===o.id?'selected':''}" onclick="App.setQuizAnswer('${q.id}','${qq.id}','${o.id}');this.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected')">
+            <span class="checkbox round">${val===o.id?'●':''}</span>
+            <span style="flex:1">${esc(o.text)}</span>
+          </button>`).join('')}
+        </div>`:
+        `<textarea class="answer-input" placeholder="پاسخ خود را بنویسید..." onchange="App.setQuizAnswer('${q.id}','${qq.id}',this.value)">${esc(val||'')}</textarea>`}
+    </div>`;
+  }).join('')}
+  <div class="card"><div class="row"><button class="btn btn-ok" style="flex:1" onclick="if(confirm('آزمون ارسال شود؟'))App.submitQuiz(false)">✅ ارسال نهایی</button></div></div>`;
+}
+function startQuizTimer(){
+  clearInterval(quizTimerInterval);
+  quizTimerInterval=setInterval(()=>{
+    if(ui.tab!=='s-quiz-taking'){clearInterval(quizTimerInterval);return;}
+    const q=state.quizzes.find(x=>x.id===ui.currentQuizId);
+    if(!q){clearInterval(quizTimerInterval);return;}
+    const sub=q.submissions?.[session.sid];
+    if(!sub||sub.submittedAt){clearInterval(quizTimerInterval);return;}
+    if(!q.durationMin)return;
+    const elapsed=(Date.now()-new Date(sub.startedAt).getTime())/1000;
+    const remaining=q.durationMin*60-elapsed;
+    const el=document.getElementById('quizTimer');
+    if(!el)return;
+    if(remaining<=0){el.textContent='⏰ زمان تمام';el.className='quiz-timer-badge danger';App.submitQuiz(true);clearInterval(quizTimerInterval);return;}
+    const m=Math.floor(remaining/60);const s=Math.floor(remaining%60);
+    el.textContent=`⏱️ ${fa(String(m).padStart(2,'0'))}:${fa(String(s).padStart(2,'0'))}`;
+    el.className='quiz-timer-badge '+(remaining<60?'danger':remaining<300?'warn':'');
+  },1000);
+}
+
+function viewStudentDiscipline(sid){
+  const st=studentStats(sid);
+  const recs=[...st.recs].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  return `
+  <div class="card"><div class="card-title"><span class="dot"></span> ⭐ امتیاز انضباط</div>
+    <div class="row" style="gap:14px">
+      <div class="stat s3" style="flex:1;min-height:100px"><div class="s-ico">⭐</div><div class="s-val">${fa(st.pts)}</div><div class="s-lbl">مجموع</div></div>
+      <div class="stat s2" style="flex:1;min-height:100px"><div class="s-ico">📋</div><div class="s-val">${fa(recs.length)}</div><div class="s-lbl">موارد</div></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title"><span class="dot"></span> 📋 تاریخچه</div>
+    ${recs.length?`<table class="tbl"><thead><tr><th>#</th><th>امتیاز</th><th>علت</th><th>تاریخ</th></tr></thead><tbody>
+      ${recs.map((r,i)=>`<tr><td>${fa(i+1)}</td><td style="font-weight:800;color:${r.points>=0?'#16a34a':'#ef4444'}">${r.points>=0?'+':''}${fa(r.points)}</td><td style="text-align:right">${esc(r.reason||'—')}</td><td style="font-size:11px">${r.date?isoToShortJalali(r.date):'—'}</td></tr>`).join('')}
+    </tbody></table>`:`<div class="empty">موردی نیست</div>`}
+  </div>`;
+}
+
+function viewStudentGroup(sid){
+  const g=getStudentGroup(sid);
+  if(!g)return `<div class="card empty"><span class="big">👥</span>شما در هیچ گروهی عضو نیستید</div>`;
+  // Student branch: use aggregate from server
+  if(state.group&&state.group.aggregate){
+    const agg=state.group.aggregate;
+    const lv=levelFromScore(agg.avgScore);
+    return `
+    <div class="group-overview">
+      <div class="gbar" style="background:linear-gradient(90deg,${g.color},${g.color}77)"></div>
+      <h3>🎨 ${esc(g.name)}</h3>
+      <div class="row">
+        <span class="chip ${levelChipClass(agg.avgScore)}">${lv?lv.icon+' '+esc(lv.label):'—'}</span>
+        <span class="chip b">رتبه ${fa(g.rank)} از ${fa(g.totalGroups)}</span>
+      </div>
+      <div class="g-stats">
+        <div class="g-stat"><div class="v">${fa(agg.memberCount)}</div><div class="l">اعضا</div></div>
+        <div class="g-stat"><div class="v">${fa(agg.avgScore.toFixed(2))}</div><div class="l">میانگین</div></div>
+        <div class="g-stat"><div class="v">${fa(agg.attRate)}٪</div><div class="l">حضور</div></div>
+        <div class="g-stat"><div class="v">${fa(agg.pts)}</div><div class="l">انضباط</div></div>
+      </div>
+      <div style="margin-top:14px;font-size:11.5px;color:#64748b;font-weight:600;line-height:1.9">ℹ️ شما فقط وضعیت کلی گروه خود را می‌بینید. جزئیات نمرات سایر اعضا محرمانه است.</div>
+    </div>`;
+  }
+  return `<div class="card empty"><span class="big">👥</span>اطلاعات گروه در دسترس نیست</div>`;
+}
+
+function viewStudentNews(){
+  const news=[...state.news].sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||(b.date||'').localeCompare(a.date||''));
+  return `<div class="card"><div class="card-title"><span class="dot"></span> 📢 اطلاعیه‌ها</div>
+    ${news.length?news.map(n=>`<div class="news-item"><div class="nt">${n.pinned?'📌 ':''}${esc(n.title)}</div><div class="nd">${esc(n.body)}</div><div class="ndate">📅 ${n.date?isoToJalaliLong(n.date):'—'}</div></div>`).join(''):`<div class="empty">اطلاعیه‌ای نیست</div>`}
+  </div>`;
+}
+
+/* ==================== CHART ==================== */
+function renderProgressChart(sid,assessList,{showClass=true,height=220}={}){
+  const{points,classAvgPoints,N}=getStudentProgress(sid,assessList);
+  if(!points.length)return `<div class="chart-empty">نموداری برای نمایش نیست</div>`;
+  const W=600,H=height;const padL=52,padR=20,padT=26,padB=44;
+  const innerW=W-padL-padR,innerH=H-padT-padB;
+  const n=points.length;
+  const xFor=i=>n===1?padL+innerW/2:padL+(i/(n-1))*innerW;
+  const yFor=v=>padT+innerH-(v/N)*innerH;
+  const lineD=points.map((p,i)=>`${i?'L':'M'}${xFor(i).toFixed(1)},${yFor(p.value).toFixed(1)}`).join(' ');
+  const areaD=lineD+` L${xFor(n-1).toFixed(1)},${(padT+innerH).toFixed(1)} L${xFor(0).toFixed(1)},${(padT+innerH).toFixed(1)} Z`;
+  let classLine='';
+  if(showClass&&classAvgPoints.length===n&&n>1){classLine=classAvgPoints.map((p,i)=>`${i?'L':'M'}${xFor(i).toFixed(1)},${yFor(p.value).toFixed(1)}`).join(' ');}
+  const gridLines=[];
+  for(let k=0;k<=N;k++){
+    const y=yFor(k);
+    gridLines.push(`<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,4"/>`);
+    const level=state.levels[N-k];
+    if(level)gridLines.push(`<text x="${padL-6}" y="${(y+4).toFixed(1)}" font-size="10" font-weight="700" fill="${level.color}" text-anchor="end">${esc(level.label)}</text>`);
+  }
+  const dots=points.map((p,i)=>{
+    const lv=levelFromScore(p.value);
+    const color=lv?lv.color:'#7c3aed';
+    return `<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(p.value).toFixed(1)}" r="5.5" fill="#fff" stroke="${color}" stroke-width="3"/>`;
+  }).join('');
+  const valueLabels=points.map((p,i)=>`<text x="${xFor(i).toFixed(1)}" y="${(yFor(p.value)-11).toFixed(1)}" font-size="10.5" font-weight="800" fill="#4c1d95" text-anchor="middle">${fa(p.value.toFixed(1))}</text>`).join('');
+  const xLabels=points.map((p,i)=>`<text x="${xFor(i).toFixed(1)}" y="${H-14}" font-size="9.5" font-weight="700" fill="#64748b" text-anchor="middle">${p.date?isoToShortJalali(p.date):''}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg">
+    <defs><linearGradient id="areaGrad-${sid}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity=".35"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${gridLines.join('')}
+    <path d="${areaD}" fill="url(#areaGrad-${sid})"/>
+    ${classLine?`<path d="${classLine}" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,5" opacity=".8"/>`:''}
+    <path d="${lineD}" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}${valueLabels}${xLabels}
+  </svg>`;
+}
+
+function analysisBoxHTML(sid,assessList){
+  const an=analyzeStudent(sid,assessList);
+  const{st,trend,strengths,weaknesses,attLow,discLow,recom,diffFromClass,N}=an;
+  let mood='info';
+  if(st.cnt===0)mood='info';
+  else if(st.avg>=N-1&&!attLow&&!discLow)mood='good';
+  else if(st.avg<2||attLow||discLow)mood='bad';
+  else mood='warn';
+  const trendMap={
+    up:{icon:'📈',cls:'g',text:'روند رو به رشد'},
+    down:{icon:'📉',cls:'r',text:'روند نزولی'},
+    stable:{icon:'➡️',cls:'y',text:'روند پایدار'},
+    null:{icon:'—',cls:'',text:'داده کافی نیست'}
+  };
+  const t=trendMap[trend]||trendMap[null];
+  const diffCls=diffFromClass>0.3?'g':diffFromClass<-0.3?'r':'y';
+  const diffText=diffFromClass>0.3?'بالاتر از میانگین':diffFromClass<-0.3?'پایین‌تر از میانگین':'در سطح میانگین';
+  return `<div class="analysis-box ${mood}">
+    <div class="an-title">🔍 تحلیل وضعیت تحصیلی</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="chip ${t.cls}">${t.icon} ${t.text}</span>
+      <span class="chip ${diffCls}">${diffText}</span>
+      <span class="chip ${st.attRate>=90?'g':st.attRate>=70?'y':'r'}">✅ حضور ${fa(st.attRate)}٪</span>
+      <span class="chip ${st.pts>=0?'g':'r'}">⭐ انضباط ${fa(st.pts)}</span>
+    </div>
+    ${strengths.length?`<ul>${strengths.slice(0,3).map(s=>`<li><b>نقطه قوت:</b> ${esc(s.sub)} — شما ${fa(s.myAvg.toFixed(2))} در برابر کلاس ${fa(s.clsAvg.toFixed(2))}</li>`).join('')}</ul>`:''}
+    ${weaknesses.length?`<ul>${weaknesses.slice(0,3).map(w=>`<li><b>نیاز به تقویت:</b> ${esc(w.sub)} — شما ${fa(w.myAvg.toFixed(2))} در برابر کلاس ${fa(w.clsAvg.toFixed(2))}</li>`).join('')}</ul>`:''}
+    <div class="recom"><b>💡 مشاوره:</b><br>${recom.map(r=>`• ${r}`).join('<br>')}</div>
+  </div>`;
+}
+
+/* ==================== WATERMARK / ANTI-SCREENSHOT ==================== */
+function updateWatermark(){
+  const wm=$('#watermark');
+  if(!state?.antiScreenshot){wm.style.display='none';return;}
+  wm.style.display='flex';
+  let text='';
+  if(session&&session.role==='student'){
+    const st=getStudent(session.sid);
+    if(st)text=`${st.name} • کد ${st.code} • محرمانه`;
+  }else if(session&&session.role==='teacher'){
+    text=`پنل مدیریت • محمدباقر کالجی`;
+  }
+  wm.dataset.text=text;
+}
+let lockTimeout;
+function lockScreen(){if(!state?.antiScreenshot)return;if(!session)return;$('#lockOverlay').classList.remove('hidden');}
+function unlockScreen(){$('#lockOverlay').classList.add('hidden');}
+function setupAntiScreenshot(){
+  if(!state?.antiScreenshot)return;
+  document.addEventListener('contextmenu',e=>{e.preventDefault();});
+  document.addEventListener('keydown',e=>{
+    const k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&['p','s','u'].includes(k)){e.preventDefault();toast('⛔ مجاز نیست','bad');return;}
+    if(e.key==='F12'){e.preventDefault();toast('⛔ Developer Tools غیرفعال','bad');return;}
+    if(e.key==='PrintScreen'||e.code==='PrintScreen'){
+      e.preventDefault();
+      try{navigator.clipboard.writeText('');}catch(err){}
+      lockScreen();toast('⛔ اسکرین‌شات غیرفعال','bad');
+      setTimeout(unlockScreen,1200);
+    }
+  });
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)lockScreen();else setTimeout(unlockScreen,200);
+  });
+  window.addEventListener('blur',()=>{clearTimeout(lockTimeout);lockTimeout=setTimeout(lockScreen,400);});
+  window.addEventListener('focus',()=>{clearTimeout(lockTimeout);setTimeout(unlockScreen,200);});
+  setInterval(()=>{if(!document.hasFocus()&&session)lockScreen();},3000);
+}
+
+/* ==================== LOGIN NEWS ==================== */
+async function loadPublicNews(){
+  try{
+    const res=await fetch(API+'/public');
+    if(!res.ok)throw new Error();
+    const data=await res.json();
+    const box=$('#loginNews');
+    if(!data.news?.length){
+      box.innerHTML=`<div class="empty" style="padding:14px">اطلاعیه‌ای ثبت نشده</div>`;
+      return;
+    }
+    box.innerHTML=data.news.slice(0,3).map(n=>`
+      <div class="news-item">
+        <div class="nt">${n.pinned?'📌 ':''}${esc(n.title)}</div>
+        <div class="nd">${esc(n.body)}</div>
+      </div>`).join('');
+  }catch(e){
+    $('#loginNews').innerHTML=`<div class="empty" style="padding:14px">در حال بارگذاری...</div>`;
+  }
+}
+
+/* ==================== BOOT ==================== */
+document.addEventListener('DOMContentLoaded', async ()=>{
+  JalaliPicker.init();
+  await loadPublicNews();
+  
+  $('#studentCode')?.addEventListener('keydown',e=>{if(e.key==='Enter')Auth.loginStudent();});
+  $('#teacherCode')?.addEventListener('keydown',e=>{if(e.key==='Enter')Auth.loginTeacher();});
+  
+  if(authToken){
+    const ok=await loadState();
+    if(ok){
+      startApp();
+      startPolling();
+      return;
+    }
+  }
+  
+  $('#loginScreen').classList.remove('hidden');
+  $('#app').classList.add('hidden');
+  setTimeout(()=>$('#studentCode')?.focus(),200);
+});
+</script>
+</body>
+</html>
