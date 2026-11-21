@@ -840,6 +840,7 @@ function applyCommand(st, cmd, session) {
   const cid = str(cmd.cid, 40);
   if (cid && st._applied.includes(cid)) return { state: st, result: { duplicate: true } };
   const T = cmd.type, sid = session.sid, D = todayISO();
+    if (cmd.subType) cmd.type = cmd.subType;
   let result = null;
   const teacher = () => { if (!isTeacher(session)) throw forb('این عملیات مخصوص معلم است.'); };
   const needRole = r => { if (st.roles?.[r] !== sid) throw forb('شما مسئول این بخش نیستید.'); };
