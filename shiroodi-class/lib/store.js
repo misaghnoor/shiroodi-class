@@ -4,6 +4,9 @@ import * as db from './db.js';
 
 const C = globalThis.ClassCore;
 
+const POLL_TYPES = ['choice', 'multi', 'yesno', 'rating', 'election'];
+const ASMT_TYPES = ['oral', 'written', 'performance', 'homework'];
+
 export async function ensureStore() {
   let row = await db.readStore();
   if (!row) {
@@ -20,11 +23,25 @@ export async function ensureStore() {
   return row;
 }
 
+/* اصلاح برخورد نام‌ها: نوع نظرسنجی/ارزشیابی نباید نام فرمان را بازنویسی کند */
+function repairCommand(cmd, draft) {
+  const c = { ...cmd };
+  if (POLL_TYPES.includes(c.type)) {
+    c.subType = c.type;
+    c.type = 'poll.create';
+  } else if (ASMT_TYPES.includes(c.type)) {
+    c.subType = c.type;
+    c.type = (draft.assessments || []).some(a => a.id === c.id) ? 'asmt.update' : 'asmt.add';
+  }
+  return c;
+}
+
 export async function mutateStore(cmd, session) {
   for (let i = 0; i < 6; i++) {
     const row = await ensureStore();
     const draft = C.clone(row.data);
-    const out = C.applyCommand(draft, cmd, session);
+    const fixed = repairCommand(cmd, draft);
+    const out = C.applyCommand(draft, fixed, session);
     const rev = await db.casStore(out.state, row.revision);
     if (rev) return { revision: rev, state: out.state, result: out.result };
   }
