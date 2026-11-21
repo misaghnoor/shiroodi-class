@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light" data-accent="teal" data-font="vazirmatn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d9488">
+<title>سامانه مدیریت کلاس | دبستان شهید شیرودی عباس‌آباد</title>
+<meta name="description" content="سامانهٔ سرورمحور مدیریت کلاس: کارنامه، تحلیل هوشمند، حضور و غیاب شمسی، آزمون زمان‌دار، دادگاه کلاسی و گزارش رسمی A4">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
+<link href="https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.css" rel="stylesheet">
+<link href="https://cdn.fontcdn.ir/Font/Persian/Anjoman/Anjoman.css" rel="stylesheet">
+<link href="https://cdn.fontcdn.ir/Font/Persian/Nazanin/Nazanin.css" rel="stylesheet">
+<link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="bg"><i></i><i></i><i></i></div>
+
+<div id="boot"><div class="bl">🎓</div><p id="bootMsg">در حال اتصال به سرور کلاس…</p></div>
+
+<section id="login" class="hidden">
+  <div class="brand" id="brand">
+    <canvas id="fx"></canvas>
+    <div class="fc" style="top:10%;left:6%;animation-delay:-2s">🌐 سرور مشترک کلاس<small>هر ثبت معلم، فوراً برای همه</small></div>
+    <div class="fc" style="bottom:14%;left:12%;animation-delay:-4.5s">🧠 تحلیل هوشمند کارنامه<small>نقاط قوت، ضعف و برنامهٔ بهبود</small></div>
+    <div class="fc" style="top:46%;left:2%;animation-delay:-1s">⚖️ دادگاه کلاسی<small>نماینده ← معلم ← قاضی ← ابلاغ</small></div>
+    <div class="bi">
+      <span class="bb">✨ نسخهٔ ۱۲ — سرورمحور و همگام‌سازی زنده</span>
+      <h1>سامانه مدیریت کلاس<br><span id="brandSchool">دبستان شهید شیرودی عباس‌آباد</span></h1>
+      <p class="bs">داده‌ها روی سرور نگهداری می‌شوند؛ هر تغییری که معلم ثبت کند بلافاصله در پنل همهٔ دانش‌آموزان دیده می‌شود — کارنامه، حضور و غیاب، آزمون، نظرسنجی و احکام کلاسی.</p>
+      <div class="bf">
+        <div style="--i:0">🔄 همگام‌سازی خودکار همهٔ دستگاه‌ها با سرور</div>
+        <div style="--i:1">🧠 تحلیل کارنامه با نمودار رادار، روند و شاخص ریسک</div>
+        <div style="--i:2">🗓️ تقویم شمسی در حضور و غیاب، ارزشیابی و آزمون</div>
+        <div style="--i:3">🖨️ کارنامهٔ رسمی A4 + ورود و خروج CSV</div>
+      </div>
+      <div class="bstat" id="brandStats"></div>
+      <div class="bt">معلم و روانشناس: <b>محمدباقر کالجی</b><br><span style="opacity:.75;font-size:.78rem">طراحی و توسعه: کالج مدیا</span></div>
+    </div>
+  </div>
+  <div class="lp">
+    <div class="lcard card" id="loginCard" style="padding:32px 28px">
+      <div class="llogo">🎓</div>
+      <h2>ورود به سامانه</h2>
+      <p class="lsub" id="loginSub">پایه پنجم • سال تحصیلی ۱۴۰۵-۱۴۰۶</p>
+      <div class="ltabs">
+        <button type="button" data-act="loginTab" data-role="student" class="on">👦 دانش‌آموز</button>
+        <button type="button" data-act="loginTab" data-role="teacher">👨‍🏫 معلم</button>
+      </div>
+      <form data-form="login">
+        <label class="lbl" id="codeLbl">کد اختصاصی ۶ رقمی خود را وارد کنید</label>
+        <div class="pw">
+          <input class="code" id="codeInput" type="password" inputmode="numeric" data-fa autocomplete="new-password" maxlength="12" placeholder="••••••" aria-label="کد ورود">
+          <button type="button" class="eye" id="eyeBtn" data-act="togglePass" title="نمایش/مخفی‌کردن کد">👁</button>
+        </div>
+        <div class="lerr" id="loginErr"></div>
+        <button class="btn lg" style="width:100%" id="loginBtn" type="submit">🔓 ورود به سامانه</button>
+      </form>
+      <div class="snote">🔒 کد هنگام تایپ مخفی است و اعداد فارسی نوشته می‌شوند.</div>
+      <div class="modebox" id="modeBox"></div>
+      <div class="lfoot">✨ معلم و روانشناس: <b>محمدباقر کالجی</b> • طراحی توسعه وب <b>کالج مدیا</b></div>
+    </div>
+  </div>
+</section>
+
+<div id="app" class="hidden">
+  <header id="topbar">
+    <button type="button" class="ib" id="menuBtn" data-act="menu" aria-label="منو">☰</button>
+    <div class="tbrand"><span class="av" style="width:36px;height:36px;font-size:1.1rem;border-radius:11px">🎓</span><span id="topSchool">سامانه کلاس</span></div>
+    <span id="dateChip"></span><span id="clock"></span>
+    <span id="sync"><span class="dot"></span><span id="syncTxt">متصل</span></span>
+    <div class="tsp"></div>
+    <button type="button" class="ib" data-act="search" title="جستجوی دانش‌آموز (Ctrl+K)">🔍</button>
+    <button type="button" class="ib" id="soundBtn" data-act="sound" title="صدا">🔊</button>
+    <button type="button" class="ib" id="themeBtn" data-act="theme" title="پوسته">🌙</button>
+    <div class="uchip"><div><span class="un" id="userName"></span><span class="role" id="userRole"></span></div><span class="av sm" id="userAv"></span></div>
+    <button type="button" class="ib" data-act="logout" title="خروج">🚪</button>
+  </header>
+  <div id="offline" class="hidden">⚠️ ارتباط با سرور قطع است — نمایش آخرین دادهٔ دریافتی؛ ثبت تغییرات تا بازگشت اتصال ممکن نیست.</div>
+  <div id="scrimSide" data-act="menu"></div>
+  <nav id="sidebar"></nav>
+  <main id="main"><div id="view"></div></main>
+</div>
+
+<div id="drawerWrap" class="hidden"><div class="scrim" data-act="drawerClose"></div><aside class="drawer" id="drawer"><header><h3 id="drawerTitle"></h3><button type="button" class="ib" data-act="drawerClose">✕</button></header><div class="dbody" id="drawerBody"></div></aside></div>
+<div id="modalWrap" class="hidden"><div class="scrim" data-act="modalClose"></div><div class="modal" id="modalBox"></div></div>
+<div id="pop" class="hidden"></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="shield" class="hidden"><div class="shi">🔒</div><h2>محتوا موقتاً مخفی شد</h2><p>برای حفظ امنیت اطلاعات کلاس، هنگام خروج از پنجره محتوا پنهان می‌شود. به همین پنجره بازگردید.</p></div>
+<div id="printArea"></div>
+
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
