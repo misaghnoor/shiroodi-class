@@ -1,5 +1,6 @@
-/* lib/store.js — مقدارگذاری اولیه و اعمال فرمان با تلاش مجدد */
+/* lib/store.js — مقدارگذاری اولیه، مهاجرت ماژول‌ها و اعمال فرمان با تلاش مجدد */
 import '../core.js';
+import '../homework-core.js';
 import * as db from './db.js';
 
 const C = globalThis.ClassCore;
@@ -18,20 +19,28 @@ export async function ensureStore() {
     const st = C.normalize(row.data);
     const rev = await db.casStore(st, row.revision);
     if (rev) return { data: st, revision: rev };
-    return await db.readStore();
+    row = await db.readStore();
+    if (!row) throw new Error('خواندن دیتابیس ناموفق بود.');
+  }
+  if (typeof C.hwEnsure === 'function' && C.hwEnsure(row.data)) {
+    const rev = await db.casStore(row.data, row.revision);
+    if (rev) return { data: row.data, revision: rev };
+    const again = await db.readStore();
+    if (again) return again;
   }
   return row;
 }
 
-/* اصلاح برخورد نام‌ها: نوع نظرسنجی/ارزشیابی نباید نام فرمان را بازنویسی کند */
 function repairCommand(cmd, draft) {
-  const c = { ...cmd };
-  if (POLL_TYPES.includes(c.type)) {
-    c.subType = c.type;
-    c.type = 'poll.create';
-  } else if (ASMT_TYPES.includes(c.type)) {
-    c.subType = c.type;
-    c.type = (draft.assessments || []).some(a => a.id === c.id) ? 'asmt.update' : 'asmt.add';
+  const c = Object.assign({}, cmd);
+  if (typeof c.type === 'string' && c.type.indexOf('hw.') !== 0) {
+    if (POLL_TYPES.includes(c.type)) {
+      c.subType = c.type;
+      c.type = 'poll.create';
+    } else if (ASMT_TYPES.includes(c.type)) {
+      c.subType = c.type;
+      c.type = (draft.assessments || []).some(a => a.id === c.id) ? 'asmt.update' : 'asmt.add';
+    }
   }
   return c;
 }
@@ -41,6 +50,7 @@ export async function mutateStore(cmd, session) {
     const row = await ensureStore();
     const draft = C.clone(row.data);
     const fixed = repairCommand(cmd, draft);
+    if (fixed.subType) fixed.type = fixed.type;
     const out = C.applyCommand(draft, fixed, session);
     const rev = await db.casStore(out.state, row.revision);
     if (rev) return { revision: rev, state: out.state, result: out.result };
