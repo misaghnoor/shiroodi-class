@@ -187,6 +187,21 @@ const orderedRewards = () => (shop().rewards || []).slice().sort((a, b) => (a.or
 const tierOf = b => TIERS[b.tier] || TIERS.bronze;
 const catOf = r => CATS[r.cat] || CATS.gift;
 const isLocked = (r) => !rewardActive(S(), r) || r.stock === 0;
+  function ring(pct, color, size) {
+  size = size || 62;
+  const r = (size - 9) / 2, c = 2 * Math.PI * r, dash = clamp(pct, 0, 100) / 100 * c;
+  return `<div class="donut" style="width:${size}px;height:${size}px"><svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+    <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="7"/>
+    <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${(c - dash).toFixed(1)}" transform="rotate(-90 ${size / 2} ${size / 2})"/></svg>
+    <div class="donut-c"><b style="color:${color}">${fa(Math.round(pct))}٪</b></div></div>`;
+}
+function jDateSelects(pre) {
+  const jd = jOf(UI.jdate[pre] || todayISO());
+  return `<div class="row" style="gap:6px">
+    <select class="select" data-chg="jdate" data-p="d" data-pre="${pre}" style="flex:1">${Array.from({ length: Jalali.monthLen(jd.jy, jd.jm) }, (_, i) => `<option value="${fa(i + 1)}" ${jd.jd === i + 1 ? 'selected' : ''}>${fa(i + 1)}</option>`).join('')}</select>
+    <select class="select" data-chg="jdate" data-p="m" data-pre="${pre}" style="flex:2">${JMONTHS.map((m, i) => `<option value="${fa(i + 1)}" ${jd.jm === i + 1 ? 'selected' : ''}>${m}</option>`).join('')}</select>
+    <select class="select" data-chg="jdate" data-p="y" data-pre="${pre}" style="flex:1.4">${[1404, 1405, 1406, 1407].map(y => `<option value="${fa(y)}" ${jd.jy === y ? 'selected' : ''}>${fa(y)}</option>`).join('')}</select></div>`;
+}
 
 /* ================= tiny helpers ================= */
 function pill(text, color, icon) { return `<span class="x-pill" style="--pc:${color}">${icon || ''} ${esc(text)}</span>`; }
@@ -944,7 +959,7 @@ ACT.xShopSheet = () => previewSheet('🖨️ برگهٔ فروشگاه (A4)', sh
 /* badges */
 ACT.xBTab = el => { X.badgeTab = el.dataset.tab; renderView(); Sound.play('tap'); };
 ACT.xBTier = el => { X.btier = el.dataset.v; renderView(); Sound.play('tap'); };
-ACT.xBadgeOpen = el => badgeDrawer(el.dataset.key) && openDrawer('🏅 ' + (BMAP[el.dataset.key] || {}).name, badgeDrawer(el.dataset.key));
+ACT.xBadgeOpen = el => { const b = BMAP[el.dataset.key]; if (b) openDrawer('🏅 ' + b.name, badgeDrawer(b.key)); };
 ACT.xBSync = () => {
   send('badge.sync', { force: true }, null, { sound: null }).then(r => {
     if (!r) return;
