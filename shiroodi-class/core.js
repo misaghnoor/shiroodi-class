@@ -577,7 +577,12 @@ function filterForStudent(st, sid) {
   }
   if (vis.discipline !== false) {
     out.discipline = (st.discipline || []).filter(r => r.sid === sid);
-    out.reports = (st.reports || []).filter(r => r.by === sid || (r.target === sid && r.status === 'approved'));
+    const isJudge = (st.roles || {}).judge === sid;
+    out.reports = (st.reports || []).filter(r =>
+      r.by === sid ||
+      (r.target === sid && r.status === 'approved') ||
+      (isJudge && (r.status === 'to_judge' || r.status === 'pending_final' || (r.verdict && r.verdict.by === sid)))
+    );
   }
   out.inspections = (st.inspections || []).filter(x => x.by === sid);
   out.leaderLogs = (st.leaderLogs || []).filter(l => l.leader === sid);
