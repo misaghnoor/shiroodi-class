@@ -2038,6 +2038,9 @@ async function enterApp(sess) {
   $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
   stopFX(); applyAppearance();
   if (!isT()) resumeAttempt();
+    else if (ST.roles?.autoRotate && ST.roles.termEnds && isoToDate(ST.roles.termEnds) < isoToDate(todayISO())) {
+    await send('role.rotate', { via: 'چرخش خودکار پایان دوره' }, null, { msg: '🔄 دورهٔ مسئولیت‌ها تمام شد؛ سمت‌ها چرخید', sound: 'win' });
+  }
   render(false); startTicker(); startPoller();
   syncStatus('', Net.mode === 'server' ? 'همگام با سرور' : 'نمایشی همگام');
   toast(`خوش آمدید، ${sess.name} 🌟`, 'ok');
