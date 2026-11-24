@@ -196,4 +196,18 @@ ACT.seLocalClear = () => confirmDlg({
     location.reload();
   }
 });
+  /* ---------- چیدمان آجری: حذف فاصلهٔ عمودی بین بلوک‌ها ---------- */
+(function addMasonryCSS(){
+  const m = document.createElement('style');
+  m.id = 'seMasonry';
+  m.textContent = `
+  #view .grid.g2.se-unified{display:block !important;column-count:2;column-gap:16px}
+  #view .grid.g2.se-unified > .card{
+    break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;
+    margin:0 0 16px;display:block;width:100%}
+  @media (max-width:960px){#view .grid.g2.se-unified{column-count:1}}
+  @media (max-width:640px){#view .grid.g2.se-unified{column-count:1}}
+  `;
+  document.head.appendChild(m);
+})();
 })();
