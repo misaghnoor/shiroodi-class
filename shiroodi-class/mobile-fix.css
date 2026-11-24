@@ -1,0 +1,70 @@
+/* mobile-fix.css — وصلهٔ واکنش‌گرایی برای ارزشیابی، تحلیل و گزارش */
+@media (max-width: 760px) {
+
+  /* ---- ارزشیابی: کارت‌ها تک‌ستونه ---- */
+  .glayout { grid-template-columns: 1fr !important; }
+  .glayout > * { min-width: 0 !important; }
+
+  /* ---- جدول نمرات: اسکرول افقی داخل خودش، نه کل صفحه ---- */
+  .tw { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 14px; }
+  .tw .tbl { min-width: 560px; font-size: .82rem; }
+  .tw .tbl th, .tw .tbl td { padding: 7px 6px; white-space: nowrap; }
+
+  /* ---- تحلیل هوشمند: نمودار و رادار ---- */
+  .grid.g2 { grid-template-columns: 1fr !important; gap: 12px; }
+  .aihero { padding: 16px !important; }
+  .aihero h2 { font-size: 1.1rem !important; }
+
+  /* ---- رادار چارت کوچکتر ---- */
+  .radar-wrap, svg.radar { max-width: 100% !important; height: auto !important; }
+
+  /* ---- کارت‌های stat ---- */
+  .grid.g4 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+  .card.stat { padding: 12px; }
+  .card.stat .si { width: 40px; height: 40px; font-size: 1.1rem; }
+  .card.stat b { font-size: 1.3rem; }
+  .card.stat span { font-size: .72rem; }
+
+  /* ---- نوار فیلترها ---- */
+  .toolbar { flex-wrap: wrap; gap: 6px; }
+  .toolbar .input, .toolbar .select { width: 100% !important; max-width: 100% !important; }
+
+  /* ---- برگهٔ گزارش دانش‌آموز ---- */
+  .report-hero { padding: 16px !important; flex-direction: column; gap: 12px; }
+  .report-hero > * { width: 100%; }
+  .report-sections { grid-template-columns: 1fr !important; }
+
+  /* ---- نمرات هر درس ---- */
+  .subject-row { flex-direction: column; align-items: stretch !important; gap: 6px; }
+  .subject-row .row { width: 100%; justify-content: space-between; }
+
+  /* ---- فیلتر تاریخ و انتخاب دانش‌آموز ---- */
+  .seg { flex-wrap: wrap; }
+  .seg button { flex: 1 1 45%; min-width: 0; font-size: .78rem; padding: 8px; }
+
+  /* ---- نمودار خطی ---- */
+  .line-chart, .bars { padding: 8px; }
+  .bars .b { font-size: .75rem; }
+  .bars .b > span:first-child { max-width: 45%; }
+
+  /* ---- هدر بالای صفحه ---- */
+  .spread { flex-direction: column; align-items: stretch !important; gap: 10px; }
+  .spread > .row { flex-wrap: wrap; }
+
+  /* ---- کشوها در موبایل تمام‌عرض ---- */
+  .drawer { width: 100vw !important; max-width: 100vw !important; }
+
+  /* ---- ریزه‌کاری: جلوگیری از زوم ناخواسته روی input ---- */
+  input, select, textarea { font-size: 16px !important; }
+
+  /* ---- جدول حضور و غیاب ---- */
+  .att-grid { grid-template-columns: repeat(7, minmax(28px, 1fr)) !important; font-size: .72rem; }
+  .att-grid .cell { padding: 4px 2px; }
+}
+
+@media (max-width: 420px) {
+  .grid.g4 { grid-template-columns: 1fr !important; }
+  .card.stat { flex-direction: row; align-items: center; gap: 10px; }
+  .x-wallet, .gr-lvl { padding: 14px; }
+  .x-wallet b, .gr-lvl b { font-size: 1.4rem !important; }
+}
