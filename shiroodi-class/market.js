@@ -1,13 +1,13 @@
-/* market.js — رابط کاربری بورس دانش و اهداف همکاری */
+/* market.js — بورس دانش، بیمهٔ سهام و اهداف همکاری */
 (function () {
 'use strict';
 const C = globalThis.ClassCore;
 if (!C || !C.EC_METRICS || typeof navItems !== 'function') return;
 
-const MET = C.EC_METRICS, price = C.ecPrice, chg = C.ecChange;
+const MET = C.EC_METRICS, price = C.ecPrice, chg = C.ecChange, INS = C.EC_INS_STATUS;
 
 const CSS = `
-.mk{--up:#16a34a;--down:#e11d48;--gold:#d97706;--ink2:#2b2418;--paper:#fdf6e8}
+.mk{--up:#16a34a;--down:#e11d48;--gold:#d97706;--shield:#0ea5e9;--ink2:#2b2418;--paper:#fdf6e8}
 [data-theme=dark] .mk{--paper:#141d33;--ink2:#e9eef7}
 .mk-hero{position:relative;overflow:hidden;border-radius:24px;padding:24px 26px;margin-bottom:18px;border:1.5px solid color-mix(in srgb,var(--gold) 30%,var(--line));
 background:radial-gradient(120% 140% at 88% -10%,color-mix(in srgb,var(--gold) 26%,transparent),transparent 55%),radial-gradient(90% 120% at 8% 110%,color-mix(in srgb,#1d4ed8 20%,transparent),transparent 60%),linear-gradient(135deg,color-mix(in srgb,var(--gold) 12%,var(--paper)),color-mix(in srgb,#1d4ed8 10%,var(--paper)));box-shadow:var(--shadow)}
@@ -26,7 +26,7 @@ background-image:linear-gradient(transparent 95%,color-mix(in srgb,var(--gold) 4
 .mk-chip .up{color:#86efac}.mk-chip .dn{color:#fca5a5}
 .mk-price{font-family:var(--display);font-size:2.6rem;font-weight:400;line-height:1.1}
 .mk-up{color:var(--up);font-weight:800}.mk-down{color:var(--down);font-weight:800}
-.mk-box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.mk-box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);min-width:0}
 .mk-step{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;background:var(--overlay)}
 .mk-step button{border:none;background:var(--surface2);width:38px;height:40px;font-size:1.1rem;font-weight:800;color:var(--ink)}
 .mk-step button:hover{background:color-mix(in srgb,var(--gold) 16%,var(--surface))}
@@ -47,21 +47,42 @@ background-image:linear-gradient(transparent 95%,color-mix(in srgb,var(--gold) 4
 .mk-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .mk-row:last-child{border:none}
 .mk-scroll{max-height:56vh;overflow:auto;scrollbar-width:thin}
+.mk-pol{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:15px 16px;box-shadow:var(--shadow);overflow:hidden}
+.mk-pol::before{content:'';position:absolute;top:0;bottom:0;right:0;width:5px;background:var(--sc,var(--shield))}
+.mk-pol .stamp{position:absolute;left:10px;top:8px;transform:rotate(-9deg);font-family:var(--display);font-size:.95rem;color:var(--sc);border:2.5px double var(--sc);border-radius:8px;padding:2px 10px;opacity:.85}
+.mk-quote{border:1.5px solid color-mix(in srgb,var(--shield) 40%,var(--line));background:color-mix(in srgb,var(--shield) 7%,var(--surface));border-radius:16px;padding:14px}
+.mk-quote .qr{display:flex;justify-content:space-between;gap:10px;font-size:.82rem;padding:4px 0;border-bottom:1px dashed color-mix(in srgb,var(--shield) 30%,var(--line))}
+.mk-quote .qr:last-child{border:none}
+.mk-fund{background:linear-gradient(135deg,#0369a1,#0ea5e9 55%,#38bdf8);color:#fff;border-radius:20px;padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 18px 40px -18px rgba(3,105,161,.7)}
+.mk-fund::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.12) 0 2px,transparent 2px 14px)}
+.mk-fund>*{position:relative;z-index:2}
+.mk-fund b{font-family:var(--display);font-weight:400}
+@media (max-width:960px){.mk .grid.g2,.mk-grid2{grid-template-columns:1fr !important;gap:12px}}
 @media (max-width:760px){
-.mk-hero{padding:18px 16px}.mk-hero h1{font-size:1.45rem}
-.mk-price{font-size:2rem}
-.mk-grid2{grid-template-columns:1fr !important}
-.mk-step button{width:34px;height:36px}
+.mk-hero{padding:16px 14px}.mk-hero .spread{flex-direction:column;align-items:stretch}.mk-hero h1{font-size:1.4rem}.mk-hero p{font-size:.82rem}
+.mk-quick .q{padding:6px 10px;font-size:.74rem}.mk-quick .q b{font-size:1rem}
+.mk-price{font-size:1.9rem}.mk-chip{padding:7px 10px;font-size:.76rem}
+.mk-box{padding:13px 12px}.mk-box svg{min-width:320px !important}
+.mk-box [dir="ltr"]{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mk-step button{width:34px;height:36px}.mk-step b{min-width:44px;font-size:1.05rem}
+.mk-row{padding:8px 6px;gap:8px}.mk-edu{padding:12px 10px}.mk-edu p{font-size:.76rem}
+.mk-mission{padding:13px 12px}.mk-rank b{font-size:.76rem}
+.mk-pol .stamp{position:static;display:inline-block;transform:rotate(-3deg);margin-bottom:6px}
+#mkBody .row .btn{white-space:normal;flex:1 1 46%;min-width:0;font-size:.8rem}
+.mk .tw{max-width:100%}
 }
+@media (max-width:420px){.mk-chips{gap:6px}.mk-chip{font-size:.7rem;padding:6px 8px}.mk-price{font-size:1.6rem}.mk-box svg{min-width:280px !important}#mkBody .row .btn{flex:1 1 100%}}
 `;
-const stl = document.createElement('style'); stl.id = 'mkStyles'; stl.textContent = CSS; document.head.appendChild(stl);
+const stl = document.createElement('style'); stl.id = 'mkStyles2'; if (!document.getElementById('mkStyles2')) document.head.appendChild(stl);
 
-const M = { tab: 'market', asset: '', qty: 1, mScope: 'class' };
-const ec = () => S().econ || { assets: [], missions: [], settings: {} };
+const M = { tab: 'market', asset: '', qty: 1, mScope: 'class', ins: { assetId: '', qty: 1, days: 5, ratio: 75 } };
+const ec = () => S().econ || { assets: [], missions: [], policies: [], fund: {}, settings: {} };
 const myAsset = () => { const a = ec().assets || []; return a.find(x => x.id === M.asset) || a[0]; };
 const pill = (t, c, i) => `<span class="mk-pill" style="--pc:${c}">${i || ''} ${esc(t)}</span>`;
+const daysLeft = p => { const t = todayISO(); if (t > p.endAt) return 0; return schoolLen(t, p.endAt); };
+function schoolLen(a, b) { let n = 0, d = isoToDate(a); const e = isoToDate(b); while (d <= e) { if (C.wdIdx(dateToISO(d)) <= 4) n++; d.setDate(d.getDate() + 1); } return n; }
 
-/* ---------- candlestick chart ---------- */
+/* ---------- candlestick ---------- */
 function candleChart(series) {
   const s = (series || []).slice(-40);
   if (!s.length) return empty('📈', 'هنوز کندلی نیست', 'با گذشت روزهای مدرسه، کندل‌ها ساخته می‌شوند.');
@@ -83,12 +104,12 @@ function candleChart(series) {
   }).join('');
   const last = s[s.length - 1];
   const labs = [0, Math.floor(s.length / 2), s.length - 1].map(i => `<text x="${X(i)}" y="${h - 4}" font-size="10" fill="var(--muted)" text-anchor="middle">${jShort(s[i].d)}</text>`).join('');
-  return `<div dir="ltr" style="overflow-x:auto"><svg viewBox="0 0 ${w} ${h}" style="width:100%;min-width:520px;height:auto;display:block">${grid}${vols}${candles}
+  return `<div dir="ltr" style="overflow-x:auto"><svg viewBox="0 0 ${w} ${h}" style="width:100%;min-width:320px;height:auto;display:block">${grid}${vols}${candles}
     <line x1="${p}" x2="${w - p}" y1="${Y(last.c)}" y2="${Y(last.c)}" stroke="var(--acc)" stroke-dasharray="6 4" stroke-width="1.2"/>
     <text x="${w - p}" y="${Y(last.c) - 5}" font-size="10.5" font-weight="800" fill="var(--acc)" text-anchor="end">${faNum(last.c)}</text>${labs}</svg></div>`;
 }
 function eduCard() {
-  return `<div class="mk-edu"><div class="spread mb"><b class="small">📚 کندل یعنی چه؟ (درسِ بورس در یک نگاه)</b><span class="chip">ویژهٔ کلاس</span></div>
+  return `<div class="mk-edu"><div class="spread mb"><b class="small">📚 کندل یعنی چه؟</b><span class="chip">ویژهٔ کلاس</span></div>
   <div dir="ltr" style="text-align:center"><svg viewBox="0 0 300 120" style="max-width:300px;width:100%">
     <line x1="80" y1="10" x2="80" y2="110" stroke="#16a34a" stroke-width="2"/><rect x="66" y="35" width="28" height="45" fill="#16a34a" rx="3"/>
     <line x1="210" y1="10" x2="210" y2="110" stroke="#e11d48" stroke-width="2"/><rect x="196" y="30" width="28" height="50" fill="#e11d48" rx="3"/>
@@ -97,7 +118,17 @@ function eduCard() {
     <text x="100" y="80" font-size="10" fill="#16a34a">کف (کمترین قیمت روز)</text>
     <text x="180" y="105" font-size="10" fill="#e11d48" text-anchor="end">قرمز یعنی بسته پایین‌تر از باز است</text>
   </svg></div>
-  <p class="small muted" style="line-height:2">در بورس دانش، قیمت هر سهم از <b>کار واقعی کلاس</b> ساخته می‌شود: روزی که میانگین نمرات یا تکالیف آن درس خوب باشد، سهم بالا می‌رود. یعنی ارزشِ واقعی = تلاشِ واقعی. معامله‌گر خوب کسی است که صبر می‌کند، همهٔ سکه‌اش را یک‌جا نمی‌خرد و دفترچهٔ دلیلِ خرید و فروش می‌نویسد.</p></div>`;
+  <p class="small muted" style="line-height:2">قیمت هر سهم از <b>کار واقعی کلاس</b> ساخته می‌شود: روزی که نمرات یا تکالیف آن درس خوب باشد، سهم بالا می‌رود. معامله‌گر خوب صبر می‌کند، همهٔ سکه‌اش را یک‌جا نمی‌خرد و دلیل هر معامله را می‌نویسد.</p></div>`;
+}
+function insEduCard() {
+  return `<div class="mk-edu" style="border-color:color-mix(in srgb,var(--shield) 45%,var(--line));background:color-mix(in srgb,var(--shield) 6%,var(--surface))">
+  <div class="spread mb"><b class="small">🛡️ بیمه یعنی چه؟ (سواد مالی در یک کارت)</b><span class="chip" style="color:var(--shield)">ویژهٔ کلاس</span></div>
+  <p class="small muted" style="line-height:2">
+  <b>بیمه‌نامه:</b> قولی است که می‌گوید «اگر قیمت سهمم پایین آمد، ضررم جبران شود».<br>
+  <b>حق بیمه:</b> پولی که امروز می‌دهی تا آن قول را بگیری — هرچه سهم <b>پرنوسان‌تر</b> یا پوشش <b>طولانی‌تر</b> باشد، گران‌تر است.<br>
+  <b>خسارت:</b> اگر تا پایان پوشش قیمت افت کرد، به اندازهٔ افت × درصد پوشش سکه برمی‌گردد (تا سقف مشخص).<br>
+  <b>نکتهٔ طلایی:</b> اگر قیمت بالا برود، حق بیمه سوخت می‌شود — دقیقاً مثل بیمهٔ واقعی خانه و ماشین! بیمه برای <b>آرامش</b> است، نه سود.<br>
+  <b>چرا حق بیمه این عدد شد؟</b> سیستم نوسان واقعی همان سهم را از کندل‌ها می‌خواند و «میانگین ضرر احتمالی» را حساب می‌کند، بعد یک حاشیهٔ امنیت اضافه می‌کند تا صندوق بیمهٔ کلاس ورشکست نشود.</p></div>`;
 }
 
 /* ---------- market tab ---------- */
@@ -105,18 +136,19 @@ function marketTab() {
   const st = S(), e = ec(), a = myAsset();
   if (!a) return `<div class="mk-box">${empty('📈', 'سهامی تعریف نشده', 'معلم از تب قواعد سهام جدید بسازد.')}</div>`;
   const p = price(a), ch = chg(a), last = (a.series || [])[a.series.length - 1];
-  const pf = isT() ? null : (S().econ ? C.ecPortfolio(st, SESS.sid) : null);
+  const pf = isT() ? null : C.ecPortfolio(st, SESS.sid);
   const my = pf ? (pf.items.find(x => x.id === a.id) || null) : null;
   const w = isT() ? null : (S().econ.wallet != null ? S().econ.wallet : C.ecWallet(st, SESS.sid).balance);
   const fee = e.settings.tradeFee || 0;
   const est = Math.round(M.qty * p * (1 + fee / 100));
+  const insQ = !isT() && my ? C.ecActivePolicies(st, SESS.sid).filter(x => x.assetId === a.id).reduce((s2, x) => s2 + x.qty, 0) : 0;
   return `<div class="mk-chips mb">${(e.assets || []).filter(x => !x.paused).map(x => { const c2 = chg(x); return `<button type="button" class="mk-chip ${x.id === a.id ? 'on' : ''}" style="--ac:${x.color}" data-act="mkPick" data-id="${x.id}">${x.icon} ${esc(x.symbol)} <span class="pr">${faNum(price(x), 0)}</span> <span class="${c2 >= 0 ? 'up' : 'dn'}">${c2 >= 0 ? '▲' : '▼'}${faNum(Math.abs(c2), 1)}٪</span></button>`; }).join('')}</div>
   <div class="grid g2 mk-grid2" style="align-items:start">
     <div class="mk-box"><div class="spread mb"><div class="row" style="gap:10px"><span class="gr-ico" style="--kc:${a.color}">${a.icon}</span>
       <div><b style="font-size:1.05rem">${esc(a.name)}</b><div class="small muted">${a.subject === '@help' ? 'سنجه: همکاری و احوال‌پرسی کلاس' : 'سنجه: عملکرد کلاس در درس ' + esc(a.subject)}</div></div></div>
       <div style="text-align:left"><div class="mk-price" style="color:${a.color}">${faNum(p)}</div><div class="${ch >= 0 ? 'mk-up' : 'mk-down'}" style="font-size:.85rem">${ch >= 0 ? '▲' : '▼'} ${faNum(Math.abs(ch), 1)}٪ نسبت به دیروز</div></div></div>
       ${candleChart(a.series)}
-      ${last ? `<div class="row mt" style="gap:6px">${pill(last.reason || '➖ روز معمولی', '#7b7261')}<span class="chip">حجم امروز: ${fa(last.v)}</span><span class="chip">سقف ${faNum(last.h)} / کف ${faNum(last.l)}</span></div>` : ''}</div>
+      ${last ? `<div class="row mt" style="gap:6px">${pill(last.reason || '➖ روز معمولی', '#7b7261')}<span class="chip">حجم امروز: ${fa(last.v)}</span><span class="chip">نوسان روزانه: ${faNum(C.ecVol(a).vol * 100, 1)}٪</span></div>` : ''}</div>
     <div>
       ${!isT() ? `<div class="mk-box mb"><div class="spread"><div><span class="small muted">کیف پول من</span><div class="mk-price" style="font-size:1.8rem;color:var(--gold)">🪙 ${fa(w || 0)}</div></div>
         <div style="text-align:left"><span class="small muted">ارزش سهام من</span><div class="mk-price" style="font-size:1.8rem;color:${a.color}">${fa(pf ? pf.value : 0)}</div></div></div>
@@ -126,19 +158,106 @@ function marketTab() {
         <div class="row mt" style="gap:6px"><span class="chip">قیمت هر سهم: ${faNum(p)}</span><span class="chip">کارمزد: ${fa(fee)}٪</span><span class="chip acc">هزینهٔ تقریبی: ${fa(est)}</span></div>
         <div class="row mt"><button type="button" class="btn ok" style="flex:1" data-act="mkBuy" data-id="${a.id}">📈 خرید ${fa(M.qty)} سهم</button>
           <button type="button" class="btn danger" style="flex:1" data-act="mkSell" data-id="${a.id}" ${my && my.qty ? '' : 'disabled'}>📉 فروش ${fa(my ? Math.min(M.qty, my.qty) : 0)} سهم</button></div>
-        ${my ? `<div class="gr-note mt">دارایی فعلی: ${fa(my.qty)} سهم • میانگین خرید ${faNum(my.qty ? my.cost / my.qty : 0)} • سود این سهم: <b class="${my.pnl >= 0 ? 'mk-up' : 'mk-down'}">${my.pnl >= 0 ? '+' : ''}${fa(my.pnl)}</b></div>` : '<p class="small muted mt">هنوز از این سهم نداری؛ با خرید کوچک شروع کن.</p>'}
-        <p class="small muted mt">⚠️ سقف هر معامله ${fa(e.settings.maxTradeQty)} سهم و روزانه ${fa(e.settings.dailyTrades)} معامله. قیمت‌ها بالا و پایین می‌روند؛ بدون دلیل معامله نکن.</p></div>`
-      : `<div class="mk-box mb"><div class="spread mb"><b class="small">👨‍🏫 نمای معلم</b><button type="button" class="btn sm soft" data-act="mkRoll">🔄 به‌روزرسانی کندل‌ها</button></div>
-        <p class="small muted">قیمت هر سهم هر روز مدرسه از میانگین نمرات/تکالیف همان درس + کمی نوسان تصادفی ساخته می‌شود. معامله فقط برای دانش‌آموزان است.</p>
+        ${my ? `<div class="gr-note mt">دارایی: ${fa(my.qty)} سهم ${insQ ? `• 🛡️ ${fa(insQ)} سهم زیر پوشش بیمه` : ''} • میانگین خرید ${faNum(my.qty ? my.cost / my.qty : 0)} • سود: <b class="${my.pnl >= 0 ? 'mk-up' : 'mk-down'}">${my.pnl >= 0 ? '+' : ''}${fa(my.pnl)}</b></div>
+        ${C.ecFreeQty(st, SESS.sid, a.id) > 0 ? `<button type="button" class="btn soft sm mt" data-act="mkGoIns" data-id="${a.id}">🛡️ بیمهٔ این سهم</button>` : ''}` : '<p class="small muted mt">هنوز از این سهم نداری؛ با خرید کوچک شروع کن.</p>'}
+        <p class="small muted mt">⚠️ سقف هر معامله ${fa(e.settings.maxTradeQty)} سهم و روزانه ${fa(e.settings.dailyTrades)} معامله.</p></div>`
+      : `<div class="mk-box mb"><div class="spread mb"><b class="small">👨‍🏫 نمای معلم</b><button type="button" class="btn sm soft" data-act="mkRoll">🔄 به‌روزرسانی بازار و تصفیهٔ بیمه‌ها</button></div>
+        <p class="small muted">قیمت هر سهم هر روز مدرسه از میانگین نمرات/تکالیف همان درس + کمی نوسان ساخته می‌شود. بیمه‌نامه‌های منقضی خودکار تصفیه می‌شوند.</p>
         <div class="divider"></div><b class="small">معامله‌های اخیر کلاس</b>
-        <div class="mk-scroll mt">${(e.trades || []).slice(-14).reverse().map(t => `<div class="mk-row"><span class="chip">${t.side === 'buy' ? '📈' : '📉'} ${t.side === 'buy' ? 'خرید' : 'فروش'}</span><b class="small">${esc((stuById(st, t.sid) || {}).name || '')}</b><span class="small muted">${fa(t.qty)} × ${esc(t.symbol)} @ ${faNum(t.price)}</span><span class="chip">${fa(t.value)} 🪙</span><span class="small muted">${jShort(iranISO(new Date(t.at)))}</span></div>`).join('') || '<p class="small muted">معامله‌ای ثبت نشده.</p>'}</div></div>`}
+        <div class="mk-scroll mt">${(e.trades || []).slice(-14).reverse().map(t => `<div class="mk-row"><span class="chip">${t.side === 'buy' ? '📈' : '📉'} ${t.side === 'buy' ? 'خرید' : 'فروش'}</span><b class="small">${esc((stuById(st, t.sid) || {}).name || ''}</b><span class="small muted">${fa(t.qty)} × ${esc(t.symbol)} @ ${faNum(t.price)}</span><span class="chip">${fa(t.value)} 🪙</span><span class="small muted">${jShort(iranISO(new Date(t.at)))}</span></div>`).join('') || '<p class="small muted">معامله‌ای ثبت نشده.</p>'}</div></div>`}
       ${e.settings.edu !== false ? eduCard() : ''}
     </div></div>
   ${!isT() && pf && pf.items.length ? `<div class="mk-box mt"><b class="small mb" style="display:block">💼 سبد سهام من</b>
-    ${pf.items.map(x => `<div class="mk-row"><span class="gr-ico" style="--kc:${x.color};width:36px;height:36px;font-size:1.05rem">${x.icon}</span><b class="small" style="flex:1">${esc(x.name)}</b><span class="chip">${fa(x.qty)} سهم</span><span class="chip">ارزش ${fa(x.value)}</span><span class="chip ${x.pnl >= 0 ? 'mk-up' : 'mk-down'}" style="color:${x.pnl >= 0 ? 'var(--up)' : 'var(--down)'}">${x.pnl >= 0 ? '+' : ''}${fa(x.pnl)}</span></div>`).join('')}</div>` : ''}`;
+    ${pf.items.map(x => { const iq = C.ecActivePolicies(st, SESS.sid).filter(pp => pp.assetId === x.id).reduce((s2, pp) => s2 + pp.qty, 0); return `<div class="mk-row"><span class="gr-ico" style="--kc:${x.color};width:36px;height:36px;font-size:1.05rem">${x.icon}</span><b class="small" style="flex:1">${esc(x.name)}</b><span class="chip">${fa(x.qty)} سهم</span>${iq ? `<span class="chip" style="color:var(--shield)">🛡️ ${fa(iq)}</span>` : ''}<span class="chip">ارزش ${fa(x.value)}</span><span class="chip" style="color:${x.pnl >= 0 ? 'var(--up)' : 'var(--down)'}">${x.pnl >= 0 ? '+' : ''}${fa(x.pnl)}</span></div>`; }).join('')}</div>` : ''}`;
 }
 
-/* ---------- missions tab ---------- */
+/* ---------- insurance tab ---------- */
+function policyCard(p, i, teacher) {
+  const st = S(), a = (ec().assets || []).find(x => x.id === p.assetId);
+  const cur = a ? price(a) : p.strike, stt = INS[p.status] || INS.active;
+  const drop = Math.max(0, p.strike - cur);
+  const proj = p.status === 'active' ? Math.min(Math.round(drop * p.qty * p.ratio / 100), p.cap || 0) : (p.payout || 0);
+  const left = p.status === 'active' ? daysLeft(p) : 0;
+  return `<div class="mk-pol" style="--sc:${stt.c};--i:${i}">
+    ${p.status !== 'active' ? `<span class="stamp">${stt.i} ${stt.l}</span>` : ''}
+    <div class="spread" style="align-items:flex-start"><div class="row" style="gap:9px">
+      <span class="gr-ico" style="--kc:${stt.c}">${a ? a.icon : '🛡️'}</span>
+      <div><b class="small">${a ? esc(a.name) : esc(p.symbol || '')}</b>
+        <div class="small muted">${fa(p.qty)} سهم • پوشش ${fa(p.ratio)}٪ • ${fa(p.days)} روز مدرسه${teacher ? ' • ' + esc((stuById(st, p.sid) || {}).name || '') : ''}</div></div></div>
+      ${p.status === 'active' ? pill(left + ' روز مانده', left <= 1 ? '#f59e0b' : '#16a34a', '⏳') : ''}</div>
+    <div class="row mt" style="gap:6px;flex-wrap:wrap">
+      <span class="chip">قیمت پایه: ${faNum(p.strike)}</span>
+      <span class="chip">قیمت الآن: ${faNum(cur)}</span>
+      <span class="chip ${cur < p.strike ? 'mk-down' : 'mk-up'}" style="color:${cur < p.strike ? 'var(--down)' : 'var(--up)'}">${cur < p.strike ? '▼ افت ' + faNum(p.strike - cur) : '▲ رشد ' + faNum(cur - p.strike)}</span>
+      <span class="chip">حق بیمه: ${fa(p.premium)} 🪙</span>
+      <span class="chip">سقف خسارت: ${fa(p.cap || 0)}</span></div>
+    <div class="gr-note mt">${p.status === 'active'
+      ? (drop > 0 ? `اگر امروز تصفیه شود: <b class="mk-down">${fa(proj)} سکه خسارت</b> می‌گیری.` : `قیمت بالا یا ثابت است؛ الان خسارتی در کار نیست — بیمه فقط <b>محافظ</b> است.`)
+      : p.status === 'settled' ? `خسارت پرداخت‌شده: <b class="mk-up">${fa(p.payout || 0)} سکه</b> • قیمت پایان: ${faNum(p.endPrice || 0)}`
+      : p.status === 'expired' ? `بدون خسارت تمام شد 🍀 — قیمت پایان ${faNum(p.endPrice || 0)} بود (بالاتر یا برابر پایه).`
+      : `فسخ شد • ارزش برگشتی: ${fa(p.refund || 0)} سکه`}</div>
+    ${p.status === 'active' ? `<div class="row mt"><button type="button" class="btn ghost sm" data-act="mkInsCancel" data-id="${p.id}">↩️ فسخ (۴۰٪ برگشت)</button></div>` : ''}</div>`;
+}
+function insTab() {
+  const st = S(), e = ec(), ins = (e.settings || {}).ins || {};
+  if (ins.enabled === false && !isT()) return `<div class="mk-box">${empty('🛡️', 'بیمه موقتاً بسته است', 'معلم آن را از تب قواعد غیرفعال کرده.')}</div>`;
+  if (!isT()) {
+    const pf = C.ecPortfolio(st, SESS.sid);
+    const insurable = pf.items.filter(x => C.ecFreeQty(st, SESS.sid, x.id) > 0);
+    if (!M.ins.assetId || !insurable.some(x => x.id === M.ins.assetId)) M.ins.assetId = insurable[0] ? insurable[0].id : '';
+    const a = (e.assets || []).find(x => x.id === M.ins.assetId);
+    const fq = a ? C.ecFreeQty(st, SESS.sid, a.id) : 0;
+    M.ins.qty = clamp(M.ins.qty, 1, Math.max(1, fq));
+    const q = a && fq > 0 ? C.ecQuote(st, { sid: SESS.sid, assetId: a.id, qty: M.ins.qty, days: M.ins.days, ratio: M.ins.ratio }) : null;
+    const mine = (e.policies || []).slice().reverse();
+    return `<div class="grid g2 mk-grid2" style="align-items:start">
+      <div class="mk-box"><div class="spread mb"><b>🛡️ بیمه‌نامهٔ جدید</b><span class="chip" style="color:var(--shield)">🪙 ${fa(e.wallet != null ? e.wallet : pf.cash)} موجود</span></div>
+        ${insurable.length ? `
+        <div class="field"><label class="lbl">کدام سهم را بیمه کنم؟</label><select class="select" data-chg="mkInsAsset">${insurable.map(x => `<option value="${x.id}" ${x.id === M.ins.assetId ? 'selected' : ''}>${x.icon} ${esc(x.name)} — ${fa(C.ecFreeQty(st, SESS.sid, x.id))} سهم آزاد</option>`).join('')}</select></div>
+        <div class="field"><label class="lbl">تعداد سهم</label><span class="mk-step"><button type="button" data-act="mkInsQty" data-d="-1">−</button><b id="mkInsQty">${fa(M.ins.qty)}</b><button type="button" data-act="mkInsQty" data-d="1">+</button></span> <span class="small muted">از ${fa(fq)} سهم آزاد</span></div>
+        <div class="field"><label class="lbl">مدت پوشش (روز مدرسه)</label><div class="seg">${[3, 5, 7, 10].filter(d => d <= (ins.maxDays || 10)).map(d => `<button type="button" class="${M.ins.days === d ? 'on' : ''}" data-act="mkInsDays" data-v="${d}">${fa(d)} روز</button>`).join('')}</div></div>
+        <div class="field"><label class="lbl">درصد پوشش ضرر</label><div class="seg">${[50, 75, 100].map(r => `<button type="button" class="${M.ins.ratio === r ? 'on' : ''}" data-act="mkInsRatio" data-v="${r}">${fa(r)}٪</button>`).join('')}</div></div>
+        ${q ? `<div class="mk-quote mt">
+          <div class="qr"><span>ارزش سهام زیر پوشش</span><b>${fa(q.value)} 🪙</b></div>
+          <div class="qr"><span>نوسان روزانهٔ سهم (ریسک)</span><b>${faNum(q.vol * 100, 1)}٪</b></div>
+          <div class="qr"><span>روند اخیر سهم</span><b class="${q.drift >= 0 ? 'mk-up' : 'mk-down'}">${q.drift >= 0 ? '▲' : '▼'} ${faNum(Math.abs(q.drift) * 100, 1)}٪ روزانه</b></div>
+          <div class="qr"><span>خسارت انتظاررفته (محاسبهٔ ریسک)</span><b>${fa(q.expLoss)} 🪙</b></div>
+          <div class="qr"><span>حاشیهٔ امنیت صندوق (${fa(q.loading)}٪)</span><b>+${fa(Math.max(0, Math.ceil(q.expLoss * q.loading / 100)))} 🪙</b></div>
+          <div class="qr"><span>سقف خسارت این بیمه‌نامه</span><b>${fa(q.cap)} 🪙</b></div>
+          <div class="qr"><span style="font-weight:800">حق بیمهٔ شما</span><b style="font-family:var(--display);font-size:1.3rem;color:var(--shield)">${fa(q.premium)} 🪙</b></div>
+          ${q.ok ? '' : `<div class="qr"><span style="color:var(--down);font-weight:800">⚠️ ${esc(q.reason)}</span></div>`}
+        </div>
+        <button type="button" class="btn mt" style="width:100%;background:linear-gradient(135deg,#0369a1,#0ea5e9)" data-act="mkInsBuy" ${q.ok ? '' : 'disabled'}>🛡️ خرید بیمه‌نامه به قیمت ${fa(q.premium)} سکه</button>` : ''}`
+        : empty('📭', 'سهم بیمه‌نشده نداری', 'اول از تب بورس سهم بخر، بعد آن را بیمه کن.')}
+      </div>
+      <div>
+        <div class="mk-box mb"><div class="spread mb"><b>📜 بیمه‌نامه‌های من</b><span class="chip">${fa(mine.length)}</span></div>
+          ${mine.length ? `<div class="grid" style="gap:12px">${mine.slice(0, 8).map((p, i) => policyCard(p, i, false)).join('')}</div>` : empty('🛡️', 'بیمه‌نامه‌ای نداری', 'با یک بیمهٔ کوچک شروع کن.')}</div>
+        ${insEduCard()}</div></div>`;
+  }
+  /* teacher */
+  const f = e.fund || { balance: 0, premiums: 0, payouts: 0 };
+  const exp = e.exposure != null ? e.exposure : C.ecExposure(st);
+  const loss = f.premiums ? Math.round(f.payouts / f.premiums * 100) : 0;
+  const pols = (e.policies || []).slice().reverse();
+  return `<div class="grid g2 mk-grid2 mb" style="align-items:start">
+    <div class="mk-fund"><div class="spread"><div><span style="font-size:.8rem;opacity:.9">🏦 صندوق بیمهٔ کلاس</span><br><b style="font-size:2.2rem">${fa(f.balance || 0)} 🪙</b></div>
+      <div style="text-align:left;font-size:.8rem;line-height:2"><span>دریافتی حق بیمه: <b>${fa(f.premiums || 0)}</b></span><br><span>پرداخت خسارت: <b>${fa(f.payouts || 0)}</b></span><br><span>نسبت خسارت: <b>${fa(loss)}٪</b></span></div></div>
+      <div class="row mt" style="gap:6px"><span class="chip" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">تعهد فعال: ${fa(exp)}</span><span class="chip" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">توانگری: ${exp ? faNum((f.balance || 0) / exp * 100, 0) + '٪' : '—'}</span>
+      <button type="button" class="btn sm" style="background:rgba(255,255,255,.25)" data-act="mkInsSettle">⚙️ تصفیهٔ دستی بیمه‌ها</button></div></div>
+    <div class="mk-box"><b class="small mb" style="display:block">⚙️ قواعد قیمت‌گذاری بیمه</b>
+      <div class="srow"><div><span class="s-lbl">🛡️ بیمه فعال باشد</span></div><span class="switch"><input type="checkbox" ${ins.enabled !== false ? 'checked' : ''} data-chg="mkInsSet" data-k="enabled"><i></i></span></div>
+      <div class="srow"><span class="s-lbl">حاشیهٔ امنیت (٪)</span><span class="mk-step"><button type="button" data-act="mkInsStep" data-k="loading" data-d="-5">−</button><b id="mkIS_loading">${fa(ins.loading == null ? 30 : ins.loading)}</b><button type="button" data-act="mkInsStep" data-k="loading" data-d="5">+</button></span></div>
+      <div class="srow"><span class="s-lbl">سقف افت پوششی (٪)</span><span class="mk-step"><button type="button" data-act="mkInsStep" data-k="cap" data-d="-5">−</button><b id="mkIS_cap">${fa(ins.cap == null ? 35 : ins.cap)}</b><button type="button" data-act="mkInsStep" data-k="cap" data-d="5">+</button></span></div>
+      <div class="srow"><span class="s-lbl">کارمزد ثابت (سکه)</span><span class="mk-step"><button type="button" data-act="mkInsStep" data-k="fee" data-d="-1">−</button><b id="mkIS_fee">${fa(ins.fee == null ? 1 : ins.fee)}</b><button type="button" data-act="mkInsStep" data-k="fee" data-d="1">+</button></span></div>
+      <div class="srow"><span class="s-lbl">بیشینهٔ روز پوشش</span><span class="mk-step"><button type="button" data-act="mkInsStep" data-k="maxDays" data-d="-1">−</button><b id="mkIS_maxDays">${fa(ins.maxDays == null ? 10 : ins.maxDays)}</b><button type="button" data-act="mkInsStep" data-k="maxDays" data-d="1">+</button></span></div>
+      <div class="srow"><span class="s-lbl">سقف بیمه‌نامهٔ فعال هر نفر</span><span class="mk-step"><button type="button" data-act="mkInsStep" data-k="maxPolicies" data-d="-1">−</button><b id="mkIS_maxPolicies">${fa(ins.maxPolicies == null ? 3 : ins.maxPolicies)}</b><button type="button" data-act="mkInsStep" data-k="maxPolicies" data-d="1">+</button></span></div>
+      <p class="small muted mt">حق بیمه = خسارت انتظاررفته × (۱ + حاشیه) + کارمزد. نوسان هر سهم از کندل‌های واقعی‌اش خوانده می‌شود.</p></div></div>
+  <div class="mk-box"><div class="spread mb"><b>📜 همهٔ بیمه‌نامه‌ها</b><button type="button" class="btn sm soft" data-act="mkCsv" data-kind="ins">📤 CSV</button></div>
+    ${pols.length ? `<div class="grid g2 mk-grid2" style="gap:12px">${pols.slice(0, 20).map((p, i) => policyCard(p, i, true)).join('')}</div>` : empty('🛡️', 'بیمه‌نامه‌ای نیست', 'دانش‌آموزان از تب بیمه خرید می‌کنند.')}</div>`;
+}
+
+/* ---------- missions / board / settings tabs ---------- */
 function missionCard(m, i) {
   const st = S(), M2 = MET[m.metric] || MET.hw_rate;
   const today = todayISO(), left = Math.ceil((isoToDate(m.to) - isoToDate(today)) / 864e5);
@@ -152,7 +271,7 @@ function missionCard(m, i) {
     const pct = clamp(v / Math.max(1, m.target) * 100, 0, 100);
     body = `<div class="spread small bold mt"><span>پیشرفت: ${fa(v)}${M2.unit}</span><span>هدف: ${fa(m.target)}${M2.unit}</span></div><div class="mk-bar" style="--mc:${pct >= 100 ? '#16a34a' : '#1d4ed8'}"><i style="width:${pct}%"></i><span class="tgt" style="right:100%"></span></div>`;
   }
-  const rs = m.status === 'settled' ? (m.result && m.result.ok !== false && m.scope !== 'battle' ? (m.result.ok ? '🏆 موفق' : '✖️ ناموفق') : '🏁 پایان‌یافته') : left < 0 ? '⏳ در انتظار تسویه' : `⏳ ${fa(left)} روز مانده`;
+  const rs = m.status === 'settled' ? (m.scope !== 'battle' ? (m.result && m.result.ok ? '🏆 موفق' : '✖️ ناموفق') : '🏁 پایان‌یافته') : left < 0 ? '⏳ در انتظار تسویه' : `⏳ ${fa(left)} روز مانده`;
   return `<div class="mk-mission ${m.status === 'settled' && m.result && m.result.ok === false ? 'lost' : m.status === 'settled' ? 'won' : ''}" style="--mc:${m.scope === 'battle' ? '#d97706' : m.scope === 'group' ? '#7c3aed' : '#1d4ed8'};--i:${i}">
     <div class="spread"><div class="row" style="gap:9px"><span class="gr-ico" style="--kc:${m.scope === 'battle' ? '#d97706' : '#1d4ed8'}">${M2.i}</span>
       <div><b class="small">${esc(m.title)}</b><div class="small muted">${m.scope === 'battle' ? '🏆 نبرد گروه‌ها' : m.scope === 'group' ? '🧩 ماموریت گروهی' : '👥 ماموریت کل کلاس'} • ${jShort(m.from)} تا ${jShort(m.to)}</div></div></div>
@@ -169,20 +288,16 @@ function missionsTab() {
   return `<div class="grid g2 mk-grid2 stagger">${list.map((m, i) => missionCard(m, i)).join('') || `<div class="mk-box" style="grid-column:1/-1">${empty('🎯', 'ماموریتی نیست', isT() ? 'اولین ماموریت مشترک کلاس را بساز.' : 'به‌زودی ماموریت تازه می‌آید.', isT() ? '<button type="button" class="btn" data-act="mkMNew">➕ ماموریت جدید</button>' : '')}</div>`}</div>
   ${isT() ? `<div class="row mt"><button type="button" class="btn" data-act="mkMNew">➕ ماموریت / نبرد جدید</button></div>` : ''}`;
 }
-
-/* ---------- board tab ---------- */
 function boardTab() {
   const st = S(), b = C.ecBoard(st);
   const rows = b.map((x, i) => `<tr><td>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : fa(i + 1)}</td>
     <td><div class="row" style="gap:8px;flex-wrap:nowrap">${avHTML(x, 'sm')}<b class="small">${esc(x.name)}</b>${x.id === SESS.sid ? '<span class="chip acc">من</span>' : ''}</div></td>
     <td>🪙 ${fa(x.cash)}</td><td>📈 ${fa(x.value)}</td><td><b>${fa(x.total)}</b></td>
-    <td class="${x.pnl >= 0 ? 'mk-up' : 'mk-down'}" style="color:${x.pnl >= 0 ? 'var(--up)' : 'var(--down)'}">${x.pnl >= 0 ? '+' : ''}${fa(x.pnl)}</td></tr>`).join('');
+    <td style="color:${x.pnl >= 0 ? 'var(--up)' : 'var(--down)'}">${x.pnl >= 0 ? '+' : ''}${fa(x.pnl)}</td></tr>`).join('');
   return `<div class="mk-box"><div class="spread mb"><b>🏆 رتبه‌بندی دارایی کلاس (سکه + سهام)</b><span class="chip">ارزش‌ها لحظه‌ای است</span></div>
     <div class="tw"><table class="tbl"><thead><tr><th>#</th><th>دانش‌آموز</th><th>نقد</th><th>سهام</th><th>کل</th><th>سود/زیان</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="small muted mt">💡 گفت‌وگوی کلاسی: چرا کسی که زودتر فروخت سود کمتر گرفت؟ چرا تنوع سبد (چند سهم) ریسک را کم می‌کند؟</p></div>`;
+    <p class="small muted mt">💡 گفت‌وگوی کلاسی: چرا تنوع سبد ریسک را کم می‌کند؟ بیمه چه نقشی دارد؟</p></div>`;
 }
-
-/* ---------- teacher settings tab ---------- */
 function setTab() {
   const s = ec().settings;
   const step = (k, v, l) => `<div class="srow"><span class="s-lbl">${l}</span><span class="mk-step"><button type="button" data-act="mkStep" data-k="${k}" data-d="-1">−</button><b id="mkS_${k}">${fa(v)}</b><button type="button" data-act="mkStep" data-k="${k}" data-d="1">+</button></span></div>`;
@@ -190,16 +305,16 @@ function setTab() {
   return `<div class="grid g2 mk-grid2" style="align-items:start">
     <div class="mk-box"><h3 class="mb">⚙️ قواعد بورس</h3>
       ${sw('marketEnabled', s.marketEnabled !== false, '📈 بورس باز باشد')}
-      ${sw('edu', s.edu !== false, '📚 کارت آموزشی کندل', 'توضیح کندل و اصول سرمایه‌گذاری برای بچه‌ها')}
+      ${sw('edu', s.edu !== false, '📚 کارت‌های آموزشی کندل و بیمه')}
       ${sw('leaderboard', s.leaderboard !== false, '🏆 نمایش رتبه‌بندی به دانش‌آموزان')}
       ${step('tradeFee', s.tradeFee || 0, '💱 کارمزد هر معامله (٪)')}
       ${step('maxTradeQty', s.maxTradeQty || 15, '📦 سقف سهم در هر معامله')}
       ${step('dailyTrades', s.dailyTrades || 5, '📅 سقف معامله در روز')}
-      <p class="small muted mt">کارمزد و سقف‌ها برای این است که بورس به «قمار» تبدیل نشود؛ هدف، یادگیری صبر و برنامه است.</p></div>
+      <p class="small muted mt">قواعد بیمه در تب «🛡️ بیمه» (نمای معلم) تنظیم می‌شود.</p></div>
     <div class="mk-box"><h3 class="mb">🎯 قواعد اهداف همکاری</h3>
       ${sw('missionsEnabled', s.missionsEnabled !== false, '🎯 ماموریت‌ها فعال باشند')}
       <div class="divider"></div><h3 class="mb">🏦 سهام کلاس</h3>
-      ${(ec().assets || []).map(a => `<div class="mk-row"><span class="gr-ico" style="--kc:${a.color};width:34px;height:34px;font-size:1rem">${a.icon}</span><b class="small" style="flex:1">${esc(a.name)}</b><span class="chip">${faNum(price(a))}</span>
+      ${(ec().assets || []).map(a => `<div class="mk-row"><span class="gr-ico" style="--kc:${a.color};width:34px;height:34px;font-size:1rem">${a.icon}</span><b class="small" style="flex:1">${esc(a.name)}</b><span class="chip">${faNum(price(a))}</span><span class="chip">نوسان ${faNum(C.ecVol(a).vol * 100, 1)}٪</span>
         <button type="button" class="ib sm" data-act="mkPause" data-id="${a.id}">${a.paused ? '🟢' : '⏸️'}</button></div>`).join('')}
       <button type="button" class="btn sm soft mt" data-act="mkANew">➕ سهام جدید</button></div></div>`;
 }
@@ -208,25 +323,27 @@ function setTab() {
 function viewHTML() {
   const st = S(), e = ec(), pf = isT() ? null : C.ecPortfolio(st, SESS.sid);
   const activeM = (e.missions || []).filter(m => m.status === 'active').length;
-  const tabs = isT() ? [['market', '📈 بورس دانش'], ['missions', '🎯 اهداف همکاری', activeM], ['board', '🏆 رتبه‌بندی'], ['set', '⚙️ قواعد']]
-    : [['market', '📈 بورس من'], ['missions', '🎯 اهداف کلاس', activeM], ['board', '🏆 رتبه‌بندی']];
+  const myPol = isT() ? (e.policies || []).filter(p => p.status === 'active').length : (e.policies || []).filter(p => p.status === 'active').length;
+  const tabs = isT() ? [['market', '📈 بورس دانش'], ['ins', '🛡️ بیمه', myPol], ['missions', '🎯 اهداف همکاری', activeM], ['board', '🏆 رتبه‌بندی'], ['set', '⚙️ قواعد']]
+    : [['market', '📈 بورس من'], ['ins', '🛡️ بیمه', myPol], ['missions', '🎯 اهداف کلاس', activeM], ['board', '🏆 رتبه‌بندی']];
   return `<div class="mk">
     <div class="mk-hero"><div class="spread"><div>
-      <h1>📈 بورس دانش و اهداف همکاری</h1>
-      <p>${isT() ? 'قیمت سهام هر درس از عملکرد واقعی کلاس ساخته می‌شود؛ ماموریت‌های مشترک، کل کلاس را هم‌هدف می‌کند.' : 'سکه‌هایت را به سهام درس‌ها تبدیل کن؛ اگر کلاس در آن درس بهتر کار کند، سهم تو ارزشمندتر می‌شود!'}</p>
+      <h1>📈 بورس دانش، بیمه و اهداف همکاری</h1>
+      <p>${isT() ? 'قیمت سهام از عملکرد واقعی کلاس ساخته می‌شود؛ دانش‌آموزان می‌توانند سهم بخرند، بیمه کنند و در ماموریت‌های مشترک برنده شوند.' : 'سکه‌هایت را به سهام درس‌ها تبدیل کن و اگر نگران افت قیمت هستی، با حق بیمهٔ منصفانه آن را بیمه کن!'}</p>
       <div class="mk-quick"><span class="q">🏦 <b>${fa((e.assets || []).filter(a => !a.paused).length)}</b> سهام</span>
-        <span class="q">🎯 <b>${fa(activeM)}</b> ماموریت فعال</span>
-        ${!isT() ? `<span class="q">🪙 <b>${fa(pf.cash)}</b> نقد</span><span class="q">💼 <b>${fa(pf.total)}</b> دارایی کل</span>` : ''}</div></div>
+        <span class="q">🛡️ <b>${fa(myPol)}</b> بیمهٔ فعال</span>
+        <span class="q">🎯 <b>${fa(activeM)}</b> ماموریت</span>
+        ${!isT() ? `<span class="q">🪙 <b>${fa(pf.cash)}</b> نقد</span><span class="q">💼 <b>${fa(pf.total)}</b> دارایی</span>` : ''}</div></div>
       ${isT() ? `<div class="row"><button type="button" class="btn" data-act="mkMNew">➕ ماموریت</button><button type="button" class="btn soft" data-act="mkRoll">🔄 به‌روزرسانی بازار</button></div>` : ''}
     </div></div>
     <div class="tabs">${tabs.map(([k, l, n]) => `<button type="button" class="${M.tab === k ? 'on' : ''}" data-act="mkTab" data-tab="${k}">${l}${n ? ` (${fa(n)})` : ''}</button>`).join('')}</div>
-    <div id="mkBody">${M.tab === 'missions' ? missionsTab() : M.tab === 'board' ? boardTab() : M.tab === 'set' ? setTab() : marketTab()}</div></div>`;
+    <div id="mkBody">${M.tab === 'ins' ? insTab() : M.tab === 'missions' ? missionsTab() : M.tab === 'board' ? boardTab() : M.tab === 'set' ? setTab() : marketTab()}</div></div>`;
 }
 
 /* ---------- drawers ---------- */
 function missionForm() {
   const st = S(), today = todayISO();
-  UI.jdate.mkfrom = today; UI.jdate.mkto = shift6(today);
+  UI.jdate.mkfrom = today; UI.jdate.mkto = C.ecSchoolAdd(today, 6);
   return `<form data-form="mkMission" class="mk">
     <div class="field"><label class="lbl">نوع</label><div class="seg" id="mkScopeSeg">
       <button type="button" class="on" data-act="mkScope" data-v="class">👥 ماموریت کلاس</button>
@@ -255,14 +372,13 @@ function assetForm() {
     <div class="field"><label class="lbl">سنجه از کدام درس؟</label><select class="select" id="mkASub">${(st.subjects || []).map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}<option value="@help">🤝 همکاری و احوال‌پرسی</option></select></div>
     <button class="btn" type="submit" style="width:100%">💾 ساخت سهام</button></form>`;
 }
-function shift6(d) { const x = isoToDate(d); x.setDate(x.getDate() + 6); return dateToISO(x); }
 
 /* ---------- integration ---------- */
 const baseNav = navItems, baseRV = renderView;
 navItems = function () {
   const items = baseNav();
-  const e = ['econ', '📈', isT() ? 'بورس و اهداف همکاری' : 'بورس من'];
-  const at = items.findIndex(x => x[0] === (isT() ? 'shop' : 'shop'));
+  const e = ['econ', '📈', isT() ? 'بورس، بیمه و اهداف' : 'بورس و بیمه من'];
+  const at = items.findIndex(x => x[0] === 'shop');
   if (at > -1) items.splice(at + 1, 0, e); else items.push(e);
   return items;
 };
@@ -276,12 +392,12 @@ renderView = function () {
 /* ---------- actions ---------- */
 ACT.mkTab = el => { M.tab = el.dataset.tab; renderView(); Sound.play('tap'); };
 ACT.mkPick = el => { M.asset = el.dataset.id; M.qty = 1; renderView(); Sound.play('tap'); };
-ACT.mkQty = el => { const max = (ec().settings.maxTradeQty || 15); M.qty = clamp(M.qty + Number(en(el.dataset.d)), 1, max); const b = document.getElementById('mkQty'); if (b) b.textContent = fa(M.qty); Sound.play('tap'); };
+ACT.mkQty = el => { M.qty = clamp(M.qty + Number(en(el.dataset.d)), 1, ec().settings.maxTradeQty || 15); const b = document.getElementById('mkQty'); if (b) b.textContent = fa(M.qty); Sound.play('tap'); };
+ACT.mkGoIns = el => { M.ins.assetId = el.dataset.id; M.ins.qty = 1; M.tab = 'ins'; renderView(); Sound.play('tap'); };
 ACT.mkBuy = el => {
   const id = el.dataset.id, a = (ec().assets || []).find(x => x.id === id); if (!a) return;
   const cost = Math.round(M.qty * price(a) * (1 + (ec().settings.tradeFee || 0) / 100));
-  confirmDlg({ title: '📈 خرید سهم', body: `${fa(M.qty)} سهم «${a.name}» به قیمت تقریبی ${fa(cost)} سکه. اگر قیمت پایین بیاید، ضرر می‌کنی؛ مطمئنی؟`, okText: 'خرید کن', onOk: () => {
-    const rect = el.getBoundingClientRect();
+  confirmDlg({ title: '📈 خرید سهم', body: `${fa(M.qty)} سهم «${a.name}» به قیمت تقریبی ${fa(cost)} سکه. اگر قیمت پایین بیاید ضرر می‌کنی؛ می‌توانی بیمه‌اش هم بکنی.`, okText: 'خرید کن', onOk: () => {
     send('econ.trade', { assetId: id, side: 'buy', qty: M.qty }, null, { sound: null }).then(r => { if (r) { Sound.play('pop'); toast(`📈 ${fa(M.qty)} سهم ${a.symbol} خریدی • ${fa(r.cost)} سکه`, 'ok'); } });
   } });
 };
@@ -291,12 +407,11 @@ ACT.mkSell = el => {
   const q = Math.min(M.qty, my ? my.qty : 0);
   if (!q) return toast('سهمی نداری', 'err');
   const val = Math.round(q * price(a) * (1 - (ec().settings.tradeFee || 0) / 100));
-  const pnl = my ? Math.round(val - (my.cost || 0) * q / my.qty) : 0;
-  confirmDlg({ title: '📉 فروش سهم', body: `${fa(q)} سهم «${a.name}» به تقریب ${fa(val)} سکه${pnl ? ` • سود/زیان این مقدار: ${pnl >= 0 ? '+' : ''}${fa(pnl)}` : ''}.`, okText: 'بفروش', onOk: () => {
-    send('econ.trade', { assetId: id, side: 'sell', qty: q }, null, { sound: null }).then(r => { if (r) { Sound.play(pnl >= 0 ? 'win' : 'pop'); toast(`💰 فروش انجام شد • ${fa(r.proceeds)} سکه برگشت`, pnl >= 0 ? 'ok' : 'info'); } });
+  confirmDlg({ title: '📉 فروش سهم', body: `${fa(q)} سهم «${a.name}» به تقریب ${fa(val)} سکه. سهم‌های زیر پوشش بیمه قابل فروش نیستند.`, okText: 'بفروش', onOk: () => {
+    send('econ.trade', { assetId: id, side: 'sell', qty: q }, null, { sound: null }).then(r => { if (r) { Sound.play('pop'); toast(`💰 فروش انجام شد • ${fa(r.proceeds)} سکه برگشت`, 'ok'); } });
   } });
 };
-ACT.mkRoll = () => send('econ.roll', {}, null, { msg: '🔄 بازار به‌روز شد' });
+ACT.mkRoll = () => send('econ.roll', {}, null, { sound: null }).then(r => { if (r) toast('🔄 بازار به‌روز و بیمه‌های منقضی تصفیه شد', 'ok'); });
 ACT.mkPause = el => send('econ.asset.pause', { id: el.dataset.id }, st => { const a = st.econ.assets.find(x => x.id === el.dataset.id); if (a) a.paused = !a.paused; }, { sound: 'pop' });
 ACT.mkANew = () => openDrawer('➕ سهام جدید', assetForm());
 ACT.mkMNew = () => openDrawer('➕ ماموریت / نبرد', missionForm(), true);
@@ -308,26 +423,61 @@ ACT.mkScope = el => {
   Sound.play('tap');
 };
 ACT.mkMDel = el => { const id = el.dataset.id; confirmDlg({ title: 'حذف ماموریت', body: 'ماموریت و نتایجش حذف شود؟', okText: 'حذف', danger: true, onOk: () => send('econ.mission.delete', { id }, st => { st.econ.missions = st.econ.missions.filter(m => m.id !== id); }, { msg: 'حذف شد', undo: true, sound: 'err' }) }); };
-ACT.mkSettle = el => { const id = el.dataset.id; confirmDlg({ title: '🏁 تسویهٔ ماموریت', body: 'پیشرفت محاسبه و پاداش به برندگان داده می‌شود. قابل بازگشت نیست.', okText: 'تسویه کن', onOk: () => send('econ.mission.settle', { id }, null, { sound: null }).then(r => { if (r) { Sound.play('win'); toast(r.ok === false ? '✖️ ماموریت محقق نشد' : '🏆 ماموریت تسویه و پاداش داده شد', 'ok', null, 7000); } }) }); };
+ACT.mkSettle = el => { const id = el.dataset.id; confirmDlg({ title: '🏁 تسویهٔ ماموریت', body: 'پیشرفت محاسبه و پاداش به برندگان داده می‌شود.', okText: 'تسویه کن', onOk: () => send('econ.mission.settle', { id }, null, { sound: null }).then(r => { if (r) { Sound.play('win'); toast(r.ok === false ? '✖️ ماموریت محقق نشد' : '🏆 ماموریت تسویه و پاداش داده شد', 'ok', null, 7000); } }) }); };
 ACT.mkStep = el => {
   const k = el.dataset.k, d = Number(en(el.dataset.d)) || 1, s = ec().settings;
   s[k] = clamp((s[k] || 0) + d, k === 'tradeFee' ? 0 : 1, k === 'tradeFee' ? 20 : k === 'maxTradeQty' ? 50 : 20);
   const b = document.getElementById('mkS_' + k); if (b) b.textContent = fa(s[k]);
   clearTimeout(M.stT); M.stT = setTimeout(() => send('econ.settings', { patch: { [k]: s[k] } }, st => { st.econ.settings[k] = s[k]; }, { sound: null }), 500);
 };
+/* insurance actions */
+ACT.mkInsAsset = null;
+CHG.mkInsAsset = el => { M.ins.assetId = el.value; M.ins.qty = 1; renderView(); Sound.play('tap'); };
+ACT.mkInsQty = el => { const fq = C.ecFreeQty(S(), SESS.sid, M.ins.assetId); M.ins.qty = clamp(M.ins.qty + Number(en(el.dataset.d)), 1, Math.max(1, fq)); const b = document.getElementById('mkInsQty'); if (b) b.textContent = fa(M.ins.qty); else renderView(); Sound.play('tap'); };
+ACT.mkInsDays = el => { M.ins.days = Number(en(el.dataset.v)); renderView(); Sound.play('tap'); };
+ACT.mkInsRatio = el => { M.ins.ratio = Number(en(el.dataset.v)); renderView(); Sound.play('tap'); };
+ACT.mkInsBuy = el => {
+  const q = C.ecQuote(S(), { sid: SESS.sid, assetId: M.ins.assetId, qty: M.ins.qty, days: M.ins.days, ratio: M.ins.ratio });
+  if (!q || !q.ok) return toast(q ? q.reason : 'شرایط برقرار نیست', 'err');
+  const a = (ec().assets || []).find(x => x.id === M.ins.assetId);
+  confirmDlg({ title: '🛡️ خرید بیمه‌نامه', body: `${fa(q.qty || M.ins.qty)} سهم «${a ? a.name : ''}» به مدت ${fa(M.ins.days)} روز با پوشش ${fa(M.ins.ratio)}٪ ضرر.\nحق بیمه: ${fa(q.premium)} سکه • سقف خسارت: ${fa(q.cap)} سکه.\nاگر قیمت بالا برود، حق بیمه برنمی‌گردد — این قانون بیمه است.`, okText: 'بیمه کن', onOk: () => {
+    send('econ.insure', { id: uid(), assetId: M.ins.assetId, qty: M.ins.qty, days: M.ins.days, ratio: M.ins.ratio }, null, { sound: null }).then(r => { if (r) { Sound.play('win'); toast(`🛡️ بیمه‌نامه فعال شد • ${fa(r.premium)} سکه حق بیمه`, 'ok', null, 7000); } });
+  } });
+};
+ACT.mkInsCancel = el => { const id = el.dataset.id; confirmDlg({ title: '↩️ فسخ بیمه‌نامه', body: '۴۰٪ حق بیمه برمی‌گردد و پوشش از بین می‌رود.', okText: 'فسخ کن', onOk: () => send('econ.insCancel', { id }, null, { sound: null }).then(r => { if (r) toast(`↩️ فسخ شد • ${fa(r.refund)} سکه برگشت`, 'ok'); }) }); };
+ACT.mkInsSettle = () => send('econ.insSettle', {}, null, { sound: null }).then(r => { if (r) toast(`⚙️ ${fa(r.settled)} بیمه‌نامه بررسی/تصفیه شد`, 'ok'); });
+ACT.mkInsStep = el => {
+  const k = el.dataset.k, d = Number(en(el.dataset.d)) || 1, ins = (ec().settings || {}).ins || {};
+  ins[k] = clamp((ins[k] == null ? 0 : ins[k]) + d, 0, k === 'loading' ? 100 : k === 'cap' ? 80 : k === 'fee' ? 10 : k === 'maxDays' ? 20 : 10);
+  const b = document.getElementById('mkIS_' + k); if (b) b.textContent = fa(ins[k]);
+  clearTimeout(M.isT2); M.isT2 = setTimeout(() => send('econ.insSettings', { patch: { [k]: ins[k] } }, st => { st.econ.settings.ins[k] = ins[k]; }, { sound: null }), 500);
+};
+CHG.mkInsSet = el => { const k = el.dataset.k, v = el.checked; send('econ.insSettings', { patch: { [k]: v } }, st => { st.econ.settings.ins[k] = v; }, { msg: 'قاعدهٔ بیمه ذخیره شد' }); };
 CHG.mkSet = el => { const k = el.dataset.k, v = el.checked; send('econ.settings', { patch: { [k]: v } }, st => { st.econ.settings[k] = v; }, { msg: 'قاعده ذخیره شد' }); };
+/* csv with insurance */
+const baseCsvKind = ACT.mkCsv;
+ACT.mkCsv = el => {
+  const kind = el.dataset.kind;
+  if (kind !== 'ins') { csvGeneric(kind); return; }
+  const st = S();
+  const rows = [['دانش‌آموز', 'سهام', 'تعداد', 'پوشش٪', 'روز', 'قیمت پایه', 'حق بیمه', 'سقف خسارت', 'شروع', 'پایان', 'وضعیت', 'خسارت']];
+  (st.econ.policies || []).forEach(p => rows.push([(stuById(st, p.sid) || {}).name || '', p.symbol || '', p.qty, p.ratio, p.days, faNum(p.strike), p.premium, p.cap || 0, jShort(p.startAt), jShort(p.endAt), (INS[p.status] || {}).l || p.status, p.payout || 0]));
+  download(`بیمه-${C.jShortEn(todayISO()).replace(/\//g, '-')}.csv`, serializeCSV(st, rows));
+  toast('فایل بیمه‌نامه‌ها دانلود شد', 'ok');
+};
+function csvGeneric(kind) {
+  const st = S(); let rows;
+  if (kind === 'quests' || kind === 'missions') { rows = [['عنوان', 'نوع', 'سنجه', 'هدف', 'از', 'تا', 'وضعیت']]; (st.econ.missions || []).forEach(m => rows.push([m.title, m.scope, (MET[m.metric] || {}).l || m.metric, m.target, m.from, m.to, m.status])); }
+  else if (kind === 'streaks' || kind === 'board') { rows = [['نام', 'نقد', 'ارزش سهام', 'دارایی کل', 'سود/زیان']]; C.ecBoard(st).forEach(b => rows.push([b.name, b.cash, b.value, b.total, b.pnl])); }
+  else { rows = [['نام', 'تاریخ', 'نوع', 'تعداد', 'قیمت', 'ارزش']]; (st.econ.trades || []).forEach(t => rows.push([(stuById(st, t.sid) || {}).name || '', jShort(iranISO(new Date(t.at))), t.side === 'buy' ? 'خرید' : 'فروش', t.qty, faNum(t.price), t.value])); }
+  download(`بورس-${kind}-${C.jShortEn(todayISO()).replace(/\//g, '-')}.csv`, serializeCSV(st, rows));
+  toast('فایل دانلود شد', 'ok');
+}
 FORM.mkMission = () => {
   const title = (document.getElementById('mkTitle').value || '').trim();
   if (!title) return toast('عنوان را بنویس', 'err');
   const scope = document.getElementById('mkScopeVal').value;
-  const data = {
-    title, desc: (document.getElementById('mkDesc').value || '').trim(),
-    scope, groupId: scope === 'group' ? document.getElementById('mkGroupSel').value : '',
-    metric: document.getElementById('mkMetric').value,
-    target: num(document.getElementById('mkTarget').value) || 0,
-    from: UI.jdate.mkfrom || todayISO(), to: UI.jdate.mkto || todayISO(),
-    reward: { points: num(document.getElementById('mkRP').value) || 0, xp: num(document.getElementById('mkRX').value) || 0, spin: num(document.getElementById('mkRS').value) || 0 }
-  };
+  const data = { title, desc: (document.getElementById('mkDesc').value || '').trim(), scope, groupId: scope === 'group' ? document.getElementById('mkGroupSel').value : '', metric: document.getElementById('mkMetric').value, target: num(document.getElementById('mkTarget').value) || 0, from: UI.jdate.mkfrom || todayISO(), to: UI.jdate.mkto || todayISO(), reward: { points: num(document.getElementById('mkRP').value) || 0, xp: num(document.getElementById('mkRX').value) || 0, spin: num(document.getElementById('mkRS').value) || 0 } };
   send('econ.mission.create', { id: uid(), ...data }, null, { msg: '🎯 ماموریت برای کلاس منتشر شد' });
   closeDrawer();
 };
