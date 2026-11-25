@@ -62,9 +62,39 @@
   .att-grid .cell { padding: 4px 2px; }
 }
 
-@media (max-width: 420px) {
-  .grid.g4 { grid-template-columns: 1fr !important; }
-  .card.stat { flex-direction: row; align-items: center; gap: 10px; }
-  .x-wallet, .gr-lvl { padding: 14px; }
-  .x-wallet b, .gr-lvl b { font-size: 1.4rem !important; }
+/* ===== بورس دانش: واکنش‌گرایی کامل ===== */
+.mk-grid2 > *{min-width:0 !important}
+.mk-box{min-width:0}
+.mk-box [dir="ltr"]{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mk .tw{max-width:100%}
+
+@media (max-width:960px){
+  .mk .grid.g2,.mk-grid2{grid-template-columns:1fr !important;gap:12px}
+}
+@media (max-width:760px){
+  .mk-hero{padding:16px 14px}
+  .mk-hero .spread{flex-direction:column;align-items:stretch}
+  .mk-hero h1{font-size:1.4rem}
+  .mk-hero p{font-size:.82rem}
+  .mk-quick .q{padding:6px 10px;font-size:.74rem}
+  .mk-quick .q b{font-size:1rem}
+  .mk-price{font-size:1.9rem}
+  .mk-chip{padding:7px 10px;font-size:.76rem}
+  .mk-box{padding:13px 12px}
+  .mk-box svg{min-width:320px !important}
+  .mk-step button{width:34px;height:36px}
+  .mk-step b{min-width:44px;font-size:1.05rem}
+  .mk-row{padding:8px 6px;gap:8px}
+  .mk-edu{padding:12px 10px}
+  .mk-edu p{font-size:.76rem}
+  .mk-mission{padding:13px 12px}
+  .mk-rank b{font-size:.76rem}
+  #mkBody .row .btn{white-space:normal;flex:1 1 46%;min-width:0;font-size:.8rem}
+}
+@media (max-width:420px){
+  .mk-chips{gap:6px}
+  .mk-chip{font-size:.7rem;padding:6px 8px}
+  .mk-price{font-size:1.6rem}
+  .mk-box svg{min-width:280px !important}
+  #mkBody .row .btn{flex:1 1 100%}
 }
