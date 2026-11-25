@@ -1,16 +1,17 @@
-/* lib/store.js — بارگذاری ماژول‌ها، مهاجرت یک‌باره و اعمال فرمان */
+/* lib/store.js — بارگذاری همهٔ ماژول‌ها، مهاجرت یک‌باره و اعمال فرمان */
 import '../core.js';
 import '../homework-core.js';
 import '../extras-core.js';
 import '../growth-core.js';
 import '../tickets-core.js';
 import '../market-core.js';
+import '../market-ext-core.js';
 import * as db from './db.js';
 
 const C = globalThis.ClassCore;
 const POLL_TYPES = ['choice', 'multi', 'yesno', 'rating', 'election'];
 const ASMT_TYPES = ['oral', 'written', 'performance', 'homework'];
-const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'tk.', 'econ.'];
+const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'tk.', 'econ.', 'mkt.'];
 
 export async function ensureStore() {
   let row = await db.readStore();
@@ -32,6 +33,7 @@ export async function ensureStore() {
     if (typeof C.grEnsure === 'function') C.grEnsure(st);
     if (typeof C.tkEnsure === 'function') C.tkEnsure(st);
     if (typeof C.ecEnsure === 'function') C.ecEnsure(st);
+    if (typeof C.mktEnsure === 'function') C.mktEnsure(st);
     st._mig = C.SCHEMA;
     const nr = await db.casStore(st, rev);
     if (nr) return { data: st, revision: nr };
