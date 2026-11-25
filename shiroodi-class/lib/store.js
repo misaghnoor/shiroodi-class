@@ -1,15 +1,16 @@
-/* lib/store.js — بارگذاری همهٔ ماژول‌ها، مهاجرت یک‌باره و اعمال فرمان */
+/* lib/store.js — بارگذاری ماژول‌ها، مهاجرت یک‌باره و اعمال فرمان */
 import '../core.js';
 import '../homework-core.js';
 import '../extras-core.js';
 import '../growth-core.js';
 import '../tickets-core.js';
+import '../market-core.js';
 import * as db from './db.js';
 
 const C = globalThis.ClassCore;
 const POLL_TYPES = ['choice', 'multi', 'yesno', 'rating', 'election'];
 const ASMT_TYPES = ['oral', 'written', 'performance', 'homework'];
-const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'tk.'];
+const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'tk.', 'econ.'];
 
 export async function ensureStore() {
   let row = await db.readStore();
@@ -25,11 +26,12 @@ export async function ensureStore() {
     if (nr) return { data: st, revision: nr };
     row = await db.readStore(); st = row.data; rev = row.revision;
   }
-  if (st._mig !== C.SCHEMA || !st.tickets) {
+  if (st._mig !== C.SCHEMA || !st.econ) {
     if (typeof C.hwEnsure === 'function') C.hwEnsure(st);
     if (typeof C.ensureExtras === 'function') C.ensureExtras(st);
     if (typeof C.grEnsure === 'function') C.grEnsure(st);
     if (typeof C.tkEnsure === 'function') C.tkEnsure(st);
+    if (typeof C.ecEnsure === 'function') C.ecEnsure(st);
     st._mig = C.SCHEMA;
     const nr = await db.casStore(st, rev);
     if (nr) return { data: st, revision: nr };
