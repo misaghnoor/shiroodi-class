@@ -1,4 +1,4 @@
-/* market-charts.js — نمودار پیشرفته، تحلیل تکنیکال + چیدمان تمام‌عرض دسکتاپ */
+/* market-charts.js — نمودار پیشرفته، تحلیل تکنیکال، چیدمان تمام‌عرض + خرید/فروش بدون باگ */
 (function () {
 'use strict';
 const C = globalThis.ClassCore;
@@ -29,7 +29,7 @@ const stl = document.createElement('style'); stl.id = 'mcStyles';
 if (!document.getElementById('mcStyles')) document.head.appendChild(stl);
 stl.textContent = CSS;
 
-/* ---------- محاسبات ---------- */
+/* ---------- محاسبات تکنیکال ---------- */
 function sma(arr, n) {
   const out = [];
   for (let i = 0; i < arr.length; i++) {
@@ -84,6 +84,20 @@ function tipOf(an, sig) {
   if (sig.k === 'sell') return 'RSI بالای ۷۰ یعنی خرید هیجانی. در بازار واقعی خیلی‌ها اینجا <b>سودشان را سیو می‌کنند</b>. درس: طمع، دشمن سود است.';
   if (sig.k === 'hold') return 'بازار همیشه جهت ندارد. بیشتر روزهای یک سرمایه‌گذار حرفه‌ای، روزِ <b>نداشتن معامله</b> است. صبر هم مهارت است.';
   return 'هرچه کندل بیشتری ساخته شود تحلیل دقیق‌تر است؛ فعلاً روی مفاهیم تمرکز کن.';
+}
+
+/* ---------- سناریوی ریسک (متن ساده و گرد) ---------- */
+function riskLine(a, qty) {
+  const p = C.ecPrice(a), vol = C.ecVol(a).vol, value = qty * p;
+  const good = Math.round(value * (1 + vol * 1.5));
+  const mid = Math.round(value * (1 + vol * 0.2));
+  const bad = Math.round(value * (1 - vol * 2));
+  return '🧮 سناریوها: 📈 ' + fa(good) + ' / ➖ ' + fa(mid) + ' / 📉 ' + fa(bad) + ' سکه • نوسان روزانه ' + faNum(vol * 100, 1) + '٪';
+}
+function readQty() {
+  const el = document.getElementById('mkQty');
+  const max = (S().econ.settings || {}).maxTradeQty || 15;
+  return el ? clamp(Number(en(el.textContent)) || 1, 1, max) : 1;
 }
 
 /* ---------- نمودارها ---------- */
@@ -169,6 +183,10 @@ function inject() {
     const onBtn = document.querySelector('#view .tabs [data-act="mkTab"].on');
     if (!onBtn || onBtn.dataset.tab !== 'market') return;
     const body = document.getElementById('mkBody'); if (!body) return;
+
+    /* فروش همیشه فعال */
+    body.querySelectorAll('[data-act="mkSell"]').forEach(b => { b.removeAttribute('disabled'); b.title = 'هر زمان خواستی بفروش'; });
+
     const grid = body.querySelector('.grid.mk-grid2'); if (!grid) return;
     const host = grid.querySelector('.mk-box'); if (!host || host.querySelector('#mcTools')) return;
     const a = currentAsset(); if (!a) return;
@@ -183,7 +201,6 @@ function inject() {
     host.insertBefore(tools, chartWrap);
     redraw(host, a);
 
-    /* --- چیدمان: حذف ستون خالی معلم + تمام‌عرض کردن --- */
     if (isT()) {
       const second = grid.children[1];
       if (second && second.querySelector('[data-act="mkRoll"]') && !second.querySelector('input,select,textarea')) {
@@ -193,7 +210,6 @@ function inject() {
         grid.classList.add('mc-single');
       }
     }
-    /* --- کارت‌های تحلیل: تمام‌عرض زیر نمودار --- */
     let an = document.getElementById('mcAnalysis');
     if (!an) { an = document.createElement('div'); an.id = 'mcAnalysis'; an.className = 'mc-grid'; }
     an.innerHTML = analysisHTML(a);
@@ -217,5 +233,53 @@ ACT.mcMode = el => {
   const a = currentAsset();
   if (host && a) redraw(host, a);
   Sound.play('tap');
+};
+
+/* ---------- خرید: پیام تمیز، بدون HTML خام و بدون اعشار ---------- */
+ACT.mkBuy = el => {
+  const id = el.dataset.id, a = (S().econ.assets || []).find(x => x.id === id);
+  if (!a) return;
+  const qty = readQty();
+  const p = C.ecPrice(a);
+  const cost = Math.round(qty * p * (1 + ((S().econ.settings.tradeFee || 0) / 100)));
+  const body = fa(qty) + ' سهم «' + a.name + '» به قیمت تقریبی ' + fa(cost) + ' سکه. ' + riskLine(a, qty) + ' اگر قیمت پایین بیاید ضرر می‌کنی؛ می‌توانی بیمه‌اش هم بکنی.';
+  confirmDlg({ title: '📈 خرید سهم ' + a.icon + ' ' + a.name, body: body, okText: 'خرید کن', onOk: () => {
+    send('econ.trade', { assetId: id, side: 'buy', qty: qty }, null, { sound: null }).then(r => {
+      if (r) {
+        Sound.play('pop');
+        toast('📈 ' + fa(qty) + ' سهم ' + a.symbol + ' خریدی • ' + fa(r.cost || cost) + ' سکه', 'ok');
+        renderView();
+        const req = S().mktExt && S().mktExt.settings && S().mktExt.settings.journalRequired;
+        if (req) setTimeout(() => promptDlg({ title: '📝 چرا این سهم را خریدی؟', placeholder: 'دلیل تحلیلت را بنویس…', onOk: reason => {
+          const t = (S().econ.trades || []).slice(-1)[0];
+          if (t) send('mkt.journal', { tradeId: t.id, reason: reason, mood: 'confident' }, null, { msg: '📝 دفترچه ثبت شد' });
+        } }), 700);
+      }
+    });
+  } });
+};
+
+/* ---------- فروش: همیشه در دسترس ---------- */
+ACT.mkSell = el => {
+  const id = el.dataset.id, a = (S().econ.assets || []).find(x => x.id === id);
+  if (!a) return;
+  const pf = C.ecPortfolio(S(), SESS.sid);
+  const my = pf.items.find(x => x.id === id);
+  if (!my || !my.qty) return toast('از این سهم نداری؛ اول یکی بخر 📈', 'err');
+  const qty = Math.min(readQty(), my.qty);
+  const p = C.ecPrice(a);
+  const val = Math.round(qty * p * (1 - ((S().econ.settings.tradeFee || 0) / 100)));
+  const avg = my.qty ? my.cost / my.qty : p;
+  const pnl = Math.round((p - avg) * qty);
+  confirmDlg({
+    title: '📉 فروش سهم ' + a.icon + ' ' + a.name,
+    body: fa(qty) + ' سهم از ' + fa(my.qty) + ' سهم تو، به تقریب ' + fa(val) + ' سکه. سود/زیان تقریبی این مقدار: ' + (pnl >= 0 ? '+' : '') + fa(pnl) + ' سکه. سهم زیر پوشش بیمه قابل فروش نیست.',
+    okText: 'بفروش',
+    onOk: () => {
+      send('econ.trade', { assetId: id, side: 'sell', qty: qty }, null, { sound: null }).then(r => {
+        if (r) { Sound.play(pnl >= 0 ? 'win' : 'pop'); toast('💰 فروش انجام شد • ' + fa(r.proceeds || val) + ' سکه برگشت', 'ok'); renderView(); }
+      });
+    }
+  });
 };
 })();
