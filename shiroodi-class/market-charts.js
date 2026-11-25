@@ -1,4 +1,4 @@
-/* market-charts.js — نمودار پیشرفته و تحلیل تکنیکال بورس کلاس + رفع باگ تب‌ها */
+/* market-charts.js — نمودار پیشرفته، تحلیل تکنیکال + چیدمان تمام‌عرض دسکتاپ */
 (function () {
 'use strict';
 const C = globalThis.ClassCore;
@@ -9,25 +9,27 @@ const clamp = C.clamp, mean = C.mean, fa = C.fa, faNum = C.faNum, jShort = C.jSh
 const std = a => { const m = mean(a); return Math.sqrt(mean(a.map(x => (x - m) * (x - m)))); };
 const closes = s => (s || []).map(x => x.c);
 
-/* ---------- CSS ---------- */
 const CSS = `
 #mcTools{gap:6px;flex-wrap:wrap}
 .mc-btn{border:1.5px solid var(--line);background:var(--overlay);border-radius:12px;padding:7px 13px;font-size:.78rem;font-weight:800;color:var(--muted);transition:all .16s}
 .mc-btn:hover{transform:translateY(-1px);border-color:var(--acc)}
 .mc-btn.on{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 60%,#000))}
-.mc-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+#mkBody .grid.mc-single{grid-template-columns:1fr !important}
+#mkBody .grid.mc-single .mk-box{width:100%}
+#mcAnalysis{margin-top:14px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
 .mc-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow);min-width:0}
 .mc-h{font-size:.78rem;font-weight:800;color:var(--muted);margin-bottom:8px}
 .mc-sig{font-size:1rem;font-weight:800;line-height:1.6;display:block}
 .mc-stat{display:flex;justify-content:space-between;font-size:.8rem;padding:4px 0;border-bottom:1px dashed var(--line)}
 .mc-stat:last-child{border:none}
 .mc-stat b{font-family:var(--display);font-weight:400}
-@media (max-width:700px){.mc-grid{grid-template-columns:1fr}}
+@media (max-width:700px){#mcAnalysis{grid-template-columns:1fr}}
 `;
 const stl = document.createElement('style'); stl.id = 'mcStyles';
-if (!document.getElementById('mcStyles')) { document.head.appendChild(stl); stl.textContent = CSS; }
+if (!document.getElementById('mcStyles')) document.head.appendChild(stl);
+stl.textContent = CSS;
 
-/* ---------- محاسبات تکنیکال ---------- */
+/* ---------- محاسبات ---------- */
 function sma(arr, n) {
   const out = [];
   for (let i = 0; i < arr.length; i++) {
@@ -40,48 +42,34 @@ function sma(arr, n) {
 function rsi(arr, n) {
   n = n || 14;
   if (arr.length < n + 1) return arr.map(() => null);
-  const out = [null];
-  let g = 0, l = 0;
+  const out = [null]; let g = 0, l = 0;
   for (let i = 1; i < arr.length; i++) {
-    const d = arr[i] - arr[i - 1];
-    const up = Math.max(d, 0), dn = Math.max(-d, 0);
-    if (i <= n) {
-      g += up; l += dn;
-      if (i === n) { g /= n; l /= n; out.push(l === 0 ? 100 : 100 - 100 / (1 + g / l)); } else out.push(null);
-    } else {
-      g = (g * (n - 1) + up) / n; l = (l * (n - 1) + dn) / n;
-      out.push(l === 0 ? 100 : 100 - 100 / (1 + g / l));
-    }
+    const d = arr[i] - arr[i - 1], up = Math.max(d, 0), dn = Math.max(-d, 0);
+    if (i <= n) { g += up; l += dn; if (i === n) { g /= n; l /= n; out.push(l === 0 ? 100 : 100 - 100 / (1 + g / l)); } else out.push(null); }
+    else { g = (g * (n - 1) + up) / n; l = (l * (n - 1) + dn) / n; out.push(l === 0 ? 100 : 100 - 100 / (1 + g / l)); }
   }
   return out;
 }
 function analyze(a) {
-  const s = (a.series || []).slice(-60);
-  const cl = closes(s);
+  const s = (a.series || []).slice(-60), cl = closes(s);
   if (!cl.length) return { last: 0, sma5: null, sma10: null, rsi: null, sup: 0, res: 0, slope: 0, chg7: 0, vol30: 0, max30: 0, min30: 0, avg30: 0, totalVol: 0 };
   const s5 = sma(cl, 5), s10 = sma(cl, 10), rr = rsi(cl, 14);
-  const last = cl[cl.length - 1];
-  const win = s.slice(-20);
+  const last = cl[cl.length - 1], win = s.slice(-20);
   const sup = win.length ? Math.min.apply(null, win.map(x => x.l)) : last;
   const res = win.length ? Math.max.apply(null, win.map(x => x.h)) : last;
-  let slope = 0;
-  const n = Math.min(10, cl.length);
+  let slope = 0; const n = Math.min(10, cl.length);
   if (n >= 3) {
-    const ys = cl.slice(-n), xs = ys.map((_, i) => i);
-    const mx = mean(xs), my = mean(ys);
+    const ys = cl.slice(-n), xs = ys.map((_, i) => i), mx = mean(xs), my = mean(ys);
     let num = 0, den = 0;
     for (let i = 0; i < n; i++) { num += (xs[i] - mx) * (ys[i] - my); den += (xs[i] - mx) * (xs[i] - mx); }
     slope = den ? (num / den) / my : 0;
   }
   const chg7 = cl.length > 7 ? (last - cl[cl.length - 8]) / cl[cl.length - 8] * 100 : 0;
   const c30 = cl.slice(-30);
-  return {
-    last, sma5: s5[s5.length - 1], sma10: s10[s10.length - 1], rsi: rr[rr.length - 1],
-    sup, res, slope, chg7,
+  return { last, sma5: s5[s5.length - 1], sma10: s10[s10.length - 1], rsi: rr[rr.length - 1], sup, res, slope, chg7,
     vol30: c30.length > 1 ? std(c30) / mean(c30) * 100 : 0,
     max30: Math.max.apply(null, c30), min30: Math.min.apply(null, c30), avg30: mean(c30),
-    totalVol: (a.series || []).reduce((t, x) => t + (x.v || 0), 0)
-  };
+    totalVol: (a.series || []).reduce((t, x) => t + (x.v || 0), 0) };
 }
 function signalOf(an) {
   if (an.rsi == null) return { l: 'داده کافی نیست — صبر کن', c: '#7b7261', i: '⏳', k: 'watch' };
@@ -92,27 +80,26 @@ function signalOf(an) {
   return { l: 'خنثی — مشاهده و صبر', c: '#f59e0b', i: '⏸️', k: 'hold' };
 }
 function tipOf(an, sig) {
-  if (sig.k === 'buy') return 'وقتی RSI زیر ۳۰ است یعنی فروش‌های هیجانی زیاد شده؛ سرمایه‌گذار صبور اینجا به‌جای ترس، <b>دلیل</b> را بررسی می‌کند. یادت باشد: اشباع فروش به‌معنی تضمین صعود نیست، فقط یعنی ریسک/پاداش بهتر شده.';
-  if (sig.k === 'sell') return 'RSI بالای ۷۰ یعنی خرید هیجانی. در بازار واقعی اینجا خیلی‌ها <b>سودشان را سیو می‌کنند</b>. درس: طمع، دشمن سود است.';
-  if (sig.k === 'hold') return 'بازار همیشه جهت ندارد. بیشتر روزهای یک سرمایه‌گذار حرفه‌ای، روزِ <b>نداشتن معامله</b> است. صبر هم یک مهارت است.';
-  return 'هرچه کندل‌های بیشتری ساخته شود، تحلیل دقیق‌تر می‌شود. فعلاً روی یادگیری مفاهیم تمرکز کن.';
+  if (sig.k === 'buy') return 'وقتی RSI زیر ۳۰ است یعنی فروش هیجانی زیاد شده؛ سرمایه‌گذار صبور اینجا به‌جای ترس، <b>دلیل</b> را بررسی می‌کند. اشباع فروش تضمین صعود نیست، فقط ریسک/پاداش را بهتر می‌کند.';
+  if (sig.k === 'sell') return 'RSI بالای ۷۰ یعنی خرید هیجانی. در بازار واقعی خیلی‌ها اینجا <b>سودشان را سیو می‌کنند</b>. درس: طمع، دشمن سود است.';
+  if (sig.k === 'hold') return 'بازار همیشه جهت ندارد. بیشتر روزهای یک سرمایه‌گذار حرفه‌ای، روزِ <b>نداشتن معامله</b> است. صبر هم مهارت است.';
+  return 'هرچه کندل بیشتری ساخته شود تحلیل دقیق‌تر است؛ فعلاً روی مفاهیم تمرکز کن.';
 }
 
-/* ---------- نمودار خط شکسته ---------- */
+/* ---------- نمودارها ---------- */
 function pathFrom(arr, X, Y, col, name) {
-  let d = '', started = false;
-  arr.forEach((v, i) => { if (v == null) return; d += (started ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(v).toFixed(1); started = true; });
+  let d = '', st = false;
+  arr.forEach((v, i) => { if (v == null) return; d += (st ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(v).toFixed(1); st = true; });
   return d ? '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="1.6" stroke-dasharray="5 4"><title>' + name + '</title></path>' : '';
 }
 function lineChartAdv(series, showSMA) {
   const s = (series || []).slice(-40);
-  if (s.length < 2) return '<p class="small muted">دادهٔ کافی برای نمودار خطی نیست.</p>';
-  const cl = closes(s);
-  const s5 = sma(cl, 5), s10 = sma(cl, 10);
+  if (s.length < 2) return '<p class="small muted">دادهٔ کافی نیست.</p>';
+  const cl = closes(s), s5 = sma(cl, 5), s10 = sma(cl, 10);
   let mn = Math.min.apply(null, cl), mx = Math.max.apply(null, cl);
-  if (showSMA) { s5.concat(s10).forEach(v => { if (v != null) { mn = Math.min(mn, v); mx = Math.max(mx, v); } }); }
+  if (showSMA) s5.concat(s10).forEach(v => { if (v != null) { mn = Math.min(mn, v); mx = Math.max(mx, v); } });
   const pad = (mx - mn) * 0.12 || 5; mn -= pad; mx += pad;
-  const w = 680, h = 250, p = 40, pb = 40;
+  const w = 900, h = 300, p = 44, pb = 42;
   const X = i => p + (w - 2 * p) * (i / (s.length - 1));
   const Y = v => h - pb - (h - p - pb) * ((v - mn) / (mx - mn));
   let grid = '';
@@ -120,20 +107,15 @@ function lineChartAdv(series, showSMA) {
   const pts = cl.map((v, i) => X(i).toFixed(1) + ',' + Y(v).toFixed(1)).join(' ');
   const area = 'M' + X(0).toFixed(1) + ',' + Y(cl[0]).toFixed(1) + ' ' + cl.map((v, i) => 'L' + X(i).toFixed(1) + ',' + Y(v).toFixed(1)).join(' ') + ' L' + X(cl.length - 1).toFixed(1) + ',' + (h - pb) + ' L' + X(0).toFixed(1) + ',' + (h - pb) + ' Z';
   const dots = cl.map((v, i) => '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(v).toFixed(1) + '" r="2.6" fill="var(--acc)"><title>' + jShort(s[i].d) + ': ' + faNum(v) + '</title></circle>').join('');
-  const smaPaths = showSMA ? (pathFrom(s5, X, Y, '#f59e0b', 'SMA5') + pathFrom(s10, X, Y, '#7c3aed', 'SMA10')) : '';
+  const smaPaths = showSMA ? pathFrom(s5, X, Y, '#f59e0b', 'SMA5') + pathFrom(s10, X, Y, '#7c3aed', 'SMA10') : '';
   const labs = [0, Math.floor(s.length / 2), s.length - 1].map(i => '<text x="' + X(i) + '" y="' + (h - 6) + '" font-size="10" fill="var(--muted)" text-anchor="middle">' + jShort(s[i].d) + '</text>').join('');
-  return '<div dir="ltr" style="overflow-x:auto"><svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;min-width:320px;height:auto">' +
-    '<defs><linearGradient id="mcLn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0ea5e9" stop-opacity=".35"/><stop offset="1" stop-color="#0ea5e9" stop-opacity="0"/></linearGradient></defs>' +
-    grid + '<path d="' + area + '" fill="url(#mcLn)"/><polyline points="' + pts + '" fill="none" stroke="var(--acc)" stroke-width="2.4" stroke-linejoin="round"/>' + smaPaths + dots + labs +
-    '<text x="' + (w - p) + '" y="' + (Y(cl[cl.length - 1]) - 8) + '" font-size="11" font-weight="800" fill="var(--acc)" text-anchor="end">' + faNum(cl[cl.length - 1]) + '</text></svg></div>';
+  return '<div dir="ltr" style="overflow-x:auto"><svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;min-width:320px;height:auto"><defs><linearGradient id="mcLn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0ea5e9" stop-opacity=".35"/><stop offset="1" stop-color="#0ea5e9" stop-opacity="0"/></linearGradient></defs>' + grid + '<path d="' + area + '" fill="url(#mcLn)"/><polyline points="' + pts + '" fill="none" stroke="var(--acc)" stroke-width="2.4" stroke-linejoin="round"/>' + smaPaths + dots + labs + '<text x="' + (w - p) + '" y="' + (Y(cl[cl.length - 1]) - 8) + '" font-size="11" font-weight="800" fill="var(--acc)" text-anchor="end">' + faNum(cl[cl.length - 1]) + '</text></svg></div>';
 }
-
-/* ---------- کندل پیشرفته ---------- */
 function candleAdv(series) {
   const s = (series || []).slice(-40);
   if (!s.length) return '<p class="small muted">کندلی نیست.</p>';
   const cl = closes(s), s10 = sma(cl, 10);
-  const w = 680, h = 280, p = 40, pb = 64;
+  const w = 900, h = 330, p = 44, pb = 66;
   let mn = Infinity, mx = -Infinity;
   s.forEach(x => { mn = Math.min(mn, x.l); mx = Math.max(mx, x.h); });
   const pad = (mx - mn) * 0.12 || 5; mn -= pad; mx += pad;
@@ -141,46 +123,33 @@ function candleAdv(series) {
   const Y = v => h - pb - (h - p - pb) * ((v - mn) / (mx - mn));
   let grid = '';
   [0, .25, .5, .75, 1].forEach(k => { const v = mn + (mx - mn) * k; grid += '<line x1="' + p + '" x2="' + (w - p) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="var(--line)" stroke-dasharray="4 5"/><text x="' + (p - 6) + '" y="' + (Y(v) + 4) + '" font-size="10" fill="var(--muted)" text-anchor="end">' + faNum(v, 0) + '</text>'; });
-  const bw = Math.max(3, Math.min(14, (w - 2 * p) / s.length * 0.62));
+  const bw = Math.max(4, Math.min(18, (w - 2 * p) / s.length * 0.62));
   const maxV = Math.max.apply(null, [1].concat(s.map(x => x.v || 1)));
   const vols = s.map((x, i) => { const vh = (x.v || 0) / maxV * (pb - 26); return '<rect x="' + (X(i) - bw / 2) + '" y="' + (h - 20 - vh) + '" width="' + bw + '" height="' + Math.max(1.5, vh) + '" fill="' + (x.c >= x.o ? '#16a34a44' : '#e11d4844') + '"/>'; }).join('');
   const candles = s.map((x, i) => { const up = x.c >= x.o, col = up ? '#16a34a' : '#e11d48', cx = X(i); return '<g><line x1="' + cx + '" x2="' + cx + '" y1="' + Y(x.h) + '" y2="' + Y(x.l) + '" stroke="' + col + '" stroke-width="1.6"/><rect x="' + (cx - bw / 2) + '" y="' + Y(Math.max(x.o, x.c)) + '" width="' + bw + '" height="' + Math.max(2, Math.abs(Y(x.o) - Y(x.c))) + '" fill="' + col + '" rx="1.5"><title>' + jShort(x.d) + ' O' + faNum(x.o) + ' H' + faNum(x.h) + ' L' + faNum(x.l) + ' C' + faNum(x.c) + ' V' + fa(x.v) + '</title></rect></g>'; }).join('');
   const smaPath = pathFrom(s10, X, Y, '#7c3aed', 'SMA10');
   const last = s[s.length - 1];
   const labs = [0, Math.floor(s.length / 2), s.length - 1].map(i => '<text x="' + X(i) + '" y="' + (h - 4) + '" font-size="10" fill="var(--muted)" text-anchor="middle">' + jShort(s[i].d) + '</text>').join('');
-  return '<div dir="ltr" style="overflow-x:auto"><svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;min-width:320px;height:auto">' + grid + vols + candles + smaPath +
-    '<line x1="' + p + '" x2="' + (w - p) + '" y1="' + Y(last.c) + '" y2="' + Y(last.c) + '" stroke="var(--acc)" stroke-dasharray="6 4"/>' +
-    '<text x="' + (w - p) + '" y="' + (Y(last.c) - 5) + '" font-size="10.5" font-weight="800" fill="var(--acc)" text-anchor="end">' + faNum(last.c) + '</text>' + labs + '</svg></div>';
+  return '<div dir="ltr" style="overflow-x:auto"><svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;min-width:320px;height:auto">' + grid + vols + candles + smaPath + '<line x1="' + p + '" x2="' + (w - p) + '" y1="' + Y(last.c) + '" y2="' + Y(last.c) + '" stroke="var(--acc)" stroke-dasharray="6 4"/><text x="' + (w - p) + '" y="' + (Y(last.c) - 5) + '" font-size="10.5" font-weight="800" fill="var(--acc)" text-anchor="end">' + faNum(last.c) + '</text>' + labs + '</svg></div>';
 }
-
-/* ---------- گیج RSI ---------- */
 function rsiGauge(v) {
-  const val = v == null ? 50 : clamp(v, 0, 100);
-  const t = val / 100;
-  const a = Math.PI * (1 - t);
+  const val = v == null ? 50 : clamp(v, 0, 100), t = val / 100, a = Math.PI * (1 - t);
   const x = 60 + 44 * Math.cos(a), y = 60 - 44 * Math.sin(a);
   const col = val < 30 ? '#16a34a' : val > 70 ? '#e11d48' : '#f59e0b';
-  return '<svg viewBox="0 0 120 70" style="width:150px;height:86px">' +
-    '<path d="M16 60 A44 44 0 0 1 104 60" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>' +
-    '<path d="M16 60 A44 44 0 0 1 104 60" fill="none" stroke="' + col + '" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + (Math.PI * 44 * t).toFixed(1) + ' 999"/>' +
-    '<line x1="60" y1="60" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>' +
-    '<circle cx="60" cy="60" r="5" fill="var(--ink)"/>' +
-    '<text x="10" y="69" font-size="8" fill="var(--muted)">0</text><text x="102" y="69" font-size="8" fill="var(--muted)">100</text></svg>';
+  return '<svg viewBox="0 0 120 70" style="width:150px;height:86px"><path d="M16 60 A44 44 0 0 1 104 60" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/><path d="M16 60 A44 44 0 0 1 104 60" fill="none" stroke="' + col + '" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + (Math.PI * 44 * t).toFixed(1) + ' 999"/><line x1="60" y1="60" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><circle cx="60" cy="60" r="5" fill="var(--ink)"/><text x="10" y="69" font-size="8" fill="var(--muted)">0</text><text x="102" y="69" font-size="8" fill="var(--muted)">100</text></svg>';
 }
-
-/* ---------- پنل تحلیل ---------- */
 function analysisHTML(a) {
   const an = analyze(a), sig = signalOf(an);
   const posPct = an.res > an.sup ? clamp((an.last - an.sup) / (an.res - an.sup) * 100, 0, 100) : 50;
   return '<div class="mc-card" style="border-color:' + sig.c + '"><div class="mc-h">' + sig.i + ' سیگنال ترکیبی</div><span class="mc-sig" style="color:' + sig.c + '">' + sig.l + '</span><p class="small muted mt">ترکیب RSI + میانگین متحرک + روند. ابزار آموزشی است، نه دستور خرید.</p></div>' +
     '<div class="mc-card"><div class="mc-h">📉 RSI چهارده‌روزه</div><div style="text-align:center">' + rsiGauge(an.rsi) + '</div><b style="display:block;text-align:center;font-family:var(--display);font-size:1.3rem">' + (an.rsi == null ? '—' : faNum(an.rsi, 0)) + '</b><p class="small muted" style="text-align:center">' + (an.rsi == null ? 'داده کم' : an.rsi < 30 ? 'اشباع فروش' : an.rsi > 70 ? 'اشباع خرید' : 'متعادل') + '</p></div>' +
-    '<div class="mc-card"><div class="mc-h">🧱 حمایت و مقاومت</div><div class="row mt" style="gap:6px"><span class="chip" style="color:#16a34a">حمایت ' + faNum(an.sup) + '</span><span class="chip" style="color:#e11d48">مقاومت ' + faNum(an.res) + '</span></div><div class="mk-bar mt" style="--mc:#0ea5e9"><i style="width:' + posPct.toFixed(0) + '%"></i></div><p class="small muted mt">جایگاه قیمت فعلی در کانال ۲۰ روزه.</p></div>' +
+    '<div class="mc-card"><div class="mc-h">🧱 حمایت و مقاومت</div><div class="row mt" style="gap:6px"><span class="chip" style="color:#16a34a">حمایت ' + faNum(an.sup) + '</span><span class="chip" style="color:#e11d48">مقاومت ' + faNum(an.res) + '</span></div><div class="mk-bar mt" style="--mc:#0ea5e9"><i style="width:' + posPct.toFixed(0) + '%"></i></div><p class="small muted mt">جایگاه قیمت در کانال ۲۰ روزه.</p></div>' +
     '<div class="mc-card"><div class="mc-h">🧭 روند ده‌روز</div><b style="display:block;font-size:1.35rem;font-family:var(--display);color:' + (an.slope > 0.001 ? '#16a34a' : an.slope < -0.001 ? '#e11d48' : '#f59e0b') + '">' + (an.slope > 0.001 ? '▲ صعودی' : an.slope < -0.001 ? '▼ نزولی' : '→ خنثی') + '</b><p class="small muted mt">شیب روزانه ' + faNum(an.slope * 100, 2) + '٪ • تغییر ۷ روز ' + faNum(an.chg7, 1) + '٪</p></div>' +
     '<div class="mc-card"><div class="mc-h">📊 آمار سی‌روز</div><div class="mc-stat"><span>بیشینه</span><b>' + faNum(an.max30) + '</b></div><div class="mc-stat"><span>کمینه</span><b>' + faNum(an.min30) + '</b></div><div class="mc-stat"><span>میانگین</span><b>' + faNum(an.avg30) + '</b></div><div class="mc-stat"><span>نوسان</span><b>' + faNum(an.vol30, 1) + '٪</b></div><div class="mc-stat"><span>حجم کل</span><b>' + fa(an.totalVol) + '</b></div></div>' +
     '<div class="mc-card"><div class="mc-h">🎓 نکتهٔ آموزشی</div><p class="small" style="line-height:2">' + tipOf(an, sig) + '</p></div>';
 }
 
-/* ---------- تزریق به تب بورس ---------- */
+/* ---------- تزریق و چیدمان ---------- */
 function currentAsset() {
   const chip = document.querySelector('#mkBody .mk-chip.on');
   const id = chip ? chip.dataset.id : null;
@@ -190,7 +159,7 @@ function currentAsset() {
 function redraw(host, a) {
   const wrap = host.querySelector('#mcChart'); if (!wrap) return;
   wrap.innerHTML = CH.mode === 'line' ? lineChartAdv(a.series, true)
-    : CH.mode === 'both' ? (lineChartAdv(a.series, true) + candleAdv(a.series))
+    : CH.mode === 'both' ? lineChartAdv(a.series, true) + candleAdv(a.series)
     : candleAdv(a.series);
 }
 function inject() {
@@ -199,8 +168,9 @@ function inject() {
     if (window.MKT_TAB) return;
     const onBtn = document.querySelector('#view .tabs [data-act="mkTab"].on');
     if (!onBtn || onBtn.dataset.tab !== 'market') return;
-    const host = document.querySelector('#mkBody .grid .mk-box');
-    if (!host || host.querySelector('#mcTools')) return;
+    const body = document.getElementById('mkBody'); if (!body) return;
+    const grid = body.querySelector('.grid.mk-grid2'); if (!grid) return;
+    const host = grid.querySelector('.mk-box'); if (!host || host.querySelector('#mcTools')) return;
     const a = currentAsset(); if (!a) return;
     const chartWrap = host.querySelector('div[dir="ltr"]'); if (!chartWrap) return;
     chartWrap.id = 'mcChart';
@@ -212,14 +182,25 @@ function inject() {
       '<span class="chip" style="color:#f59e0b">🟠 SMA5</span><span class="chip" style="color:#7c3aed">🟣 SMA10</span>';
     host.insertBefore(tools, chartWrap);
     redraw(host, a);
-    const an = document.createElement('div');
-    an.id = 'mcAnalysis'; an.className = 'mc-grid mt';
+
+    /* --- چیدمان: حذف ستون خالی معلم + تمام‌عرض کردن --- */
+    if (isT()) {
+      const second = grid.children[1];
+      if (second && second.querySelector('[data-act="mkRoll"]') && !second.querySelector('input,select,textarea')) {
+        const heroHas = !!document.querySelector('.gr-hero [data-act="mkRoll"]');
+        if (!heroHas) { const b = second.querySelector('[data-act="mkRoll"]'); if (b) tools.appendChild(b); }
+        second.remove();
+        grid.classList.add('mc-single');
+      }
+    }
+    /* --- کارت‌های تحلیل: تمام‌عرض زیر نمودار --- */
+    let an = document.getElementById('mcAnalysis');
+    if (!an) { an = document.createElement('div'); an.id = 'mcAnalysis'; an.className = 'mc-grid'; }
     an.innerHTML = analysisHTML(a);
-    host.appendChild(an);
+    grid.insertAdjacentElement('afterend', an);
   } catch (e) { console.error('mc inject', e); }
 }
 
-/* ---------- رفع باگ تب‌ها + یکپارچه‌سازی ---------- */
 const baseRV = renderView;
 renderView = function () {
   if (UI.section === 'econ' && !window.__mcLastExt) window.MKT_TAB = null;
