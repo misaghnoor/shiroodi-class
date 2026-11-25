@@ -1,0 +1,341 @@
+/* market.js — رابط کاربری بورس دانش و اهداف همکاری */
+(function () {
+'use strict';
+const C = globalThis.ClassCore;
+if (!C || !C.EC_METRICS || typeof navItems !== 'function') return;
+
+const MET = C.EC_METRICS, price = C.ecPrice, chg = C.ecChange;
+
+const CSS = `
+.mk{--up:#16a34a;--down:#e11d48;--gold:#d97706;--ink2:#2b2418;--paper:#fdf6e8}
+[data-theme=dark] .mk{--paper:#141d33;--ink2:#e9eef7}
+.mk-hero{position:relative;overflow:hidden;border-radius:24px;padding:24px 26px;margin-bottom:18px;border:1.5px solid color-mix(in srgb,var(--gold) 30%,var(--line));
+background:radial-gradient(120% 140% at 88% -10%,color-mix(in srgb,var(--gold) 26%,transparent),transparent 55%),radial-gradient(90% 120% at 8% 110%,color-mix(in srgb,#1d4ed8 20%,transparent),transparent 60%),linear-gradient(135deg,color-mix(in srgb,var(--gold) 12%,var(--paper)),color-mix(in srgb,#1d4ed8 10%,var(--paper)));box-shadow:var(--shadow)}
+.mk-hero::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.35;
+background-image:linear-gradient(transparent 95%,color-mix(in srgb,var(--gold) 40%,transparent) 95%),linear-gradient(90deg,transparent 95%,color-mix(in srgb,var(--gold) 25%,transparent) 95%);background-size:26px 26px}
+.mk-hero>*{position:relative;z-index:2}
+.mk-hero h1{font-family:var(--display);font-weight:400;font-size:2rem;color:var(--ink2)}
+.mk-quick{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.mk-quick .q{display:inline-flex;align-items:center;gap:7px;background:color-mix(in srgb,var(--surface) 84%,transparent);border:1px solid var(--line);border-radius:13px;padding:7px 13px;font-size:.8rem;font-weight:800}
+.mk-quick .q b{font-family:var(--display);font-size:1.15rem;font-weight:400}
+.mk-chips{display:flex;gap:8px;flex-wrap:wrap}
+.mk-chip{border:1.5px solid var(--line);background:var(--overlay);border-radius:14px;padding:8px 13px;font-size:.82rem;font-weight:800;color:var(--muted);display:inline-flex;align-items:center;gap:7px;transition:all .16s}
+.mk-chip:hover{transform:translateY(-2px);border-color:var(--ac,var(--gold))}
+.mk-chip.on{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--ac,var(--gold)),color-mix(in srgb,var(--ac,var(--gold)) 60%,#000))}
+.mk-chip .pr{font-variant-numeric:tabular-nums;opacity:.9}
+.mk-chip .up{color:#86efac}.mk-chip .dn{color:#fca5a5}
+.mk-price{font-family:var(--display);font-size:2.6rem;font-weight:400;line-height:1.1}
+.mk-up{color:var(--up);font-weight:800}.mk-down{color:var(--down);font-weight:800}
+.mk-box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.mk-step{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;background:var(--overlay)}
+.mk-step button{border:none;background:var(--surface2);width:38px;height:40px;font-size:1.1rem;font-weight:800;color:var(--ink)}
+.mk-step button:hover{background:color-mix(in srgb,var(--gold) 16%,var(--surface))}
+.mk-step b{min-width:52px;text-align:center;font-family:var(--display);font-size:1.2rem;font-weight:400}
+.mk-pill{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--pc) 13%,var(--surface));color:var(--pc);border:1px solid color-mix(in srgb,var(--pc) 32%,transparent)}
+.mk-mission{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);overflow:hidden}
+.mk-mission::before{content:'';position:absolute;top:0;bottom:0;right:0;width:5px;background:var(--mc,#1d4ed8)}
+.mk-mission.won{border-color:color-mix(in srgb,var(--up) 45%,var(--line));background:color-mix(in srgb,var(--up) 6%,var(--surface))}
+.mk-mission.lost{opacity:.75;filter:saturate(.6)}
+.mk-bar{height:12px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);overflow:hidden;position:relative;margin-top:10px}
+.mk-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--mc),color-mix(in srgb,var(--mc) 55%,#fff));transition:width .6s}
+.mk-bar .tgt{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--ink2);opacity:.6;border-radius:2px}
+.mk-rank{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px dashed var(--line)}
+.mk-rank:last-child{border:none}
+.mk-rank .bar{flex:1;height:10px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.mk-rank .bar i{display:block;height:100%;border-radius:99px}
+.mk-edu{border:1.5px dashed color-mix(in srgb,var(--gold) 45%,var(--line));background:color-mix(in srgb,var(--gold) 6%,var(--surface));border-radius:16px;padding:14px}
+.mk-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.mk-row:last-child{border:none}
+.mk-scroll{max-height:56vh;overflow:auto;scrollbar-width:thin}
+@media (max-width:760px){
+.mk-hero{padding:18px 16px}.mk-hero h1{font-size:1.45rem}
+.mk-price{font-size:2rem}
+.mk-grid2{grid-template-columns:1fr !important}
+.mk-step button{width:34px;height:36px}
+}
+`;
+const stl = document.createElement('style'); stl.id = 'mkStyles'; stl.textContent = CSS; document.head.appendChild(stl);
+
+const M = { tab: 'market', asset: '', qty: 1, mScope: 'class' };
+const ec = () => S().econ || { assets: [], missions: [], settings: {} };
+const myAsset = () => { const a = ec().assets || []; return a.find(x => x.id === M.asset) || a[0]; };
+const pill = (t, c, i) => `<span class="mk-pill" style="--pc:${c}">${i || ''} ${esc(t)}</span>`;
+
+/* ---------- candlestick chart ---------- */
+function candleChart(series) {
+  const s = (series || []).slice(-40);
+  if (!s.length) return empty('📈', 'هنوز کندلی نیست', 'با گذشت روزهای مدرسه، کندل‌ها ساخته می‌شوند.');
+  const w = 680, h = 270, p = 36, pb = 50;
+  let mn = Infinity, mx = -Infinity;
+  s.forEach(x => { mn = Math.min(mn, x.l); mx = Math.max(mx, x.h); });
+  const pad = (mx - mn) * 0.12 || 5; mn -= pad; mx += pad;
+  const X = i => p + (w - 2 * p) * (s.length === 1 ? .5 : i / (s.length - 1));
+  const Y = v => h - pb - (h - p - pb) * ((v - mn) / (mx - mn));
+  const bw = Math.max(3, Math.min(14, (w - 2 * p) / s.length * 0.62));
+  let grid = '';
+  [0, .25, .5, .75, 1].forEach(k => { const v = mn + (mx - mn) * k; grid += `<line x1="${p}" x2="${w - p}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-dasharray="${k === 0 ? '0' : '4 5'}"/><text x="${p - 6}" y="${Y(v) + 4}" font-size="10" fill="var(--muted)" text-anchor="end">${faNum(v, 0)}</text>`; });
+  const maxV = Math.max(1, ...s.map(x => x.v || 1));
+  const vols = s.map((x, i) => { const vh = (x.v || 0) / maxV * (pb - 20); return `<rect x="${X(i) - bw / 2}" y="${h - 18 - vh}" width="${bw}" height="${Math.max(1.5, vh)}" fill="${x.c >= x.o ? '#16a34a44' : '#e11d4844'}"/>`; }).join('');
+  const candles = s.map((x, i) => {
+    const up = x.c >= x.o, col = up ? '#16a34a' : '#e11d48', cx = X(i);
+    return `<g><line x1="${cx}" x2="${cx}" y1="${Y(x.h)}" y2="${Y(x.l)}" stroke="${col}" stroke-width="1.6"/>
+      <rect x="${cx - bw / 2}" y="${Y(Math.max(x.o, x.c))}" width="${bw}" height="${Math.max(2, Math.abs(Y(x.o) - Y(x.c)))}" fill="${col}" rx="1.5"><title>${jShort(x.d)} — باز ${faNum(x.o)} • بسته ${faNum(x.c)} • سقف ${faNum(x.h)} • کف ${faNum(x.l)} • حجم ${fa(x.v)}${x.reason ? '\n' + x.reason : ''}</title></rect></g>`;
+  }).join('');
+  const last = s[s.length - 1];
+  const labs = [0, Math.floor(s.length / 2), s.length - 1].map(i => `<text x="${X(i)}" y="${h - 4}" font-size="10" fill="var(--muted)" text-anchor="middle">${jShort(s[i].d)}</text>`).join('');
+  return `<div dir="ltr" style="overflow-x:auto"><svg viewBox="0 0 ${w} ${h}" style="width:100%;min-width:520px;height:auto;display:block">${grid}${vols}${candles}
+    <line x1="${p}" x2="${w - p}" y1="${Y(last.c)}" y2="${Y(last.c)}" stroke="var(--acc)" stroke-dasharray="6 4" stroke-width="1.2"/>
+    <text x="${w - p}" y="${Y(last.c) - 5}" font-size="10.5" font-weight="800" fill="var(--acc)" text-anchor="end">${faNum(last.c)}</text>${labs}</svg></div>`;
+}
+function eduCard() {
+  return `<div class="mk-edu"><div class="spread mb"><b class="small">📚 کندل یعنی چه؟ (درسِ بورس در یک نگاه)</b><span class="chip">ویژهٔ کلاس</span></div>
+  <div dir="ltr" style="text-align:center"><svg viewBox="0 0 300 120" style="max-width:300px;width:100%">
+    <line x1="80" y1="10" x2="80" y2="110" stroke="#16a34a" stroke-width="2"/><rect x="66" y="35" width="28" height="45" fill="#16a34a" rx="3"/>
+    <line x1="210" y1="10" x2="210" y2="110" stroke="#e11d48" stroke-width="2"/><rect x="196" y="30" width="28" height="50" fill="#e11d48" rx="3"/>
+    <text x="100" y="20" font-size="10" fill="#16a34a" text-anchor="start">سقف (بیشترین قیمت روز)</text>
+    <text x="100" y="45" font-size="10" fill="#16a34a">بدنه: باز→بسته (سبز یعنی بالا رفت)</text>
+    <text x="100" y="80" font-size="10" fill="#16a34a">کف (کمترین قیمت روز)</text>
+    <text x="180" y="105" font-size="10" fill="#e11d48" text-anchor="end">قرمز یعنی بسته پایین‌تر از باز است</text>
+  </svg></div>
+  <p class="small muted" style="line-height:2">در بورس دانش، قیمت هر سهم از <b>کار واقعی کلاس</b> ساخته می‌شود: روزی که میانگین نمرات یا تکالیف آن درس خوب باشد، سهم بالا می‌رود. یعنی ارزشِ واقعی = تلاشِ واقعی. معامله‌گر خوب کسی است که صبر می‌کند، همهٔ سکه‌اش را یک‌جا نمی‌خرد و دفترچهٔ دلیلِ خرید و فروش می‌نویسد.</p></div>`;
+}
+
+/* ---------- market tab ---------- */
+function marketTab() {
+  const st = S(), e = ec(), a = myAsset();
+  if (!a) return `<div class="mk-box">${empty('📈', 'سهامی تعریف نشده', 'معلم از تب قواعد سهام جدید بسازد.')}</div>`;
+  const p = price(a), ch = chg(a), last = (a.series || [])[a.series.length - 1];
+  const pf = isT() ? null : (S().econ ? C.ecPortfolio(st, SESS.sid) : null);
+  const my = pf ? (pf.items.find(x => x.id === a.id) || null) : null;
+  const w = isT() ? null : (S().econ.wallet != null ? S().econ.wallet : C.ecWallet(st, SESS.sid).balance);
+  const fee = e.settings.tradeFee || 0;
+  const est = Math.round(M.qty * p * (1 + fee / 100));
+  return `<div class="mk-chips mb">${(e.assets || []).filter(x => !x.paused).map(x => { const c2 = chg(x); return `<button type="button" class="mk-chip ${x.id === a.id ? 'on' : ''}" style="--ac:${x.color}" data-act="mkPick" data-id="${x.id}">${x.icon} ${esc(x.symbol)} <span class="pr">${faNum(price(x), 0)}</span> <span class="${c2 >= 0 ? 'up' : 'dn'}">${c2 >= 0 ? '▲' : '▼'}${faNum(Math.abs(c2), 1)}٪</span></button>`; }).join('')}</div>
+  <div class="grid g2 mk-grid2" style="align-items:start">
+    <div class="mk-box"><div class="spread mb"><div class="row" style="gap:10px"><span class="gr-ico" style="--kc:${a.color}">${a.icon}</span>
+      <div><b style="font-size:1.05rem">${esc(a.name)}</b><div class="small muted">${a.subject === '@help' ? 'سنجه: همکاری و احوال‌پرسی کلاس' : 'سنجه: عملکرد کلاس در درس ' + esc(a.subject)}</div></div></div>
+      <div style="text-align:left"><div class="mk-price" style="color:${a.color}">${faNum(p)}</div><div class="${ch >= 0 ? 'mk-up' : 'mk-down'}" style="font-size:.85rem">${ch >= 0 ? '▲' : '▼'} ${faNum(Math.abs(ch), 1)}٪ نسبت به دیروز</div></div></div>
+      ${candleChart(a.series)}
+      ${last ? `<div class="row mt" style="gap:6px">${pill(last.reason || '➖ روز معمولی', '#7b7261')}<span class="chip">حجم امروز: ${fa(last.v)}</span><span class="chip">سقف ${faNum(last.h)} / کف ${faNum(last.l)}</span></div>` : ''}</div>
+    <div>
+      ${!isT() ? `<div class="mk-box mb"><div class="spread"><div><span class="small muted">کیف پول من</span><div class="mk-price" style="font-size:1.8rem;color:var(--gold)">🪙 ${fa(w || 0)}</div></div>
+        <div style="text-align:left"><span class="small muted">ارزش سهام من</span><div class="mk-price" style="font-size:1.8rem;color:${a.color}">${fa(pf ? pf.value : 0)}</div></div></div>
+        <div class="row mt" style="gap:6px"><span class="chip">سود/زیان: <b class="${(pf && pf.pnl) >= 0 ? 'mk-up' : 'mk-down'}">${pf && pf.pnl >= 0 ? '+' : ''}${fa(pf ? pf.pnl : 0)}</b></span><span class="chip">دارایی کل: ${fa(pf ? pf.total : 0)}</span></div>
+        <div class="divider"></div>
+        <div class="row" style="gap:10px"><span class="small bold">تعداد سهم</span><span class="mk-step"><button type="button" data-act="mkQty" data-d="-1">−</button><b id="mkQty">${fa(M.qty)}</b><button type="button" data-act="mkQty" data-d="1">+</button></span></div>
+        <div class="row mt" style="gap:6px"><span class="chip">قیمت هر سهم: ${faNum(p)}</span><span class="chip">کارمزد: ${fa(fee)}٪</span><span class="chip acc">هزینهٔ تقریبی: ${fa(est)}</span></div>
+        <div class="row mt"><button type="button" class="btn ok" style="flex:1" data-act="mkBuy" data-id="${a.id}">📈 خرید ${fa(M.qty)} سهم</button>
+          <button type="button" class="btn danger" style="flex:1" data-act="mkSell" data-id="${a.id}" ${my && my.qty ? '' : 'disabled'}>📉 فروش ${fa(my ? Math.min(M.qty, my.qty) : 0)} سهم</button></div>
+        ${my ? `<div class="gr-note mt">دارایی فعلی: ${fa(my.qty)} سهم • میانگین خرید ${faNum(my.qty ? my.cost / my.qty : 0)} • سود این سهم: <b class="${my.pnl >= 0 ? 'mk-up' : 'mk-down'}">${my.pnl >= 0 ? '+' : ''}${fa(my.pnl)}</b></div>` : '<p class="small muted mt">هنوز از این سهم نداری؛ با خرید کوچک شروع کن.</p>'}
+        <p class="small muted mt">⚠️ سقف هر معامله ${fa(e.settings.maxTradeQty)} سهم و روزانه ${fa(e.settings.dailyTrades)} معامله. قیمت‌ها بالا و پایین می‌روند؛ بدون دلیل معامله نکن.</p></div>`
+      : `<div class="mk-box mb"><div class="spread mb"><b class="small">👨‍🏫 نمای معلم</b><button type="button" class="btn sm soft" data-act="mkRoll">🔄 به‌روزرسانی کندل‌ها</button></div>
+        <p class="small muted">قیمت هر سهم هر روز مدرسه از میانگین نمرات/تکالیف همان درس + کمی نوسان تصادفی ساخته می‌شود. معامله فقط برای دانش‌آموزان است.</p>
+        <div class="divider"></div><b class="small">معامله‌های اخیر کلاس</b>
+        <div class="mk-scroll mt">${(e.trades || []).slice(-14).reverse().map(t => `<div class="mk-row"><span class="chip">${t.side === 'buy' ? '📈' : '📉'} ${t.side === 'buy' ? 'خرید' : 'فروش'}</span><b class="small">${esc((stuById(st, t.sid) || {}).name || '')}</b><span class="small muted">${fa(t.qty)} × ${esc(t.symbol)} @ ${faNum(t.price)}</span><span class="chip">${fa(t.value)} 🪙</span><span class="small muted">${jShort(iranISO(new Date(t.at)))}</span></div>`).join('') || '<p class="small muted">معامله‌ای ثبت نشده.</p>'}</div></div>`}
+      ${e.settings.edu !== false ? eduCard() : ''}
+    </div></div>
+  ${!isT() && pf && pf.items.length ? `<div class="mk-box mt"><b class="small mb" style="display:block">💼 سبد سهام من</b>
+    ${pf.items.map(x => `<div class="mk-row"><span class="gr-ico" style="--kc:${x.color};width:36px;height:36px;font-size:1.05rem">${x.icon}</span><b class="small" style="flex:1">${esc(x.name)}</b><span class="chip">${fa(x.qty)} سهم</span><span class="chip">ارزش ${fa(x.value)}</span><span class="chip ${x.pnl >= 0 ? 'mk-up' : 'mk-down'}" style="color:${x.pnl >= 0 ? 'var(--up)' : 'var(--down)'}">${x.pnl >= 0 ? '+' : ''}${fa(x.pnl)}</span></div>`).join('')}</div>` : ''}`;
+}
+
+/* ---------- missions tab ---------- */
+function missionCard(m, i) {
+  const st = S(), M2 = MET[m.metric] || MET.hw_rate;
+  const today = todayISO(), left = Math.ceil((isoToDate(m.to) - isoToDate(today)) / 864e5);
+  let body = '';
+  if (m.scope === 'battle') {
+    const ranks = (st.groups || []).map(g => ({ g, v: C.ecMissionValue(st, m, g.id) })).sort((a, b) => b.v - a.v);
+    const mx = Math.max(1, ...ranks.map(r => r.v));
+    body = ranks.map((r, k) => `<div class="mk-rank"><span style="width:22px">${['🥇', '🥈', '🥉', '🏅', '🏅', '🏅'][k]}</span><b class="small" style="width:70px">${esc(r.g.name)}</b><div class="bar"><i style="width:${r.v / mx * 100}%;background:${r.g.color}"></i></div><b class="small" style="color:${r.g.color}">${fa(r.v)}${M2.unit}</b></div>`).join('');
+  } else {
+    const v = C.ecMissionValue(st, m, m.scope === 'group' ? m.groupId : null);
+    const pct = clamp(v / Math.max(1, m.target) * 100, 0, 100);
+    body = `<div class="spread small bold mt"><span>پیشرفت: ${fa(v)}${M2.unit}</span><span>هدف: ${fa(m.target)}${M2.unit}</span></div><div class="mk-bar" style="--mc:${pct >= 100 ? '#16a34a' : '#1d4ed8'}"><i style="width:${pct}%"></i><span class="tgt" style="right:100%"></span></div>`;
+  }
+  const rs = m.status === 'settled' ? (m.result && m.result.ok !== false && m.scope !== 'battle' ? (m.result.ok ? '🏆 موفق' : '✖️ ناموفق') : '🏁 پایان‌یافته') : left < 0 ? '⏳ در انتظار تسویه' : `⏳ ${fa(left)} روز مانده`;
+  return `<div class="mk-mission ${m.status === 'settled' && m.result && m.result.ok === false ? 'lost' : m.status === 'settled' ? 'won' : ''}" style="--mc:${m.scope === 'battle' ? '#d97706' : m.scope === 'group' ? '#7c3aed' : '#1d4ed8'};--i:${i}">
+    <div class="spread"><div class="row" style="gap:9px"><span class="gr-ico" style="--kc:${m.scope === 'battle' ? '#d97706' : '#1d4ed8'}">${M2.i}</span>
+      <div><b class="small">${esc(m.title)}</b><div class="small muted">${m.scope === 'battle' ? '🏆 نبرد گروه‌ها' : m.scope === 'group' ? '🧩 ماموریت گروهی' : '👥 ماموریت کل کلاس'} • ${jShort(m.from)} تا ${jShort(m.to)}</div></div></div>
+      ${pill(rs, m.status === 'settled' ? (m.result && m.result.ok === false ? '#e11d48' : '#16a34a') : left <= 1 ? '#f59e0b' : '#1d4ed8')}</div>
+    ${m.desc ? `<div class="gr-note">${esc(m.desc)}</div>` : ''}
+    ${body}
+    <div class="row mt" style="gap:6px"><span class="chip" style="color:#d97706">🪙 ${fa((m.reward || {}).points || 0)}</span><span class="chip" style="color:#7c3aed">⚡ ${fa((m.reward || {}).xp || 0)}</span>${(m.reward || {}).spin ? `<span class="chip" style="color:#e11d48">🎰 ${fa(m.reward.spin)}</span>` : ''}
+      <span class="small muted">پاداش ${m.scope === 'battle' ? 'گروه برنده' : m.scope === 'group' ? 'اعضای گروه' : 'همهٔ کلاس'}</span></div>
+    ${isT() && m.status === 'active' && left < 0 ? `<div class="row mt"><button type="button" class="btn ok sm" data-act="mkSettle" data-id="${m.id}">🏁 تسویه و پاداش</button></div>` : ''}
+    ${isT() && m.status === 'active' ? `<div class="row mt"><button type="button" class="btn ghost sm" data-act="mkMDel" data-id="${m.id}">🗑 حذف</button></div>` : ''}</div>`;
+}
+function missionsTab() {
+  const list = (ec().missions || []).slice().sort((a, b) => (a.status === 'active' ? 0 : 1) - (b.status === 'active' ? 0 : 1) || String(b.from).localeCompare(String(a.from)));
+  return `<div class="grid g2 mk-grid2 stagger">${list.map((m, i) => missionCard(m, i)).join('') || `<div class="mk-box" style="grid-column:1/-1">${empty('🎯', 'ماموریتی نیست', isT() ? 'اولین ماموریت مشترک کلاس را بساز.' : 'به‌زودی ماموریت تازه می‌آید.', isT() ? '<button type="button" class="btn" data-act="mkMNew">➕ ماموریت جدید</button>' : '')}</div>`}</div>
+  ${isT() ? `<div class="row mt"><button type="button" class="btn" data-act="mkMNew">➕ ماموریت / نبرد جدید</button></div>` : ''}`;
+}
+
+/* ---------- board tab ---------- */
+function boardTab() {
+  const st = S(), b = C.ecBoard(st);
+  const rows = b.map((x, i) => `<tr><td>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : fa(i + 1)}</td>
+    <td><div class="row" style="gap:8px;flex-wrap:nowrap">${avHTML(x, 'sm')}<b class="small">${esc(x.name)}</b>${x.id === SESS.sid ? '<span class="chip acc">من</span>' : ''}</div></td>
+    <td>🪙 ${fa(x.cash)}</td><td>📈 ${fa(x.value)}</td><td><b>${fa(x.total)}</b></td>
+    <td class="${x.pnl >= 0 ? 'mk-up' : 'mk-down'}" style="color:${x.pnl >= 0 ? 'var(--up)' : 'var(--down)'}">${x.pnl >= 0 ? '+' : ''}${fa(x.pnl)}</td></tr>`).join('');
+  return `<div class="mk-box"><div class="spread mb"><b>🏆 رتبه‌بندی دارایی کلاس (سکه + سهام)</b><span class="chip">ارزش‌ها لحظه‌ای است</span></div>
+    <div class="tw"><table class="tbl"><thead><tr><th>#</th><th>دانش‌آموز</th><th>نقد</th><th>سهام</th><th>کل</th><th>سود/زیان</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="small muted mt">💡 گفت‌وگوی کلاسی: چرا کسی که زودتر فروخت سود کمتر گرفت؟ چرا تنوع سبد (چند سهم) ریسک را کم می‌کند؟</p></div>`;
+}
+
+/* ---------- teacher settings tab ---------- */
+function setTab() {
+  const s = ec().settings;
+  const step = (k, v, l) => `<div class="srow"><span class="s-lbl">${l}</span><span class="mk-step"><button type="button" data-act="mkStep" data-k="${k}" data-d="-1">−</button><b id="mkS_${k}">${fa(v)}</b><button type="button" data-act="mkStep" data-k="${k}" data-d="1">+</button></span></div>`;
+  const sw = (k, on, l, sub) => `<div class="srow"><div><span class="s-lbl">${l}</span>${sub ? `<span class="s-sub">${sub}</span>` : ''}</div><span class="switch"><input type="checkbox" ${on ? 'checked' : ''} data-chg="mkSet" data-k="${k}"><i></i></span></div>`;
+  return `<div class="grid g2 mk-grid2" style="align-items:start">
+    <div class="mk-box"><h3 class="mb">⚙️ قواعد بورس</h3>
+      ${sw('marketEnabled', s.marketEnabled !== false, '📈 بورس باز باشد')}
+      ${sw('edu', s.edu !== false, '📚 کارت آموزشی کندل', 'توضیح کندل و اصول سرمایه‌گذاری برای بچه‌ها')}
+      ${sw('leaderboard', s.leaderboard !== false, '🏆 نمایش رتبه‌بندی به دانش‌آموزان')}
+      ${step('tradeFee', s.tradeFee || 0, '💱 کارمزد هر معامله (٪)')}
+      ${step('maxTradeQty', s.maxTradeQty || 15, '📦 سقف سهم در هر معامله')}
+      ${step('dailyTrades', s.dailyTrades || 5, '📅 سقف معامله در روز')}
+      <p class="small muted mt">کارمزد و سقف‌ها برای این است که بورس به «قمار» تبدیل نشود؛ هدف، یادگیری صبر و برنامه است.</p></div>
+    <div class="mk-box"><h3 class="mb">🎯 قواعد اهداف همکاری</h3>
+      ${sw('missionsEnabled', s.missionsEnabled !== false, '🎯 ماموریت‌ها فعال باشند')}
+      <div class="divider"></div><h3 class="mb">🏦 سهام کلاس</h3>
+      ${(ec().assets || []).map(a => `<div class="mk-row"><span class="gr-ico" style="--kc:${a.color};width:34px;height:34px;font-size:1rem">${a.icon}</span><b class="small" style="flex:1">${esc(a.name)}</b><span class="chip">${faNum(price(a))}</span>
+        <button type="button" class="ib sm" data-act="mkPause" data-id="${a.id}">${a.paused ? '🟢' : '⏸️'}</button></div>`).join('')}
+      <button type="button" class="btn sm soft mt" data-act="mkANew">➕ سهام جدید</button></div></div>`;
+}
+
+/* ---------- view ---------- */
+function viewHTML() {
+  const st = S(), e = ec(), pf = isT() ? null : C.ecPortfolio(st, SESS.sid);
+  const activeM = (e.missions || []).filter(m => m.status === 'active').length;
+  const tabs = isT() ? [['market', '📈 بورس دانش'], ['missions', '🎯 اهداف همکاری', activeM], ['board', '🏆 رتبه‌بندی'], ['set', '⚙️ قواعد']]
+    : [['market', '📈 بورس من'], ['missions', '🎯 اهداف کلاس', activeM], ['board', '🏆 رتبه‌بندی']];
+  return `<div class="mk">
+    <div class="mk-hero"><div class="spread"><div>
+      <h1>📈 بورس دانش و اهداف همکاری</h1>
+      <p>${isT() ? 'قیمت سهام هر درس از عملکرد واقعی کلاس ساخته می‌شود؛ ماموریت‌های مشترک، کل کلاس را هم‌هدف می‌کند.' : 'سکه‌هایت را به سهام درس‌ها تبدیل کن؛ اگر کلاس در آن درس بهتر کار کند، سهم تو ارزشمندتر می‌شود!'}</p>
+      <div class="mk-quick"><span class="q">🏦 <b>${fa((e.assets || []).filter(a => !a.paused).length)}</b> سهام</span>
+        <span class="q">🎯 <b>${fa(activeM)}</b> ماموریت فعال</span>
+        ${!isT() ? `<span class="q">🪙 <b>${fa(pf.cash)}</b> نقد</span><span class="q">💼 <b>${fa(pf.total)}</b> دارایی کل</span>` : ''}</div></div>
+      ${isT() ? `<div class="row"><button type="button" class="btn" data-act="mkMNew">➕ ماموریت</button><button type="button" class="btn soft" data-act="mkRoll">🔄 به‌روزرسانی بازار</button></div>` : ''}
+    </div></div>
+    <div class="tabs">${tabs.map(([k, l, n]) => `<button type="button" class="${M.tab === k ? 'on' : ''}" data-act="mkTab" data-tab="${k}">${l}${n ? ` (${fa(n)})` : ''}</button>`).join('')}</div>
+    <div id="mkBody">${M.tab === 'missions' ? missionsTab() : M.tab === 'board' ? boardTab() : M.tab === 'set' ? setTab() : marketTab()}</div></div>`;
+}
+
+/* ---------- drawers ---------- */
+function missionForm() {
+  const st = S(), today = todayISO();
+  UI.jdate.mkfrom = today; UI.jdate.mkto = shift6(today);
+  return `<form data-form="mkMission" class="mk">
+    <div class="field"><label class="lbl">نوع</label><div class="seg" id="mkScopeSeg">
+      <button type="button" class="on" data-act="mkScope" data-v="class">👥 ماموریت کلاس</button>
+      <button type="button" data-act="mkScope" data-v="group">🧩 ماموریت گروه</button>
+      <button type="button" data-act="mkScope" data-v="battle">🏆 نبرد گروه‌ها</button></div>
+      <input type="hidden" id="mkScopeVal" value="class"></div>
+    <div class="field" id="mkGroupBox" style="display:none"><label class="lbl">گروه</label><select class="select" id="mkGroupSel">${(st.groups || []).map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</select></div>
+    <div class="field"><label class="lbl">عنوان</label><input class="input" id="mkTitle" required placeholder="مثلاً: ماموریت کلاس: حضور این هفته بالای ۹۵٪"></div>
+    <div class="field"><label class="lbl">توضیح برای بچه‌ها</label><textarea class="input" id="mkDesc" rows="2" placeholder="چطور می‌بریم؟ چه چیزی شمرده می‌شود؟"></textarea></div>
+    <div class="grid g2"><div class="field"><label class="lbl">سنجهٔ پیشرفت</label><select class="select" id="mkMetric">${Object.entries(MET).map(([k, v]) => `<option value="${k}">${v.i} ${v.l}</option>`).join('')}</select></div>
+      <div class="field"><label class="lbl">هدف (عدد)</label><input class="input" data-fa inputmode="numeric" id="mkTarget" value="۹۰"></div></div>
+    <div class="card mb" style="padding:13px;background:var(--surface2)"><h3 class="mb">🗓️ بازه (شمسی)</h3>
+      <div class="field"><label class="lbl">از</label>${jDateSelects('mkfrom')}</div>
+      <div class="field" style="margin-bottom:0"><label class="lbl">تا</label>${jDateSelects('mkto')}</div></div>
+    <div class="grid g3"><div class="field"><label class="lbl">🪙 امتیاز</label><input class="input" data-fa inputmode="numeric" id="mkRP" value="۳"></div>
+      <div class="field"><label class="lbl">⚡ تجربه</label><input class="input" data-fa inputmode="numeric" id="mkRX" value="۲۵"></div>
+      <div class="field"><label class="lbl">🎰 چرخش</label><input class="input" data-fa inputmode="numeric" id="mkRS" value="۱"></div></div>
+    <button class="btn" type="submit" style="width:100%">💾 ساخت ماموریت</button></form>`;
+}
+function assetForm() {
+  const st = S();
+  return `<form data-form="mkAsset" class="mk">
+    <div class="field"><label class="lbl">نام سهام</label><input class="input" id="mkAName" required placeholder="مثلاً: سهام قرآن"></div>
+    <div class="grid g2"><div class="field"><label class="lbl">نماد</label><input class="input" id="mkASym" maxlength="8" placeholder="QRAN"></div>
+      <div class="field"><label class="lbl">آیکن</label><input class="input" id="mkAIcon" maxlength="4" value="📊"></div></div>
+    <div class="field"><label class="lbl">سنجه از کدام درس؟</label><select class="select" id="mkASub">${(st.subjects || []).map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}<option value="@help">🤝 همکاری و احوال‌پرسی</option></select></div>
+    <button class="btn" type="submit" style="width:100%">💾 ساخت سهام</button></form>`;
+}
+function shift6(d) { const x = isoToDate(d); x.setDate(x.getDate() + 6); return dateToISO(x); }
+
+/* ---------- integration ---------- */
+const baseNav = navItems, baseRV = renderView;
+navItems = function () {
+  const items = baseNav();
+  const e = ['econ', '📈', isT() ? 'بورس و اهداف همکاری' : 'بورس من'];
+  const at = items.findIndex(x => x[0] === (isT() ? 'shop' : 'shop'));
+  if (at > -1) items.splice(at + 1, 0, e); else items.push(e);
+  return items;
+};
+renderView = function () {
+  if (UI.section !== 'econ') return baseRV();
+  const v = document.getElementById('view');
+  try { C.ecEnsure(S()); v.innerHTML = `<div class="ve">${viewHTML()}</div>`; }
+  catch (e) { console.error('econ view', e); v.innerHTML = `<div class="card">${empty('🛠️', 'خطا در نمایش بورس', 'صفحه را دوباره بارگذاری کنید.', '<button type="button" class="btn" data-act="reload">بارگذاری مجدد</button>')}</div>`; }
+};
+
+/* ---------- actions ---------- */
+ACT.mkTab = el => { M.tab = el.dataset.tab; renderView(); Sound.play('tap'); };
+ACT.mkPick = el => { M.asset = el.dataset.id; M.qty = 1; renderView(); Sound.play('tap'); };
+ACT.mkQty = el => { const max = (ec().settings.maxTradeQty || 15); M.qty = clamp(M.qty + Number(en(el.dataset.d)), 1, max); const b = document.getElementById('mkQty'); if (b) b.textContent = fa(M.qty); Sound.play('tap'); };
+ACT.mkBuy = el => {
+  const id = el.dataset.id, a = (ec().assets || []).find(x => x.id === id); if (!a) return;
+  const cost = Math.round(M.qty * price(a) * (1 + (ec().settings.tradeFee || 0) / 100));
+  confirmDlg({ title: '📈 خرید سهم', body: `${fa(M.qty)} سهم «${a.name}» به قیمت تقریبی ${fa(cost)} سکه. اگر قیمت پایین بیاید، ضرر می‌کنی؛ مطمئنی؟`, okText: 'خرید کن', onOk: () => {
+    const rect = el.getBoundingClientRect();
+    send('econ.trade', { assetId: id, side: 'buy', qty: M.qty }, null, { sound: null }).then(r => { if (r) { Sound.play('pop'); toast(`📈 ${fa(M.qty)} سهم ${a.symbol} خریدی • ${fa(r.cost)} سکه`, 'ok'); } });
+  } });
+};
+ACT.mkSell = el => {
+  const id = el.dataset.id, a = (ec().assets || []).find(x => x.id === id); if (!a) return;
+  const h = (S().econ.holdings || {})[SESS.sid]; const my = h && h[id];
+  const q = Math.min(M.qty, my ? my.qty : 0);
+  if (!q) return toast('سهمی نداری', 'err');
+  const val = Math.round(q * price(a) * (1 - (ec().settings.tradeFee || 0) / 100));
+  const pnl = my ? Math.round(val - (my.cost || 0) * q / my.qty) : 0;
+  confirmDlg({ title: '📉 فروش سهم', body: `${fa(q)} سهم «${a.name}» به تقریب ${fa(val)} سکه${pnl ? ` • سود/زیان این مقدار: ${pnl >= 0 ? '+' : ''}${fa(pnl)}` : ''}.`, okText: 'بفروش', onOk: () => {
+    send('econ.trade', { assetId: id, side: 'sell', qty: q }, null, { sound: null }).then(r => { if (r) { Sound.play(pnl >= 0 ? 'win' : 'pop'); toast(`💰 فروش انجام شد • ${fa(r.proceeds)} سکه برگشت`, pnl >= 0 ? 'ok' : 'info'); } });
+  } });
+};
+ACT.mkRoll = () => send('econ.roll', {}, null, { msg: '🔄 بازار به‌روز شد' });
+ACT.mkPause = el => send('econ.asset.pause', { id: el.dataset.id }, st => { const a = st.econ.assets.find(x => x.id === el.dataset.id); if (a) a.paused = !a.paused; }, { sound: 'pop' });
+ACT.mkANew = () => openDrawer('➕ سهام جدید', assetForm());
+ACT.mkMNew = () => openDrawer('➕ ماموریت / نبرد', missionForm(), true);
+ACT.mkScope = el => {
+  M.mScope = el.dataset.v;
+  document.querySelectorAll('#mkScopeSeg button').forEach(b => b.classList.toggle('on', b === el));
+  document.getElementById('mkScopeVal').value = el.dataset.v;
+  document.getElementById('mkGroupBox').style.display = el.dataset.v === 'group' ? '' : 'none';
+  Sound.play('tap');
+};
+ACT.mkMDel = el => { const id = el.dataset.id; confirmDlg({ title: 'حذف ماموریت', body: 'ماموریت و نتایجش حذف شود؟', okText: 'حذف', danger: true, onOk: () => send('econ.mission.delete', { id }, st => { st.econ.missions = st.econ.missions.filter(m => m.id !== id); }, { msg: 'حذف شد', undo: true, sound: 'err' }) }); };
+ACT.mkSettle = el => { const id = el.dataset.id; confirmDlg({ title: '🏁 تسویهٔ ماموریت', body: 'پیشرفت محاسبه و پاداش به برندگان داده می‌شود. قابل بازگشت نیست.', okText: 'تسویه کن', onOk: () => send('econ.mission.settle', { id }, null, { sound: null }).then(r => { if (r) { Sound.play('win'); toast(r.ok === false ? '✖️ ماموریت محقق نشد' : '🏆 ماموریت تسویه و پاداش داده شد', 'ok', null, 7000); } }) }); };
+ACT.mkStep = el => {
+  const k = el.dataset.k, d = Number(en(el.dataset.d)) || 1, s = ec().settings;
+  s[k] = clamp((s[k] || 0) + d, k === 'tradeFee' ? 0 : 1, k === 'tradeFee' ? 20 : k === 'maxTradeQty' ? 50 : 20);
+  const b = document.getElementById('mkS_' + k); if (b) b.textContent = fa(s[k]);
+  clearTimeout(M.stT); M.stT = setTimeout(() => send('econ.settings', { patch: { [k]: s[k] } }, st => { st.econ.settings[k] = s[k]; }, { sound: null }), 500);
+};
+CHG.mkSet = el => { const k = el.dataset.k, v = el.checked; send('econ.settings', { patch: { [k]: v } }, st => { st.econ.settings[k] = v; }, { msg: 'قاعده ذخیره شد' }); };
+FORM.mkMission = () => {
+  const title = (document.getElementById('mkTitle').value || '').trim();
+  if (!title) return toast('عنوان را بنویس', 'err');
+  const scope = document.getElementById('mkScopeVal').value;
+  const data = {
+    title, desc: (document.getElementById('mkDesc').value || '').trim(),
+    scope, groupId: scope === 'group' ? document.getElementById('mkGroupSel').value : '',
+    metric: document.getElementById('mkMetric').value,
+    target: num(document.getElementById('mkTarget').value) || 0,
+    from: UI.jdate.mkfrom || todayISO(), to: UI.jdate.mkto || todayISO(),
+    reward: { points: num(document.getElementById('mkRP').value) || 0, xp: num(document.getElementById('mkRX').value) || 0, spin: num(document.getElementById('mkRS').value) || 0 }
+  };
+  send('econ.mission.create', { id: uid(), ...data }, null, { msg: '🎯 ماموریت برای کلاس منتشر شد' });
+  closeDrawer();
+};
+FORM.mkAsset = () => {
+  const name = (document.getElementById('mkAName').value || '').trim();
+  if (!name) return toast('نام سهام را بنویس', 'err');
+  send('econ.asset.add', { id: uid(), name, symbol: (document.getElementById('mkASym').value || 'NEW').toUpperCase(), icon: document.getElementById('mkAIcon').value || '📊', subject: document.getElementById('mkASub').value, color: C.CPAL[Math.floor(Math.random() * 8)] }, null, { msg: '🏦 سهام جدید ساخته شد' });
+  closeDrawer();
+};
+if (S() && SESS) render(true);
+})();
