@@ -2063,7 +2063,7 @@ function showLogin(pub) {
     $('#brandStats').innerHTML = [`👦 ${fa(pub.students)} دانش‌آموز`, `📝 ${fa(pub.assessments)} ارزشیابی`, `📅 ${fa(pub.attendanceDays)} روز حضور`, `⭐ ${fa(pub.discipline)} رویداد انضباطی`, `🧩 ${fa(pub.groups)} گروه`].map(x => `<span>${x}</span>`).join('');
   }
   $('#modeBox').innerHTML = Net.mode === 'server'
-    ? '🟢 <b>حالت سرور:</b> داده‌ها روی Supabase نگهداری می‌شود؛ هر ثبت معلم فوراً برای همهٔ دانش‌آموزان نمایش داده می‌شود.'
+    ? '🟢 <b>حالت سرور:</b> داده ها به صورت آنلاین ثبت می شوند
     
   applyAppearance();
   setTimeout(() => $('#codeInput')?.focus(), 300);
