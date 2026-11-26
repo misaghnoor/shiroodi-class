@@ -79,7 +79,7 @@ const Net = {
   async login(code) {
     if (this.mode === 'server') return this.call('login', { method: 'POST', body: JSON.stringify({ code }) });
     const st = this.demoState();
-    const tc = String(st.meta.teacherCode || '991404');
+    const tc = String(st.meta.teacherCode || '847190');
     let sess;
     if (code === tc) sess = { role: 'teacher', sid: null, name: st.meta.teacher };
     else { const s = st.students.find(x => x.code === code); if (!s) throw new Error('کد وارد شده معتبر نیست'); sess = { role: 'student', sid: s.id, name: s.name }; }
@@ -2061,7 +2061,6 @@ function showLogin(pub) {
   }
   $('#modeBox').innerHTML = Net.mode === 'server'
     ? '🟢 <b>حالت سرور:</b> داده‌ها روی Supabase نگهداری می‌شود؛ هر ثبت معلم فوراً برای همهٔ دانش‌آموزان نمایش داده می‌شود.'
-    : '🟡 <b>حالت نمایشی:</b> سرور در دسترس نیست؛ دادهٔ واقعی کلاس روی همین دستگاه است. تب دیگری باز کنید و با کد دیگری وارد شوید — تغییرات بین تب‌ها همگام می‌شود. کد معلم: ۹۹۱۴۰۴';
   applyAppearance();
   setTimeout(() => $('#codeInput')?.focus(), 300);
   startFX(); startTicker();
