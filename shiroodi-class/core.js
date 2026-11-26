@@ -493,7 +493,7 @@ function buildSeed() {
     schema: SCHEMA,
     meta: {
       school: 'دبستان شهید شیرودی عباس‌آباد', className: 'پایه پنجم', teacher: 'محمدباقر کالجی', year: '۱۴۰۵-۱۴۰۶',
-      teacherCode: '991404', gradingMode: 'descriptive', numericMax: 20, numericMin: 0,
+      teacherCode: '847190', gradingMode: 'descriptive', numericMax: 20, numericMin: 0,
       numericThresholds: { excellent: 17, good: 14, acceptable: 10 },
       appearance: { accent: 'teal', theme: 'light', font: 'vazirmatn', fontScale: 1, density: 'cozy', pattern: true, anim: true },
       csv: { delim: ',', digits: 'fa', dates: 'jalali', bom: true }
