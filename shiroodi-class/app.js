@@ -1201,7 +1201,7 @@ ${qq.type === 'mcq' && qq.options.length < 6 ? `<button type="button" class="btn
 /* ================= A4 sheets ================= */
 function sheetHead(title, sub) {
 const st = S();
-return `<div class="sh"><div class="sht"><span>ادارهٔ آموزش و پرورش — منطقهٔ عباس‌آباد</span><span>شماره: ${fa(Math.floor(1000 + Math.random() * 9000))}/د</span><span>تاریخ: ${jShort(todayISO())}</span></div>
+return `<div class="sh"><div class="sht"><span>اداره آموزش و پرورش شهرستان نور</span><span>شماره: ${fa(Math.floor(1000 + Math.random() * 9000))}/د</span><span>تاریخ: ${jShort(todayISO())}</span></div>
 <h1>${esc(st.meta.school)}</h1><div class="shs">${esc(title)} — ${esc(st.meta.className)} • سال تحصیلی ${esc(st.meta.year)}${sub ? ' • ' + esc(sub) : ''}</div><div class="seal">مهر رسمی<br>مدرسه</div></div>`;
 }
 const sheetFoot = () => `<div class="sf"><div>امضای معلم<br><b>${esc(S().meta.teacher)}</b><br>....................</div><div>امضای مدیر مدرسه<br><br>....................</div><div>مهر و امضای دفتر<br><br>....................</div></div>
