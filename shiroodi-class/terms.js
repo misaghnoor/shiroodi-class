@@ -286,7 +286,6 @@ var CSS = ''
 + '.tm-empty{text-align:center;padding:28px 16px}.tm-empty .e{font-size:2.2rem;display:block;margin-bottom:8px}'
 + '.tm-note{border-radius:14px;padding:11px 14px;font-size:.78rem;font-weight:700;line-height:1.9;background:color-mix(in srgb,var(--tm-info) 10%,var(--tm-surf));border:1px dashed color-mix(in srgb,var(--tm-info) 42%,var(--tm-line));color:var(--tm-ink)}'
 + '.tm-tip{font-size:.7rem;color:var(--tm-mut);line-height:1.9;margin-top:8px}'
-+ '.tm-dl{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;padding:6px 0;border-bottom:1px dashed var(--tm-line)}
 +'.tm-dl:last-child{border:none}'
 + '@media (max-width:1200px){.tm-g6{grid-template-columns:repeat(3,1fr)}}'
 + '@media (max-width:980px){.tm-g2,.tm-g32{grid-template-columns:1fr}.tm-ctl{position:static}}'
