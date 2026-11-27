@@ -1,4 +1,4 @@
-/* growth-core.js — استریک، چالش، جعبه شانس، هم‌یار، آینه و پاسخگویی (هستهٔ مشترک) */
+/* growth-core.js v2 — استریک، چالش، جعبه شانس، هم‌یار، آینه و پاسخگویی (هستهٔ مشترک) */
 (function (g) {
 'use strict';
 const C = g.ClassCore;
@@ -113,6 +113,7 @@ function grant(st, sid, o) {
   return true;
 }
 function act(st, sid, kind, ref) {
+  if (!sid) return;
   if (ref && (G(st).acts || []).some(a => a.ref === ref)) return;
   G(st).acts.push({ id: uid(), sid, kind, date: D(), at: T(), ref: ref || null });
   if (G(st).acts.length > 4000) G(st).acts = G(st).acts.slice(-3000);
@@ -195,15 +196,24 @@ function syncStreaks(st) {
 }
 
 /* ---------------- quests ---------------- */
+/* 🔧 نسخهٔ تاریخ‌محور + گارد: هرگز عضو undefined نمی‌خواند */
 function autoQuests(date) {
-  const h = hash(date), out = [];
-  const idx = [(h % 10), ((h >> 4) % 10), ((h >> 8) % 10)];
+  const d = (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) ? date : D();
+  const N = AUTO_POOL.length;
+  const h = hash(d), out = [];
+  const idx = [(h % N), ((h >> 4) % N), ((h >> 8) % N)];
   const seen = new Set();
-  for (let i = 0; i < idx.length; i++) { let k = idx[i]; while (seen.has(k)) k = (k + 1) % 10; seen.add(k); out.push(AUTO_POOL[k]); }
+  for (let i = 0; i < idx.length; i++) {
+    let k = idx[i], guard = 0;
+    while (seen.has(k) && guard++ < N) k = (k + 1) % N;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    if (AUTO_POOL[k]) out.push(AUTO_POOL[k]);
+  }
   return out.map(p => ({
-    id: 'auto:' + date + ':' + p.key, auto: true, kind: p.kind, title: p.title, n: p.n,
-    points: p.points, xp: p.xp, icon: QK[p.kind].i, scope: 'all', targetId: '', from: date, to: date,
-    daily: true, active: true, createdAt: date
+    id: 'auto:' + d + ':' + p.key, auto: true, kind: p.kind, title: p.title, n: p.n,
+    points: p.points, xp: p.xp, icon: (QK[p.kind] || QK.manual).i, scope: 'all', targetId: '', from: d, to: d,
+    daily: true, active: true, createdAt: d
   }));
 }
 function questsFor(st, sid, date) {
@@ -223,7 +233,6 @@ function inRange(iso, q) { if (!iso) return false; if (q.from && iso < q.from) r
 function progress(st, q, sid, date) {
   const gr = G(st), d = date || D();
   const rng = q.daily ? { from: d, to: d } : { from: q.from || d, to: q.to || d };
-  const cnt = f => { let n = 0; f(x => { if (inRange(x, rng)) n++; }); return n; };
   switch (q.kind) {
     case 'hw_done': case 'hw_read': {
       let n = 0;
@@ -651,7 +660,7 @@ function apply(st, cmd, session) {
 /* ---------------- hooks on base commands ---------------- */
 function afterBase(st, cmd, out) {
   ensure(st);
-  const gr = G(st), acc = gr.settings.acc, sid = session_sid(out, cmd);
+  const gr = G(st), acc = gr.settings.acc, sid = cmd.__sid || null;
   const t = cmd.type;
   const findR = id => (st.reports || []).find(x => x.id === id);
 
@@ -679,17 +688,17 @@ function afterBase(st, cmd, out) {
   if (t === 'hw.bulkReview' && cmd.verdict !== 'redo') {
     (cmd.sids || []).forEach(s => grant(st, s, { xp: gr.settings.xp.hw, spin: 1, reason: '📚 تکلیف تأییدشده', ref: 'hwx:' + cmd.aid + ':' + s, kind: 'hw' }));
   }
-  if (t === 'quiz.submit') {
+  /* 🔧 گارد: فقط وقتی دانش‌آموزِ واقعی فرمان را زده (sid معتبر) */
+  if (t === 'quiz.submit' && sid) {
     act(st, sid, 'quiz', 'qz:' + cmd.quizId + ':' + sid);
     grant(st, sid, { xp: gr.settings.xp.quiz, spin: 1, reason: '🧠 شرکت در آزمون', ref: 'qzx:' + cmd.quizId + ':' + sid, kind: 'quiz' });
   }
-  if (t === 'poll.vote') {
+  if (t === 'poll.vote' && sid) {
     act(st, sid, 'vote', 'vt:' + cmd.pollId + ':' + sid);
     grant(st, sid, { xp: gr.settings.xp.vote, reason: '🗳️ شرکت در نظرسنجی', ref: 'vtx:' + cmd.pollId + ':' + sid, kind: 'vote' });
   }
   syncStreaks(st);
 }
-function session_sid(out, cmd) { return cmd.__sid || (out && out.__sid) || null; }
 
 /* ---------------- patch core ---------------- */
 const baseApply = C.applyCommand, baseSeed = C.buildSeed, baseNorm = C.normalize, baseView = C.viewFor;
