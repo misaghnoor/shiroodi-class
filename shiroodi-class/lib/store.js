@@ -7,6 +7,7 @@ import '../skills-core.js';
 import '../tickets-core.js';
 import '../market-core.js';
 import '../market-ext-core.js';
+import '../market-pro-core.js';
 import * as db from './db.js';
 try { await import('../insco-core.js'); } catch (e) { /* ماژول اختیاری */ }
 
@@ -16,7 +17,7 @@ function runEnsures(st) { for (const fn of ENSURES) { try { if (typeof C[fn] ===
 
 const POLL_TYPES = ['choice', 'multi', 'yesno', 'rating', 'election'];
 const ASMT_TYPES = ['oral', 'written', 'performance', 'homework'];
-const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'sk.', 'tk.', 'econ.', 'mkt.', 'ico.'];
+const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'sk.', 'tk.', 'econ.', 'mkt.', 'mk2.', 'ico.'];
 
 export async function ensureStore() {
   let row = await db.readStore();
