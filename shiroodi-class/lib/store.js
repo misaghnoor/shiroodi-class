@@ -1,8 +1,9 @@
-/* lib/store.js — بیمهٔ کلاس وصل شد؛ اگر فایلش نبود سرور نمی‌خوابد */
+/* lib/store.js — بارگذاری ایمن ماژول‌ها؛ نبودِ هیچ فایلی هرگز سرور را نمی‌خواباند */
 import '../core.js';
 import '../homework-core.js';
 import '../extras-core.js';
 import '../growth-core.js';
+import '../skills-core.js';
 import '../tickets-core.js';
 import '../market-core.js';
 import '../market-ext-core.js';
@@ -10,12 +11,12 @@ import * as db from './db.js';
 try { await import('../insco-core.js'); } catch (e) { /* ماژول اختیاری */ }
 
 const C = globalThis.ClassCore;
-const ENSURES = ['hwEnsure', 'ensureExtras', 'grEnsure', 'tkEnsure', 'ecEnsure', 'mktEnsure'];
+const ENSURES = ['hwEnsure', 'ensureExtras', 'grEnsure', 'skEnsure', 'tkEnsure', 'ecEnsure', 'mktEnsure'];
 function runEnsures(st) { for (const fn of ENSURES) { try { if (typeof C[fn] === 'function') C[fn](st); } catch (e) {} } }
 
 const POLL_TYPES = ['choice', 'multi', 'yesno', 'rating', 'election'];
 const ASMT_TYPES = ['oral', 'written', 'performance', 'homework'];
-const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'tk.', 'econ.', 'mkt.', 'ico.'];
+const OWN = ['hw.', 'shop.', 'badge.', 'gr.', 'sk.', 'tk.', 'econ.', 'mkt.', 'ico.'];
 
 export async function ensureStore() {
   let row = await db.readStore();
@@ -25,12 +26,10 @@ export async function ensureStore() {
     if (!row) { const e = new Error('راه‌اندازی دیتابیس ناموفق بود.'); e.status = 500; throw e; }
   }
   let st = row.data, rev = row.revision, dirty = false;
-
   if (!st || st.schema !== C.SCHEMA) { st = C.normalize(st); st._mig = C.SCHEMA; dirty = true; }
   if (st._mig !== C.SCHEMA) { runEnsures(st); st._mig = C.SCHEMA; dirty = true; }
   if (!st.insCo && typeof C.icoEnsure === 'function') { try { C.icoEnsure(st); dirty = true; } catch (e) {} }
   if (typeof C.icoCollect === 'function') { try { if (C.icoCollect(st)) dirty = true; } catch (e) {} }
-
   if (dirty) {
     const nr = await db.casStore(st, rev);
     if (nr) return { data: st, revision: nr };
